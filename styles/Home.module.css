@@ -1,5 +1,6 @@
 .container {
   padding: 0 2rem;
+  padding-top: 50px;
 }
 
 .main {
@@ -52,8 +53,9 @@
 
 .description {
   margin: 4rem 0;
-  line-height: 1.5;
-  font-size: 1.5rem;
+  line-height: 1.2;
+  font-size: 1.2rem;
+  max-width: 640px;
 }
 
 .code {
@@ -106,6 +108,13 @@
 .logo {
   height: 1em;
   margin-left: 0.2rem;
+}
+
+.iconContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
 }
 
 @media (max-width: 600px) {

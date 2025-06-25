@@ -3,6 +3,8 @@ import { env } from "process";
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: [env.REPLIT_DOMAINS.split(",")[0]],
+  //basePath: ""
+  output: "export",
 };
 
 module.exports = nextConfig;
