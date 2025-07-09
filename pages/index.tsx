@@ -11,7 +11,7 @@ const Home: NextPage = () => {
         <h2>大阪産業大学</h2>
 
         <p className={styles.description}>
-          パソコン組み立て、ガジェット、ネットワーク、ゲーム、プログラミングといった活動をしている大阪産業大学のコンピューター系の部会です。
+          パソコン、ネットワーク、ゲーム、プログラミングといった活動をしている大産大のクラブです。
         </p>
 
         <div className={styles.iconContainer}>
@@ -28,7 +28,7 @@ const Home: NextPage = () => {
               icon="mdi:twitter"
               width="2em"
               height="2em"
-              style={{ color: "1D9BF0" }}
+              style={{ color: "404040" }}
             />
           </a>
           <a href="https://github.com/osu-denken">
@@ -36,7 +36,7 @@ const Home: NextPage = () => {
               icon="mdi:github"
               width="2em"
               height="2em"
-              style={{ color: "000000" }}
+              style={{ color: "404040" }}
             />
           </a>
         </div>
