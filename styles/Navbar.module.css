@@ -36,16 +36,8 @@
 }
 
 @media screen and (max-width: 640px) {
-  .nav {
-    height: 150px;
-  }
-
-  .nav ul {
-    flex-direction: column;
-    padding: 0;
-  }
-
-  .nav li {
-    border-bottom: solid 1px #111;
+  .nav a {
+    font-size: 16px;
+    line-height: 24px;
   }
 }
