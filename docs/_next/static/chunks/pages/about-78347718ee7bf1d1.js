@@ -1,0 +1,1 @@
+(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[239],{3551:(_,n,u)=>{"use strict";u.r(n),u.d(n,{default:()=>r});var e=u(7876);let r=function(){return(0,e.jsx)("div",{children:"トップページ"})}},8897:(_,n,u)=>{(window.__NEXT_P=window.__NEXT_P||[]).push(["/about",function(){return u(3551)}])}},_=>{var n=n=>_(_.s=n);_.O(0,[636,593,792],()=>n(8897)),_N_E=_.O()}]);
