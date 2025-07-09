@@ -34,6 +34,9 @@ export default function Navbar() {
           <Link href="https://osu-denken.github.io">電研</Link>
         </li>
         <li className={styles.right}>
+          <Link href="https://docs.google.com/forms/d/e/1FAIpQLSc5PLg3PhXZa6Z3YCt9aXJVv_rmWcJHTMFbwovR8RTdJQ61fw/viewform">入部</Link>
+        </li>
+        <li className={styles.rightend}>
           <a onClick={() => setIsOpen(true)}>ログイン</a>
         </li>
         {/* <li className={styles.right}>

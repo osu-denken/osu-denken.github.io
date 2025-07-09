@@ -20,6 +20,10 @@
   margin-right: 20px;
 }
 
+.nav ul li.rightend {
+  margin-right: 20px;
+}
+
 .nav a {
   text-decoration: none;
   color: #fff;
