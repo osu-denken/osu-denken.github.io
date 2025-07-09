@@ -3,7 +3,7 @@ import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import { Icon } from "@iconify/react";
 
-const Home: NextPage = () => {
+const HomePage: NextPage = () => {
   return (
     <div className={styles.container}>
       <main className={styles.main}>
@@ -70,4 +70,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default HomePage;
