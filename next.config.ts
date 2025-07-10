@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 import { env } from "process";
 
-const isExport: boolean = process.env.NEXT_PHASE === "phase-export";
+const isExport: boolean = process.env.IS_EXPORT === "1";
 
 const nextConfig: NextConfig = {
   //allowedDevOrigins: [env.REPLIT_DOMAINS.split(",")[0]],

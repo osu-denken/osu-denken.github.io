@@ -6,7 +6,7 @@ Next.jsを用いてGitHub Pagesへデプロイして作成
    こちらは[Next.js 15 + GitHub PagesでCSSが反映されない問題を解決した話（App Router対応・Tailwind・TypeScript） - Qiita](https://qiita.com/hellomyzn/items/692f4fa1703c45c7efa9)を参考に修正した。
 
 ## デプロイ方法
-1. `npm run build`を実行してビルドする
+1. `npm run export`を実行して静的サイトとしてビルドする
 2. 各種gitコマンドを実行してビルドされたファイルをGitHubにプッシュする
    - `git add .`
    - `git commit -m "..."`
