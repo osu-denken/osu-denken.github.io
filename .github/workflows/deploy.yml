@@ -1,0 +1,54 @@
+name: Static Export to docs/
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-export:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check commit message
+        id: check_msg
+        run: |
+          echo "commit_msg<<EOF" >> $GITHUB_OUTPUT
+          echo "$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Skip if commit message contains [skip-ci]
+        if: contains(steps.check_msg.outputs.commit_msg, '[skip-ci]')
+        run: exit 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Next.js app
+        run: npm run build
+
+      - name: Set export env var
+        run: echo "IS_EXPORT=1" >> $GITHUB_ENV
+
+      - name: Export static site
+        run: npm run export
+
+      - name: Configure git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and push docs
+        run: |
+          git add docs
+          git commit -m "[skip-ci] Update docs from GitHub Actions" || echo "No changes to commit"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
