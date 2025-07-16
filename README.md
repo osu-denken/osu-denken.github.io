@@ -17,4 +17,3 @@ Next.jsを用いてGitHub Pagesへデプロイして作成
 ## デバッグ
 1. `npm run dev`を実行してローカルサーバーを起動
 2. ブラウザで`http://localhost:3000`にアクセスする
-
