@@ -2,11 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from "../../styles/Navbar.module.css";
 import Modal from "react-modal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-Modal.setAppElement(".App");
-
-const modalStyle = {
+const modalStyle: Modal.Styles = {
   overlay: {
     position: "fixed",
     top: 0,
@@ -25,15 +23,21 @@ const modalStyle = {
   }
 };
 
-export default function Navbar() {
-  const [modalIsOpen, setIsOpen] = useState(false);
+const Navbar: React.FC = () => {
+  const [modalIsOpen, setIsOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      Modal.setAppElement('.App');
+    }
+  }, []);
 
   return (
     <nav className={styles.nav}>
       <ul>
         <li>
           <Link href="https://osu-denken.github.io">
-            <Image src="/icon.png" alt="電研ロゴ"/>
+            <Image src="/icon.png" alt="電研ロゴ" width={30} height={30} />
             電研
           </Link>
         </li>
@@ -58,4 +62,6 @@ export default function Navbar() {
       </Modal>
     </nav>
   );
-}
+};
+
+export default Navbar;
