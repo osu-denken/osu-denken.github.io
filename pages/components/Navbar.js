@@ -31,7 +31,10 @@ export default function Navbar() {
     <nav className={styles.nav}>
       <ul>
         <li>
-          <Link href="https://osu-denken.github.io">電研</Link>
+          <Link href="https://osu-denken.github.io">
+            <Image src="/icon.png" alt="電研ロゴ"/>
+            電研
+          </Link>
         </li>
         <li className={styles.right}>
           <Link href="https://osu-denken.github.io/blog/join">入部</Link>
