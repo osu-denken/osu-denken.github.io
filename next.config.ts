@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
   //basePath: ""
   distDir: isExport ? "docs" : ".next",
   output: isExport ? "export" : undefined,
+
+  images: {
+    unoptimized: isExport,
+  },
 };
 
 module.exports = nextConfig;
