@@ -14,13 +14,11 @@ const Footer = () => {
           </div>
 
           <div className={`${styles.footerCol} ${styles.footerCol2}`}>
-            <ul className={styles.socialMediaList}>
-              {/* Social media links can be added here */}
-            </ul>
-          </div>
-
-          <div className={`${styles.footerCol} ${styles.footerCol3}`}>
-            <p>{/* Additional information can be added here */}</p>
+            <p>
+              <a href="/denken-pub.asc">
+                PGP公開鍵
+              </a>
+            </p>
           </div>
         </div>
       </div>
