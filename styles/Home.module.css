@@ -50,20 +50,38 @@
     0 0 10px #00a6c499
     0 0 20px #50c7ffcc;
   /* color: transparent; */
-  animation: rainbow 3s linear infinite;
-  animation-direction: alternate; 
+  animation-name: lighting;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-duration: 8s;
 }
 
-@keyframes rainbow {
-  from {
+@keyframes lighting {
+  15% {
     text-shadow: 
       0 0 10px #00a6c499
       0 0 20px #50c7ffcc;
   }
-  to {
+  30% {
     text-shadow: 
       0 0 10px #00a6c4,
       0 0 20px #50c7ff;
+  }
+  50% {
+    text-shadow: none;
+  }
+  70% {
+    text-shadow: 
+      0 0 10px #c4760099,
+      0 0 20px #ffb950cc;
+  }
+  85% {
+    text-shadow: 
+      0 0 10px #c46f00,
+      0 0 20px #ffb350;
+  }
+  100% {
+    text-shadow: none;
   }
 }
 
