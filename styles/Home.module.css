@@ -30,7 +30,8 @@
 }
 
 .title a {
-  color: #0070f3;
+  /* color: #0070f3; */
+  color: #4fafff;
   text-decoration: none;
 }
 
@@ -45,6 +46,25 @@
   line-height: 1.15;
   font-size: 4rem;
   font-weight: bold;
+  text-shadow: 
+    0 0 10px #00a6c499
+    0 0 20px #50c7ffcc;
+  /* color: transparent; */
+  animation: rainbow 3s linear infinite;
+  animation-direction: alternate; 
+}
+
+@keyframes rainbow {
+  from {
+    text-shadow: 
+      0 0 10px #00a6c499
+      0 0 20px #50c7ffcc;
+  }
+  to {
+    text-shadow: 
+      0 0 10px #00a6c4,
+      0 0 20px #50c7ff;
+  }
 }
 
 .bold {
@@ -95,8 +115,8 @@
 .card:hover,
 .card:focus,
 .card:active {
-  color: #0070f3;
-  border-color: #0070f3;
+  color: #4fafff;
+  border-color: #4fafff;
 }
 
 .card h2 {

@@ -20,7 +20,7 @@ const HomePage: NextPage = () => {
               icon="mdi:university"
               width="2em"
               height="2em"
-              style={{ color: "white" }}
+              style={{ color: "404040" }}
             />
           </a>
           <a href="https://x.com/osu_denken">
@@ -28,7 +28,7 @@ const HomePage: NextPage = () => {
               icon="mdi:twitter"
               width="2em"
               height="2em"
-              style={{ color: "white" }}
+              style={{ color: "404040" }}
             />
           </a>
           <a href="https://github.com/osu-denken">
@@ -36,7 +36,7 @@ const HomePage: NextPage = () => {
               icon="mdi:github"
               width="2em"
               height="2em"
-              style={{ color: "white" }}
+              style={{ color: "404040" }}
             />
           </a>
         </div>
