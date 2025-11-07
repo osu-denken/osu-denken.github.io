@@ -164,7 +164,7 @@
 .terminal {
   border: none;
   width: 640px;
-  height: 480px;
+  height: 340px;
   overflow-x: hidden;
   overflow-y: scroll;
 }
