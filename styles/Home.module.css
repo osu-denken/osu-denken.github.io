@@ -163,9 +163,11 @@
 
 .terminal {
   border: none;
+  max-width: 640px;
   width: 100%;
   height: 600px;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 @media (max-width: 600px) {

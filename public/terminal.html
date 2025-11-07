@@ -2,7 +2,7 @@
 @import url('https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css');
 
 * {
-  background: #000;
+  background: #121212;
   color: #fff;
 }
 
@@ -37,17 +37,22 @@ span.text a.dir {
 }
 
 .user {
+  display: inline-block;
   color: #2adfdf;
   height: 20px;
   font-size: 18px;
-  text-shadow:0 0 3px #2adfdfaa,0 0 6px #2adfdfaa;
+  text-shadow: 0 0 3px #2adfdfaa, 0 0 6px #2adfdfaa;
+}
+
+.user .sp {
+  color: #fff;
 }
 
 .prefix {
   color: #fff;
   height: 20px;
   font-size: 18px;
-  text-shadow:0 0 3px #ffffffaa,0 0 6px #ffffffaa;
+  text-shadow: 0 0 3px #ffffffaa, 0 0 6px #ffffffaa;
 }
 
 @keyframes blink-cursor {
@@ -61,6 +66,7 @@ span.text a.dir {
 <script>
 const texts = ["$ ls /var/www/html/",
 `<a class="dir" href="/about/">about/</a>\t<a class="dir" href="/blog/">blog/</a>\t<a href="/denken-pub.asc">denken-pub.asc</a>\t<a href="/favicon.ico">favicon.ico</a>\t<a href="/icon.png">icon.png</a>\t<a href="./">index.html</a>\t<a href="./welcome.md">welcome.md</a>`,
+"$ cd /var/www/html/",
 "$ cat welcome.md",
 "__GET__welcome.md"
 ];
@@ -93,6 +99,7 @@ function getFile(path) {
     });
 }
 
+var cd = "~";
 function cliLoop() {
   if (charIndex < texts[textIndex].length) { // Still typing
     targets[targets.length - 1].textContent += texts[textIndex][charIndex++];
@@ -107,9 +114,14 @@ function cliLoop() {
     const nextText = texts[textIndex + 1];
 
     if (nextText.startsWith("$ ")) {
-      newLine.innerHTML = `<span class="user">denken@osu</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
+      newLine.innerHTML = `<span class="user">denken@osu<span class="sp">:</span>${cd}</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
       cli.appendChild(newLine);
       targets.push(newLine.getElementsByClassName("text")[0]);
+      
+      if (nextText.startsWith("$ cd ")) { // Change directory
+        cd = nextText.replace("$ cd ", "");
+      }
+
     } else if (nextText.startsWith("__GET__")) {
         // Fetch file
         const filePath = nextText.replace("__GET__", "");
@@ -128,7 +140,7 @@ function cliLoop() {
 
           const commandLine = document.createElement("div");
           commandLine.classList.add("line");
-          commandLine.innerHTML = `<span class="user">denken@osu</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
+          commandLine.innerHTML = `<span class="user">denken@osu<span class="sp">:</span>${cd}</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
           cli.appendChild(commandLine);
           targets.push(commandLine.getElementsByClassName("text")[0]);
           charIndex = 2;
