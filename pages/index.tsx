@@ -10,9 +10,11 @@ const HomePage: NextPage = () => {
         <h1 className={styles.title}>電子計算研究部</h1>
         <h2 className={styles.bold}>大阪産業大学</h2>
 
-        <p className={styles.description}>
+        {/* <p className={styles.description}>
           パソコン、ネットワーク、ゲーム、プログラミングといった活動をしている大産大のクラブです。
-        </p>
+        </p> */}
+
+        <iframe className={styles.terminal} src="./terminal.html"></iframe>
 
         <div className={styles.iconContainer}>
           <a href="https://www.osaka-sandai.ac.jp/club_circle/club/233">

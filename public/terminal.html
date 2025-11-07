@@ -1,0 +1,160 @@
+<style>
+@import url('https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css');
+
+* {
+  background: #000;
+  color: #fff;
+}
+
+div.cli {
+  font-family: 'Fira Code', monospace;
+}
+
+div.line {
+  display: block;
+}
+
+span.text {
+  color: #23df1e;
+  height: 20px;
+  font-size: 18px;
+  text-shadow:0 0 3px #23df1eaa,0 0 6px #23df1eaa;
+}
+
+span.text a {
+  color: #23df1e;
+  text-shadow:0 0 3px #23df1eaa,0 0 6px #23df1eaa;
+}
+
+span.text a.dir {
+  color: #7658fd;
+  text-shadow:0 0 3px #7658fdaa,0 0 6px #7658fdaa;
+}
+
+.cursor {
+  border-right: 4px solid #fff;
+  animation: blink-cursor .85s step-end infinite;
+}
+
+.user {
+  color: #2adfdf;
+  height: 20px;
+  font-size: 18px;
+  text-shadow:0 0 3px #2adfdfaa,0 0 6px #2adfdfaa;
+}
+
+.prefix {
+  color: #fff;
+  height: 20px;
+  font-size: 18px;
+  text-shadow:0 0 3px #ffffffaa,0 0 6px #ffffffaa;
+}
+
+@keyframes blink-cursor {
+  0%, 100% { border-color: #fff; }
+  50% { border-color: transparent; }
+}
+</style>
+
+<div class="cli"></div>
+
+<script>
+const texts = ["$ ls /var/www/html/",
+`<a class="dir" href="/about/">about/</a>\t<a class="dir" href="/blog/">blog/</a>\t<a href="/denken-pub.asc">denken-pub.asc</a>\t<a href="/favicon.ico">favicon.ico</a>\t<a href="/icon.png">icon.png</a>\t<a href="./">index.html</a>\t<a href="./welcome.md">welcome.md</a>`,
+"$ cat welcome.md",
+"__GET__welcome.md"
+];
+const cli = document.getElementsByClassName("cli")[0];
+const targets = [];
+
+let textIndex = 0;
+let charIndex = 2;
+
+// init first line
+const firstLine = document.createElement("div");
+firstLine.classList.add("line");
+firstLine.innerHTML = `<span class="user">denken@osu</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
+cli.appendChild(firstLine);
+targets.push(firstLine.getElementsByClassName("text")[0]);
+
+function getFile(path) {
+  return fetch(path)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`status-${response.status}`);
+      }
+      return response.text();
+    })
+    .then(data => {
+      return data;
+    })
+    .catch(error => {
+      return `error-${error.message}`;
+    });
+}
+
+function cliLoop() {
+  if (charIndex < texts[textIndex].length) { // Still typing
+    targets[targets.length - 1].textContent += texts[textIndex][charIndex++];
+    setTimeout(cliLoop, 80);
+  } else if (textIndex + 1 === texts.length) { // Last text
+    return;
+  } else { // Move to next text
+    targets[textIndex].classList.remove("cursor");
+
+    const newLine = document.createElement("div");
+    newLine.classList.add("line");
+    const nextText = texts[textIndex + 1];
+
+    if (nextText.startsWith("$ ")) {
+      newLine.innerHTML = `<span class="user">denken@osu</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
+      cli.appendChild(newLine);
+      targets.push(newLine.getElementsByClassName("text")[0]);
+    } else if (nextText.startsWith("__GET__")) {
+        // Fetch file
+        const filePath = nextText.replace("__GET__", "");
+        getFile(filePath).then(fileContent => {
+          if (fileContent == `error-status-404`) {
+            fileContent = `cat: ${filePath}: No such file or directory`;
+          }
+
+          const fileLines = fileContent.split("\n");
+          fileLines.forEach((lineContent, index) => {
+            const fileLine = document.createElement("div");
+            fileLine.classList.add("line");
+            fileLine.innerHTML = `<span class="text">` + lineContent + `</span>`;
+            cli.appendChild(fileLine);
+          });
+
+          const commandLine = document.createElement("div");
+          commandLine.classList.add("line");
+          commandLine.innerHTML = `<span class="user">denken@osu</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
+          cli.appendChild(commandLine);
+          targets.push(commandLine.getElementsByClassName("text")[0]);
+          charIndex = 2;
+          textIndex += 2;
+          cliLoop();
+        });
+
+      return;
+    } else {
+        // View
+        newLine.innerHTML = `<span class="text">` + nextText + `</span>`;
+        cli.appendChild(newLine);
+        targets.push(newLine.getElementsByClassName("text")[0]);
+        charIndex = nextText.length;
+        textIndex++;
+        cliLoop();
+        return;
+    }
+
+    setTimeout(() => {
+      charIndex = 2;
+      textIndex = (textIndex + 1) % texts.length;
+      setTimeout(cliLoop, 500);
+    }, 100);
+  }
+}
+
+cliLoop();
+</script>
