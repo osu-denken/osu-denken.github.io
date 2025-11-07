@@ -76,10 +76,12 @@ const targets = [];
 let textIndex = 0;
 let charIndex = 2;
 
+var cd = "~";
+
 // init first line
 const firstLine = document.createElement("div");
 firstLine.classList.add("line");
-firstLine.innerHTML = `<span class="user">denken@osu</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
+firstLine.innerHTML = `<span class="user">denken@osu<span class="sp">:</span>${cd}</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
 cli.appendChild(firstLine);
 targets.push(firstLine.getElementsByClassName("text")[0]);
 
@@ -98,8 +100,6 @@ function getFile(path) {
       return `error-${error.message}`;
     });
 }
-
-var cd = "~";
 function cliLoop() {
   if (charIndex < texts[textIndex].length) { // Still typing
     targets[targets.length - 1].textContent += texts[textIndex][charIndex++];
