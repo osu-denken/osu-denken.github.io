@@ -1,9 +1,11 @@
+import { useEffect, useRef } from 'react';
 import type { NextPage } from "next";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import { Icon } from "@iconify/react";
 
 const HomePage: NextPage = () => {
+
   return (
     <div className={styles.container}>
       <main className={styles.main}>
@@ -57,10 +59,7 @@ const HomePage: NextPage = () => {
             <p>電研のメンバーが記述する記事をまとめたものです。</p>
           </a>
 
-          <a
-            href="./other/"
-            className={styles.card}
-          >
+          <a href="./other/" className={styles.card}>
             <h2>その他 &rarr;</h2>
             <p>これらに該当しないものを記載する予定です。</p>
           </a>

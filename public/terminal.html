@@ -101,6 +101,7 @@ function getFile(path) {
     });
 }
 function cliLoop() {
+  window.scrollTo(0, document.body.scrollHeight);
   if (charIndex < texts[textIndex].length) { // Still typing
     targets[targets.length - 1].textContent += texts[textIndex][charIndex++];
     setTimeout(cliLoop, 80);
@@ -138,11 +139,11 @@ function cliLoop() {
             cli.appendChild(fileLine);
           });
 
-          const commandLine = document.createElement("div");
-          commandLine.classList.add("line");
-          commandLine.innerHTML = `<span class="user">denken@osu<span class="sp">:</span>${cd}</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
-          cli.appendChild(commandLine);
-          targets.push(commandLine.getElementsByClassName("text")[0]);
+          const cmdLine = document.createElement("div");
+          cmdLine.classList.add("line");
+          cmdLine.innerHTML = `<span class="user">denken@osu<span class="sp">:</span>${cd}</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
+          cli.appendChild(cmdLine);
+          targets.push(cmdLine.getElementsByClassName("text")[0]);
           charIndex = 2;
           textIndex += 2;
           cliLoop();
