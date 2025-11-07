@@ -163,12 +163,18 @@
 
 .terminal {
   border: none;
-  max-width: 640px;
-  width: 100%;
+  width: 640px;
   height: 600px;
   overflow-x: hidden;
   overflow-y: scroll;
 }
+
+@media (max-width: 639px) {
+  .terminal {
+    width: 100%;
+  }
+}
+
 
 @media (max-width: 600px) {
   .grid {
