@@ -191,6 +191,7 @@ window.addEventListener("keydown", async (e) => {
   
   //console.log(e.key);
   if (e.key.toLowerCase() == "backspace") {
+    e.preventDefault();
     if (document.getElementsByClassName("text cursor")[0].textContent.length === 0) return;
 
     const currentText = document.getElementsByClassName("text cursor")[0].textContent;
@@ -199,6 +200,7 @@ window.addEventListener("keydown", async (e) => {
   }
 
   if (e.key.toLowerCase() === "arrowup") {
+    e.preventDefault();
     let count = 0;
     for (let i = cli.children.length - 2; i >= 0; i--) {
       const line = cli.children[i];
@@ -219,6 +221,7 @@ window.addEventListener("keydown", async (e) => {
   }
 
   if (e.key.toLowerCase() === "arrowdown") {
+    e.preventDefault();
     if (undo > 0) undo--;
     let count = 0;
     for (let i = cli.children.length - 2; i >= 0; i--) {
@@ -238,6 +241,7 @@ window.addEventListener("keydown", async (e) => {
   }
 
   if (e.key.toLowerCase() === "enter") {
+    e.preventDefault();
     const currentText = document.getElementsByClassName("text cursor")[0].textContent;
     document.getElementsByClassName("text cursor")[0].classList.remove("cursor");
 
@@ -300,6 +304,7 @@ window.addEventListener("keydown", async (e) => {
   }
 
   if (e.key.length > 1) return;
+  e.preventDefault();
   document.getElementsByClassName("text cursor")[0].textContent += e.key;
 });
 </script>
