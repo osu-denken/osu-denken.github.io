@@ -13,6 +13,7 @@ html, body {
 
 div.cli {
   font-family: 'Fira Code', monospace;
+  white-space: pre-wrap;
 }
 
 div.line {
@@ -82,6 +83,7 @@ let textIndex = 0;
 let charIndex = 2;
 
 var cd = "~";
+var canInput = false;
 
 // init first line
 const firstLine = document.createElement("div");
@@ -105,13 +107,19 @@ function getFile(path) {
       return `error-${error.message}`;
     });
 }
+
+let undo = 0;
+
 function cliLoop() {
+  canInput = false;
   window.scrollTo(0, document.body.scrollHeight);
-  if (charIndex < texts[textIndex].length) { // Still typing
+  if (textIndex === texts.length) { // Last text
+    console.log("Done");
+    canInput = true;
+    return;
+  } else if (charIndex < texts[textIndex].length) { // Still typing
     targets[targets.length - 1].textContent += texts[textIndex][charIndex++];
     setTimeout(cliLoop, 80);
-  } else if (textIndex + 1 === texts.length) { // Last text
-    return;
   } else { // Move to next text
     targets[textIndex].classList.remove("cursor");
 
@@ -129,30 +137,32 @@ function cliLoop() {
       }
 
     } else if (nextText.startsWith("__GET__")) {
-        // Fetch file
-        const filePath = nextText.replace("__GET__", "");
-        getFile(filePath).then(fileContent => {
-          if (fileContent == `error-status-404`) {
-            fileContent = `cat: ${filePath}: No such file or directory`;
-          }
+      // Fetch file
+      const filePath = nextText.replace("__GET__", "");
+      getFile(filePath).then(fileContent => {
+        if (fileContent == `error-status-404`) {
+          fileContent = `cat: ${filePath}: No such file or directory`;
+        }
 
-          const fileLines = fileContent.split("\n");
-          fileLines.forEach((lineContent, index) => {
-            const fileLine = document.createElement("div");
-            fileLine.classList.add("line");
-            fileLine.innerHTML = `<span class="text">` + lineContent + `</span>`;
-            cli.appendChild(fileLine);
-          });
-
-          const cmdLine = document.createElement("div");
-          cmdLine.classList.add("line");
-          cmdLine.innerHTML = `<span class="user">denken@osu<span class="sp">:</span>${cd}</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
-          cli.appendChild(cmdLine);
-          targets.push(cmdLine.getElementsByClassName("text")[0]);
-          charIndex = 2;
-          textIndex += 2;
-          cliLoop();
+        const fileLines = fileContent.split("\n");
+        fileLines.forEach((lineContent, index) => {
+          const fileLine = document.createElement("div");
+          fileLine.classList.add("line");
+          fileLine.innerHTML = `<span class="text">` + lineContent + `</span>`;
+          cli.appendChild(fileLine);
         });
+
+        const cmdLine = document.createElement("div");
+        cmdLine.classList.add("line");
+        cmdLine.innerHTML = `<span class="user">denken@osu<span class="sp">:</span>${cd}</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
+        cli.appendChild(cmdLine);
+        targets.push(cmdLine.getElementsByClassName("text")[0]);
+        charIndex = 2;
+        textIndex += 2;
+
+        //console.log("textIndex:", textIndex);
+        cliLoop();
+      });
 
       return;
     } else {
@@ -175,4 +185,126 @@ function cliLoop() {
 }
 
 cliLoop();
+window.addEventListener("keydown", async (e) => {
+  if (!canInput) return;
+  //e.preventDefault();
+  
+  //console.log(e.key);
+  if (e.key.toLowerCase() == "backspace") {
+    e.preventDefault();
+    if (document.getElementsByClassName("text cursor")[0].textContent.length === 0) return;
+
+    const currentText = document.getElementsByClassName("text cursor")[0].textContent;
+    document.getElementsByClassName("text cursor")[0].textContent = currentText.slice(0, -1);
+    return;
+  }
+
+  if (e.key.toLowerCase() === "arrowup") {
+    e.preventDefault();
+    let count = 0;
+    for (let i = cli.children.length - 2; i >= 0; i--) {
+      const line = cli.children[i];
+      const prefix = line.getElementsByClassName("prefix")[0];
+      if (prefix && prefix.textContent.trim() === "$") {
+        if (count === undo) {
+          const commandText = line.getElementsByClassName("text")[0].textContent;
+          document.getElementsByClassName("text cursor")[0].textContent = commandText;
+          break;
+
+        }
+        count++;
+      }
+    }
+
+    undo++;
+    return;
+  }
+
+  if (e.key.toLowerCase() === "arrowdown") {
+    e.preventDefault();
+    if (undo > 0) undo--;
+    let count = 0;
+    for (let i = cli.children.length - 2; i >= 0; i--) {
+      const line = cli.children[i];
+      const prefix = line.getElementsByClassName("prefix")[0];
+      if (prefix && prefix.textContent.trim() === "$") {
+        if (count === undo) {
+          const commandText = line.getElementsByClassName("text")[0].textContent;
+          document.getElementsByClassName("text cursor")[0].textContent = commandText;
+          break;
+
+        }
+        count++;
+      }
+    }
+    return;
+  }
+
+  if (e.key.toLowerCase() === "enter") {
+    e.preventDefault();
+    const currentText = document.getElementsByClassName("text cursor")[0].textContent;
+    document.getElementsByClassName("text cursor")[0].classList.remove("cursor");
+
+    canInput = false;
+
+    if (currentText.startsWith("cd ")) { // cd command
+      const path = currentText.replace("cd ", "").trim();
+      cd = path;
+    } else if (currentText.startsWith("cat ")) { // cat command
+      const filePath = currentText.replace("cat ", "").trim();
+      await getFile(filePath).then(fileContent => {
+        if (fileContent == `error-status-404`) {
+          fileContent = `cat: ${filePath}: No such file or directory`;
+        }
+        const fileLines = fileContent.split("\n");
+        fileLines.forEach((lineContent, index) => {
+          const fileLine = document.createElement("div");
+          fileLine.classList.add("line");
+          fileLine.innerHTML = `<span class="text">` + lineContent + `</span>`;
+
+          cli.appendChild(fileLine);
+        });
+      });
+    } else if (currentText === "ls /var/www/html/") { // ls command (TODO: 動的にする)
+      const lsLine = document.createElement("div");
+      lsLine.classList.add("line");
+      lsLine.innerHTML = `<span class="text"><a class="dir" href="/about/" target="_parent">about/</a>\t<a class="dir" href="/blog/" target="_parent">blog/</a>\t<a href="/denken-pub.asc" target="_parent">denken-pub.asc</a>\t<a href="/favicon.ico" target="_parent">favicon.ico</a>\t<a href="/icon.png" target="_parent">icon.png</a>\t<a href="./" target="_parent">index.html</a>\t<a href="./welcome.md" target="_parent">welcome.md</a></span>`;
+      cli.appendChild(lsLine);
+    } else if (currentText === "help") { // help command
+      const helpLines = [
+        "Available commands:",
+        "  ls ([path]) - List files (/var/www/html/ only)",
+        "  cd [path]   - Change directory",
+        "  cat [file]  - Display contents of a file",
+        "  help        - Show this help message"
+      ];
+      helpLines.forEach(lineContent => {
+        const helpLine = document.createElement("div");
+        helpLine.classList.add("line");
+        helpLine.innerHTML = `<span class="text">` + lineContent + `</span>`;
+        cli.appendChild(helpLine);
+      });
+    } else if (currentText.trim() === "") {
+      // 
+    } else {
+      const errLine = document.createElement("div");
+      errLine.classList.add("line");
+      errLine.innerHTML = `<span class="text">bash: ${currentText}: command not found</span>`;
+      cli.appendChild(errLine);
+    }
+
+    const newLine = document.createElement("div");
+    newLine.classList.add("line");
+    newLine.innerHTML = `<span class="user">denken@osu<span class="sp">:</span>${cd}</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
+    cli.appendChild(newLine);
+
+    canInput = true;
+
+    return;
+  }
+
+  if (e.key.length > 1) return;
+  e.preventDefault();
+  document.getElementsByClassName("text cursor")[0].textContent += e.key;
+});
 </script>
