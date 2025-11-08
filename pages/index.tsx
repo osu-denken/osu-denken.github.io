@@ -146,17 +146,11 @@ const HomePage: NextPage = () => {
 
   return (
     <div className={styles.container}>
-      <canvas
-        ref={blurCanvasRef}
-        style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0 }}
-      />
-      <canvas
-        ref={charCanvasRef}
-        style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 1 }}
-      />
-      <div
-        style={{ position: 'fixed', inset: 0, backgroundColor: '#12121266', pointerEvents: 'none', zIndex: 2 }}
-      />
+      <canvas ref={blurCanvasRef}
+        style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 0 }} />
+      <canvas ref={charCanvasRef}
+        style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 1 }} />
+      <div style={{ position: 'fixed', inset: 0, backgroundColor: '#12121266', pointerEvents: 'none', zIndex: 2 }} />
       <main className={styles.main} style={{ position: 'relative', zIndex: 3 }}>
         <h1 className={styles.title}>電子計算研究部</h1>
         <h2 className={styles.bold}>大阪産業大学</h2>
@@ -216,9 +210,9 @@ const HomePage: NextPage = () => {
             <p>電研のメンバーが記述する記事をまとめたものです。</p>
           </a>
 
-          <a href="./other/" className={styles.card}>
-            <h2>その他 &rarr;</h2>
-            <p>これらに該当しないものを記載する予定です。</p>
+          <a href="./blog/faq" className={styles.card}>
+            <h2>Q&A &rarr;</h2>
+            <p>よくある質問、想定される質問を記載しています。</p>
           </a>
         </div>
       </main>
