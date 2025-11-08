@@ -42,11 +42,11 @@ const Navbar: React.FC = () => {
           </Link>
         </li>
         <li className={styles.right}>
-          <Link href="https://osu-denken.github.io/blog/join">Join</Link>
+          <Link href="https://osu-denken.github.io/blog/join">入部</Link>
         </li>
-        <li className={styles.rightend}>
+        {/* <li className={styles.rightend}>
           <a onClick={() => setIsOpen(true)}>Login</a>
-        </li>
+        </li> */}
         {/* <li className={styles.right}>
           <a>設定</a>
         </li> */}
