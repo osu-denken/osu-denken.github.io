@@ -5,6 +5,25 @@ Next.jsを用いてGitHub Pagesへデプロイして作成
 1. CSSが適用されない
    こちらは[Next.js 15 + GitHub PagesでCSSが反映されない問題を解決した話（App Router対応・Tailwind・TypeScript） - Qiita](https://qiita.com/hellomyzn/items/692f4fa1703c45c7efa9)を参考に修正した。
 
+2. about/ へアクセスできない
+デフォルトでの静的エクスポートでは about.html として作成されます。<br>
+そのため https://osu-denken.github.io/about/ として開くには next.config.ts を以下のように変更しました。
+
+```ts
+import type { NextConfig } from "next";
+import { env } from "process";
+
+const isExport: boolean = process.env.IS_EXPORT === "1";
+
+const nextConfig: NextConfig = {
+  [...]
+
+  trailingSlash: true,
+};
+
+module.exports = nextConfig;
+```
+
 ## デプロイ方法
 この手順を踏まなくても基本的には勝手にActionsでGitHub Pagesにデプロイされます
 
