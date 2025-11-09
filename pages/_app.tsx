@@ -1,5 +1,6 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
+import type { NextPageWithLayout } from "./api/NextPageWithLayout";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Head from "next/head";
@@ -23,17 +24,21 @@ const firebaseConfig = {
   measurementId: "G-K8FSER9QG2",
 };
 
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
+
 let app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   useEffect(() => {
     if (typeof window !== "undefined") {
 //      const analytics = getAnalytics(app);
     }
   }, []);
   
-  //return <Component {...pageProps} />
-  return (
+  const getLayout =
+    Component.getLayout ?? ((page) => (
     <div className="App">
       <Head>
         <title>大阪産業大学 電子計算研究部</title>
@@ -42,10 +47,12 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
 
       <Navbar />
-      <Component {...pageProps} />
+      {page}
       <Footer />
     </div>
-  );
+  ));
+  
+  return getLayout(<Component {...pageProps} />);
 }
 
 export default MyApp;
