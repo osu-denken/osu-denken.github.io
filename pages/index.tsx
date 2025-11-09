@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import styles from "../styles/Home.module.css";
 import { Icon } from "@iconify/react";
-import { ParticleSpaceAnimationBackground } from "./components/ParticleSpaceAnimationBackground";
+import ParticleSpaceAnimationBackground from "./components/ParticleSpaceAnimationBackground";
 
 const HomePage: NextPage = () => {
 
