@@ -1,3 +1,9 @@
+/* 851ゴチカクット by 8:51:22 pm */
+@font-face {
+  font-family: '851Gkktt';
+  src: url('https://osu-denken.github.io/851Gkktt_005.ttf') format('truetype');
+}
+
 .container {
   padding: 0 2rem;
   padding-top: 50px;
@@ -14,7 +20,6 @@
 }
 
 .title a {
-  /* color: #0070f3; */
   color: #4fafff;
   text-decoration: none;
 }
@@ -28,8 +33,10 @@
 .title {
   margin: 0;
   line-height: 1.15;
-  font-size: 4rem;
-  font-weight: bold;
+  font-size: 5rem;
+  line-height: 5rem;
+  font-family: '851Gkktt', sans-serif;
+  font-weight: normal;
   text-shadow: 
     0 0 10px #00a6c499
     0 0 20px #50c7ffcc;
