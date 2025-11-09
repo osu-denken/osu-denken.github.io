@@ -36,13 +36,13 @@ const Navbar: React.FC = () => {
     <nav className={styles.nav}>
       <ul>
         <li>
-          <Link href="https://osu-denken.github.io">
+          <a href="https://osu-denken.github.io">
             <Image src="/icon.png" alt="電研ロゴ" width={30} height={30} />
             電研
-          </Link>
+          </a>
         </li>
         <li className={styles.right}>
-          <Link href="https://osu-denken.github.io/blog/join">入部</Link>
+          <a href="https://osu-denken.github.io/blog/join">入部</a>
         </li>
         {/* <li className={styles.rightend}>
           <a onClick={() => setIsOpen(true)}>Login</a>

@@ -108,13 +108,17 @@ function getFile(path) {
     });
 }
 
-const ESCAPE_MAP = {
-  '&': '&amp;',
-  '<': '&lt;',
-  '>': '&gt;',
-};
 function escapeHtml(text) {
-  return text.replace(/[&<>"']/g, function(m) { return ESCAPE_MAP[m]; });
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/&lt;br&gt;/g, '<br>')
+    .replace(/&lt;br \/&gt;/g, '<br />')
+    .replace(/&lt;a /g, '<a ')
+    .replace(/&lt;\/a&gt;/g, '</a>')
+    .replace(/&lt;img /g, '<img ')
+    .replace(/&gt;/g, '>');
 }
 
 let undo = 0;
@@ -278,7 +282,7 @@ window.addEventListener("keydown", async (e) => {
     } else if (currentText === "ls /var/www/html/") { // ls command (TODO: 動的にする)
       const lsLine = document.createElement("div");
       lsLine.classList.add("line");
-      lsLine.innerHTML = `<span class="text"><a class="dir" href="/about/" target="_parent">about/</a>\t<a class="dir" href="/blog/" target="_parent">blog/</a>\t<a href="/denken-pub.asc" target="_parent">denken-pub.asc</a>\t<a href="/favicon.ico" target="_parent">favicon.ico</a>\t<a href="/icon.png" target="_parent">icon.png</a>\t<a href="./" target="_parent">index.html</a>\t<a href="./welcome.md" target="_parent">welcome.md</a></span>`;
+      lsLine.innerHTML = `<span class="text"><a class="dir" href="/about/" target="_parent">about/</a>\t<a class="dir" href="/background/" target="_parent">background/</a>\t<a class="dir" href="/blog/" target="_parent">blog/</a>\t<a href="/denken-pub.asc" target="_parent">denken-pub.asc</a>\t<a href="/favicon.ico" target="_parent">favicon.ico</a>\t<a href="/icon.png" target="_parent">icon.png</a>\t<a href="./" target="_parent">index.html</a>\t<a href="./welcome.md" target="_parent">welcome.md</a></span>`;
       cli.appendChild(lsLine);
     } else if (currentText === "help") { // help command
       const helpLines = [
