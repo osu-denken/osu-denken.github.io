@@ -1,6 +1,6 @@
 import { useParticleSpaceAnimation } from "../../hooks/useParticleSpaceAnimation";
 
-export const ParticleSpaceAnimationBackground = () => {
+const ParticleSpaceAnimationBackground = () => {
   const { blurCanvasRef, charCanvasRef } = useParticleSpaceAnimation();
 
   return (
@@ -17,3 +17,5 @@ export const ParticleSpaceAnimationBackground = () => {
     </>
   );
 };
+
+export default ParticleSpaceAnimationBackground;
