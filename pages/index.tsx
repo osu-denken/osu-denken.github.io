@@ -13,7 +13,7 @@ const HomePage: NextPage = () => {
         <h2 className={styles.bold}>大阪産業大学</h2>
 
         <div className={styles.iconContainer}>
-          <a href="https://www.osaka-sandai.ac.jp/club_circle/club/233" title="大阪産業大学公式サイト">
+          <a href="https://www.osaka-sandai.ac.jp/club_circle/club/233" title="大阪産業大学公式サイト" target="_blank">
             <Icon
               icon="mdi:university"
               width="2em"
@@ -21,7 +21,7 @@ const HomePage: NextPage = () => {
               style={{ color: "white" }}
             />
           </a>
-          <a href="https://x.com/osu_denken" title="X (旧Twitter)">
+          <a href="https://x.com/osu_denken" title="X (旧Twitter)" target="_blank">
             <Icon
               icon="mdi:twitter"
               width="2em"
@@ -29,7 +29,7 @@ const HomePage: NextPage = () => {
               style={{ color: "white" }}
             />
           </a>
-          <a href="https://osu-denken.github.io/blog/2025/11/03/sandai-discord.html" title="Discordサーバーへの参加方法 (大産大生限定)">
+          <a href="https://osu-denken.github.io/blog/2025/11/03/sandai-discord.html" title="Discordサーバーへの参加方法 (大産大生限定)" target="_blank">
             <Icon
               icon="mdi:discord"
               width="2em"
@@ -37,7 +37,7 @@ const HomePage: NextPage = () => {
               style={{ color: "white" }}
             />
           </a>
-          <a href="https://github.com/osu-denken" title="GitHub">
+          <a href="https://github.com/osu-denken" title="GitHub" target="_blank">
             <Icon
               icon="mdi:github"
               width="2em"
