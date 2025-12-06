@@ -35,11 +35,8 @@ const Navbar: React.FC = () => {
     }
   }, []);
 
-  // onclick
   const handleLogin = (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
-    //alert("ログイン処理が実行されました。");
-    // https://api.osudenken4dev.workers.dev/user/login POST email password
     const form = e.currentTarget.form;
     if (!form) return;
     const formData = new FormData(form);
@@ -61,6 +58,11 @@ const Navbar: React.FC = () => {
         console.log("data:", data);
         if (data.idToken) {
           localStorage.setItem("idToken", data.idToken);
+          if (data.name)
+            localStorage.setItem("idToken", data.name);
+          else 
+            localStorage.setItem("name", username as string);
+          
           alert("ログインに成功しました");
           setIsOpen(false);
         } else {
@@ -73,18 +75,26 @@ const Navbar: React.FC = () => {
       });
   }
 
-  let loginNav = (
+  let rightNavItem = (
     <li className={styles.rightend}>
       <a onClick={() => setIsOpen(true)}>ログイン</a>
     </li>
   );
 
   if (typeof window !== 'undefined' && localStorage.getItem("idToken")) {
-    loginNav = (
+    rightNavItem = (
+      <li className={styles.right}>
+        <a href="https://osu-denken.github.io/portal/">{
+          localStorage.getItem("name") || "Unknown"
+        }</a>
+      </li>
+    );
+    rightNavItem = (
       <li className={styles.rightend}>
         <a onClick={
           () => {
             localStorage.removeItem("idToken");
+            localStorage.removeItem("name");
             alert("ログアウトしました");
             window.location.reload();
           }
@@ -105,7 +115,7 @@ const Navbar: React.FC = () => {
         <li className={styles.right}>
           <a href="https://osu-denken.github.io/blog/join">入部</a>
         </li>
-        {loginNav}
+        {rightNavItem}
         {/* <li className={styles.right}>
           <a>設定</a>
         </li> */}
