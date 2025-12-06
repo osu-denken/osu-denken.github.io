@@ -30,6 +30,18 @@ const Navbar: React.FC = () => {
   const [modalIsOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
+    if (!modalIsOpen) {
+      if (typeof window !== 'undefined' && window.location.hash === "#login") {
+        history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
+    }
+  }, [modalIsOpen]);
+
+  if (typeof window !== 'undefined' && window.location.hash === "#login" && !modalIsOpen) {
+    setIsOpen(true);
+  }
+
+  useEffect(() => {
     if (typeof window !== 'undefined') {
       Modal.setAppElement('.App');
     }
@@ -77,7 +89,7 @@ const Navbar: React.FC = () => {
 
   let rightNavItem = (
     <li className={styles.rightend}>
-      <a onClick={() => setIsOpen(true)}>ログイン</a>
+      <a href="#login" onClick={() => setIsOpen(true)}>ログイン</a>
     </li>
   );
 
