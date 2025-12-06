@@ -13,6 +13,60 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 400;
 }
 
+h3 {
+  margin-top: 0rem;
+  margin-bottom: 0.25rem;
+  font-size: 1rem;
+  color: #f0ffff;
+  /* border-bottom: 2px solid #ffffff; */
+}
+
+input[type="text"], input[type="password"] {
+  background-color: #222;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+input[type="submit"] {
+  background-color: #666;
+  color: #fff;
+  border: 1px solid #666;
+  border-radius: 4px;
+  font-size: 15px;
+  padding: 0.3rem 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+input[type="submit"]:hover {
+  background-color: #23df1e;
+}
+
+.modalOverlay {
+  background: rgba(0, 0, 0, 0.3);
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+}
+
+.ReactModal__Overlay--before-close {
+  opacity: 0;
+}
+
+
 a {
   color: inherit;
   text-decoration: none;
