@@ -28,18 +28,23 @@ const modalStyle: Modal.Styles = {
 
 const Navbar: React.FC = () => {
   const [modalIsOpen, setIsOpen] = useState<boolean>(false);
-
+  
   useEffect(() => {
-    if (!modalIsOpen) {
-      if (typeof window !== 'undefined' && window.location.hash === "#login") {
-        history.replaceState(null, "", window.location.pathname + window.location.search);
+    const checkHash = () => {
+      if (window.location.hash === "#login") {
+        setIsOpen(true);
+      } else {
+        setIsOpen(false);
       }
-    }
-  }, [modalIsOpen]);
+    };
 
-  if (typeof window !== 'undefined' && window.location.hash === "#login" && !modalIsOpen) {
-    setIsOpen(true);
-  }
+    checkHash(); // 初期チェック
+    window.addEventListener("hashchange", checkHash);
+
+    return () => {
+      window.removeEventListener("hashchange", checkHash);
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -89,7 +94,7 @@ const Navbar: React.FC = () => {
 
   let rightNavItem = (
     <li className={styles.rightend}>
-      <a href="#login" onClick={() => setIsOpen(true)}>ログイン</a>
+      <a href="#login">ログイン</a>
     </li>
   );
 
@@ -145,7 +150,7 @@ const Navbar: React.FC = () => {
     height: "2rem",
     borderRadius: "0.5rem",
     cursor: "pointer"
-  }} onClick={() => setIsOpen(false)}>×</button>
+  }} onClick={() => { history.replaceState(null, "", window.location.pathname + window.location.search); }}>×</button>
         <h2>ログイン</h2>
         <form method="POST">
           <h3>学籍番号</h3>
