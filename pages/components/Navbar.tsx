@@ -95,23 +95,23 @@ const Navbar: React.FC = () => {
 
   if (typeof window !== 'undefined' && localStorage.getItem("idToken")) {
     rightNavItem = (
-      <li className={styles.right}>
-        <a href="https://osu-denken.github.io/portal/">{
-          localStorage.getItem("name") || "Unknown"
-        }</a>
-      </li>
-    );
-    rightNavItem = (
-      <li className={styles.rightend}>
-        <a onClick={
-          () => {
-            localStorage.removeItem("idToken");
-            localStorage.removeItem("name");
-            alert("ログアウトしました");
-            window.location.reload();
-          }
-        }>ログアウト</a>
-      </li>
+      <>
+        <li className={styles.right}>
+          <a href="https://osu-denken.github.io/portal/">{
+            localStorage.getItem("name") || "Unknown"
+          }</a>
+        </li>
+        <li className={styles.rightend}>
+          <a onClick={
+            () => {
+              localStorage.removeItem("idToken");
+              localStorage.removeItem("name");
+              alert("ログアウトしました");
+              window.location.reload();
+            }
+          }>ログアウト</a>
+        </li>
+      </>
     );
   }
 
