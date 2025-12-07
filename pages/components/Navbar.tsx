@@ -150,7 +150,7 @@ const Navbar: React.FC = () => {
     height: "2rem",
     borderRadius: "0.5rem",
     cursor: "pointer"
-  }} onClick={() => { history.replaceState(null, "", window.location.pathname + window.location.search); }}>×</button>
+  }} onClick={() => { history.replaceState(null, "", window.location.pathname + window.location.search); setIsOpen(false); }}>×</button>
         <h2>ログイン</h2>
         <form method="POST">
           <h3>学籍番号</h3>
