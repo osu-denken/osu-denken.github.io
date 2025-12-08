@@ -10,9 +10,8 @@ const PortalPage : NextPage = () => {
     const name = localStorage.getItem("name");
     if (name) {
       const heading = document.getElementById("title");
-      if (heading) {
+      if (heading)
         heading.textContent = `ようこそ、${name} さん`;
-      }
     }
 
   }, []);
