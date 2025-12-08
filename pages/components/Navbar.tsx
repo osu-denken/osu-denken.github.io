@@ -176,7 +176,7 @@ const Navbar: React.FC = () => {
           <a>設定</a>
         </li> */}
       </ul>
-      <Modal isOpen={modalIsOpen} style={modalStyle} onRequestClose={() => setIsOpen(false)} className="modalContent" overlayClassName="modalOverlay" closeTimeoutMS={200} >
+      <Modal isOpen={modalIsOpen} style={modalStyle} onRequestClose={() => { history.replaceState(null, "", window.location.pathname + window.location.search); setIsOpen(false); }} className="modalContent" overlayClassName="modalOverlay" closeTimeoutMS={200} >
         <button style={{
     position: "absolute",
     top: "0.5rem",
