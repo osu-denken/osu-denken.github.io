@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import styles from "../../styles/Page.module.css";
+import styles from "@styles/Page.module.css";
 
 const AboutPage : NextPage = () => {
   return (

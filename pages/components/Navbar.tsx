@@ -1,5 +1,5 @@
 import Image from "next/image";
-import styles from "../../styles/Navbar.module.css";
+import styles from "@styles/Navbar.module.css";
 import Modal from "react-modal";
 import { useState, useEffect } from "react";
 
@@ -72,7 +72,7 @@ const Navbar: React.FC = () => {
     const form = e.currentTarget.form;
     if (!form) return;
     const formData = new FormData(form);
-    const username = formData.get("username");
+    const email = formData.get("username");
     const password = formData.get("password");
 
     fetch("https://api.osudenken4dev.workers.dev/user/login", {
@@ -81,7 +81,7 @@ const Navbar: React.FC = () => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        email: username,
+        email: email,
         password: password
       })
     })
@@ -89,13 +89,29 @@ const Navbar: React.FC = () => {
       .then(data => {
         // console.log("data:", data);
 
+        if (!data.name) { // data.nameがない場合は メールアドレスemailの@より前、ユーザ名にする。
+          if (typeof email === "string") {
+            const atIndex = email.indexOf("@");
+            data.name = atIndex !== -1 ? email.substring(0, atIndex) : email;
+          } else {
+            data.name = "Unknown";
+          }
+        }
+
         // XSS対策のためのサニタイズ
         data.name = data.name ? data.name.replace(/</g, "&lt;").replace(/>/g, "&gt;") : data.name;
 
         if (data.idToken) {
           localStorage.setItem("idToken", data.idToken);
-          localStorage.setItem("name", (data.name ? data.name : username as string));
+          localStorage.setItem("name", data.name);
           
+          const params = new URLSearchParams(window.location.search);
+          const param_i = params.get("i");
+          if (param_i) {
+            window.location.href = "/" + param_i;
+            return;
+          }
+
           setIsOpen(false);
 
           history.replaceState(null, "", window.location.pathname + window.location.search); // #loginを外す
@@ -118,7 +134,7 @@ const Navbar: React.FC = () => {
     rightNavItem = (
       <>
         <li className={styles.right}>
-          <a href="https://osu-denken.github.io/portal/">{userName}</a>
+          <a href="/portal/">{userName}</a>
         </li>
         <li>
           <a href="#logout" onClick={() => {

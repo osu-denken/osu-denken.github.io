@@ -1,4 +1,4 @@
-import { useParticleSpaceAnimation } from "../../hooks/useParticleSpaceAnimation";
+import { useParticleSpaceAnimation } from "@hooks/useParticleSpaceAnimation";
 
 const ParticleSpaceAnimationBackground = () => {
   const { blurCanvasRef, charCanvasRef } = useParticleSpaceAnimation();
