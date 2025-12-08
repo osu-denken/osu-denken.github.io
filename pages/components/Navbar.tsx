@@ -28,7 +28,21 @@ const modalStyle: Modal.Styles = {
 
 const Navbar: React.FC = () => {
   const [modalIsOpen, setIsOpen] = useState<boolean>(false);
-  
+  const [isLogin, setIsLogin] = useState<boolean | null>(null);
+  const [userName, setUserName] = useState("");
+
+  // ログイン状態を取得する
+  useEffect(() => {
+    const token = localStorage.getItem("idToken");
+    if (token) {
+      setIsLogin(true);
+      setUserName(localStorage.getItem("name") || "Unknown");
+    } else {
+      setIsLogin(false);
+    }
+  }, []);
+
+  // #loginがある場合はログイン画面を開く
   useEffect(() => {
     const checkHash = () => {
       if (window.location.hash === "#login") {
@@ -38,7 +52,7 @@ const Navbar: React.FC = () => {
       }
     };
 
-    checkHash(); // 初期チェック
+    checkHash();
     window.addEventListener("hashchange", checkHash);
 
     return () => {
@@ -52,6 +66,7 @@ const Navbar: React.FC = () => {
     }
   }, []);
 
+  // ログイン処理
   const handleLogin = (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
     const form = e.currentTarget.form;
@@ -72,7 +87,11 @@ const Navbar: React.FC = () => {
     })
       .then(response => response.json())
       .then(data => {
-        console.log("data:", data);
+        // console.log("data:", data);
+
+        // XSS対策のためのサニタイズ
+        data.name = data.name ? data.name.replace(/</g, "&lt;").replace(/>/g, "&gt;") : data.name;
+
         if (data.idToken) {
           localStorage.setItem("idToken", data.idToken);
           if (data.name)
@@ -80,8 +99,10 @@ const Navbar: React.FC = () => {
           else 
             localStorage.setItem("name", username as string);
           
-          alert("ログインに成功しました");
           setIsOpen(false);
+
+          history.replaceState(null, "", window.location.pathname + window.location.search); // #loginを外す
+          window.location.reload();
         } else {
           alert("ログイン失敗: " + data.message);
         }
@@ -92,29 +113,35 @@ const Navbar: React.FC = () => {
       });
   }
 
-  let rightNavItem = (
-    <li className={styles.rightend}>
-      <a href="#login">ログイン</a>
-    </li>
-  );
+  // ナビバーにあるログイン状態でそれぞれ表示する項目
+  let rightNavItem = null;
 
-  if (typeof window !== 'undefined' && localStorage.getItem("idToken")) {
+  // ログイン時
+  if (isLogin) {
     rightNavItem = (
       <>
         <li className={styles.right}>
-          <a href="https://osu-denken.github.io/portal/">{
-            localStorage.getItem("name") || "Unknown"
-          }</a>
+          <a href="https://osu-denken.github.io/portal/">{userName}</a>
         </li>
-        <li className={styles.rightend}>
-          <a onClick={
-            () => {
-              localStorage.removeItem("idToken");
-              localStorage.removeItem("name");
-              alert("ログアウトしました");
-              window.location.reload();
-            }
-          }>ログアウト</a>
+        <li>
+          <a href="#logout" onClick={() => {
+            localStorage.removeItem("idToken");
+            localStorage.removeItem("name");
+            window.location.reload();
+          }}>
+            ログアウト
+          </a>
+        </li>
+      </>
+    );
+  } else {
+    rightNavItem = (
+      <>
+        <li className={styles.right}>
+          <a href="https://osu-denken.github.io/blog/join">入部</a>
+        </li>
+        <li>
+          <a href="#login">ログイン</a>
         </li>
       </>
     );
@@ -128,9 +155,6 @@ const Navbar: React.FC = () => {
             <Image src="/icon.png" alt="電研ロゴ" width={30} height={30} />
             電研
           </a>
-        </li>
-        <li className={styles.right}>
-          <a href="https://osu-denken.github.io/blog/join">入部</a>
         </li>
         {rightNavItem}
         {/* <li className={styles.right}>

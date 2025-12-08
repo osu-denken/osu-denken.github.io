@@ -17,17 +17,13 @@
 }
 
 .nav ul li {
-  margin-left: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
   height: 100%;
 }
 
 .nav ul li.right {
   margin-left: auto;
-  margin-right: 20px;
-}
-
-.nav ul li.rightend {
-  margin-right: 20px;
 }
 
 .nav a {
