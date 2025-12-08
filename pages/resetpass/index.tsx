@@ -28,14 +28,8 @@ const ResetpassPage : NextPage = () => {
               })
                 .then(res => res.json())
                 .then(data => {
-                  if (data.success) {
-                    alert("パスワード再設定メールを送信しました。")
-                    return true;
-                  } else {
-                    alert("メールを送信できませんでした。");
-                    console.log(data);
-                    return false;
-                  }
+                  alert("パスワード再設定メールを送信しました。")
+                  return true;
                 })
                 .catch(error => {
                   console.error("Error:", error);
