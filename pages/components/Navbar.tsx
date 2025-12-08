@@ -94,10 +94,7 @@ const Navbar: React.FC = () => {
 
         if (data.idToken) {
           localStorage.setItem("idToken", data.idToken);
-          if (data.name)
-            localStorage.setItem("name", data.name);
-          else 
-            localStorage.setItem("name", username as string);
+          localStorage.setItem("name", (data.name ? data.name : username as string));
           
           setIsOpen(false);
 
