@@ -25,11 +25,12 @@ const PortalPage : NextPage = () => {
 
       const data = await res.json();
 
-      if (data.success) {
+      if (data.displayName) {
         console.log(`${key} updated successfully.`);
         return true;
       } else {
         console.error(`Failed to update ${key}.`);
+        console.log(data);
         return false;
       }
     } catch (error) {
