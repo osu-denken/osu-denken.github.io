@@ -14,7 +14,7 @@ const PortalPage : NextPage = () => {
 
   async function updateUserData4api(key: string, value: string): Promise<boolean> {
     try {
-      const res = await fetch("https://api.denken4dev.workers.dev/user/update", {
+      const res = await fetch("https://api.osudenken4dev.workers.dev/user/update", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -110,11 +110,14 @@ const PortalPage : NextPage = () => {
                   const newName = input.value.trim() as string;
                   if (newName) {
                     localStorage.setItem("name", newName);
-                    if (updateUserData4api("name", newName)) {
-                      window.location.href = "?tab=settings&msg=ユーザー名を更新しました。";
-                    } else {
-                      alert("ユーザー名の更新に失敗しました。");
-                    }
+
+                    updateUserData4api("name", newName).then(ok => {
+                      if (ok) {
+                        setMsg("ユーザー名を更新しました。");
+                      } else {
+                        alert("ユーザー名の更新に失敗しました。");
+                      }
+                    });
                   } else {
                     alert("有効なユーザー名を入力してください。");
                   }
@@ -134,11 +137,13 @@ const PortalPage : NextPage = () => {
                   const input = document.getElementById("emailInput") as HTMLInputElement;
                   const newEmail = input.value.trim() as string;
                   if (newEmail) {
-                    if (updateUserData4api("email", newEmail)) {
-                      window.location.href = "?tab=settings&msg=メールアドレスを更新しました。";
-                    } else {
-                      alert("メールアドレスの更新に失敗しました。");
-                    }
+                    updateUserData4api("email", newEmail).then(ok => {
+                      if (ok) {
+                        setMsg("メールアドレスを更新しました。");
+                      } else {
+                        alert("メールアドレスの更新に失敗しました。");
+                      }
+                    });
                   } else {
                     alert("有効なメールアドレスを入力してください。");
                   }

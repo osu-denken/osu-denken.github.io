@@ -17,7 +17,7 @@ const ResetpassPage : NextPage = () => {
             const input = document.getElementById("email") as HTMLInputElement;
             const email = input.value.trim() as string;
             if (email) {
-              fetch("https://api.denken4dev.workers.dev/user/resetPassword", {
+              fetch("https://api.osudenken4dev.workers.dev/user/resetPassword", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json"
