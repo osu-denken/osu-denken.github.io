@@ -33,6 +33,7 @@ const ResetpassPage : NextPage = () => {
                     return true;
                   } else {
                     alert("メールを送信できませんでした。");
+                    console.log(data);
                     return false;
                   }
                 })
