@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 const PortalPage : NextPage = () => {
   const [activeTab, setActiveTab] = useState<"main" | "settings" | "blog">("main");
@@ -146,7 +147,7 @@ const PortalPage : NextPage = () => {
 
               <h3>パスワードの再設定</h3>
               <p className={styles.description}>
-                パスワードを再設定するには<a href="/resetpass/">こちら</a>からメールアドレスを入力してください。
+                パスワードを再設定するには<Link href="/resetpass/">こちら</Link>からメールアドレスを入力してください。
               </p>
             </div>
           )}
