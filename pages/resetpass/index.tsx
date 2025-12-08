@@ -12,33 +12,36 @@ const ResetpassPage : NextPage = () => {
         </p>
 
         <div className={portalStyles.inputGroup}>
-          <input type="text" id="email" placeholder="メールアドレス" className={portalStyles.portal}></input>
-          <button onClick={() => {
-            const input = document.getElementById("email") as HTMLInputElement;
-            const email = input.value.trim() as string;
-            if (email) {
-              fetch("https://api.osudenken4dev.workers.dev/user/resetPassword", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                  email: email
+          <form>
+            <input type="text" id="email" placeholder="メールアドレス" className={portalStyles.portal}></input>
+            <button onClick={(e) => {
+              e.preventDefault();
+              const input = document.getElementById("email") as HTMLInputElement;
+              const email = input.value.trim() as string;
+              if (email) {
+                fetch("https://api.osudenken4dev.workers.dev/user/resetPassword", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({
+                    email: email
+                  })
                 })
-              })
-                .then(res => res.json())
-                .then(data => {
-                  alert("パスワード再設定メールを送信しました。")
-                  return true;
-                })
-                .catch(error => {
-                  console.error("Error:", error);
-                  alert("メールを送信できませんでした。");
-                });
-            } else {
-              alert("有効なメールアドレスを入力してください。");
-            }
-          }} className={portalStyles.portal}>送信</button>
+                  .then(res => res.json())
+                  .then(data => {
+                    alert("パスワード再設定メールを送信しました。")
+                    return true;
+                  })
+                  .catch(error => {
+                    console.error("Error:", error);
+                    alert("メールを送信できませんでした。");
+                  });
+              } else {
+                alert("有効なメールアドレスを入力してください。");
+              }
+            }} className={portalStyles.portal}>送信</button>
+          </form>
         </div>
         
 

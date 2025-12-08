@@ -6,11 +6,32 @@ import Link from "next/link";
 
 const PortalPage : NextPage = () => {
   const [activeTab, setActiveTab] = useState<"main" | "settings" | "blog">("main");
+  const [msg, setMsg] = useState("");
 
   const [userName, setUserName] = useState("Unknown");
-  const [email, setEmail] = useState("")
+  const [email, setEmail] = useState("");
+  const [blogList, setBlogList] = useState([]);
+  const [loadedBlogList, setLoadedBlogList] = useState(false);
+  const [discordInviteUrl, setDiscordInviteUrl] = useState("");
 
-  const [msg, setMsg] = useState("");
+  useEffect(() => { // ブログタブを初回開いたときに動作する
+    if (activeTab === "blog" && !loadedBlogList) {
+      fetch("https://api.osudenken4dev.workers.dev/blog/list", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      })
+        .then(res => res.json())
+        .then(data => {          
+          setBlogList(data ?? []);
+          setLoadedBlogList(true); // 2回目以降はロードしないようにする
+        })
+        .catch(e => {
+          console.error("Failed to load blog list:", e);
+        });
+  }
+}, [activeTab]);
 
   async function updateUserData4api(key: string, value: string): Promise<boolean> {
     try {
@@ -25,7 +46,7 @@ const PortalPage : NextPage = () => {
 
       const data = await res.json();
 
-      if (data.displayName) {
+      if (data.success) {
         console.log(`${key} updated successfully.`);
         return true;
       } else {
@@ -33,8 +54,8 @@ const PortalPage : NextPage = () => {
         console.log(data);
         return false;
       }
-    } catch (error) {
-      console.error("Error:", error);
+    } catch (e) {
+      console.error("Error:", e);
       return false;
     }
   }
@@ -53,13 +74,25 @@ const PortalPage : NextPage = () => {
     const msg = params.get("msg");
     if (msg) setMsg(msg);
 
-    // todo :tab
-    const tab = params.get("tab")
-    if (tab) {
+    const tab: any = params.get("tab")
+    if (tab) setActiveTab(tab);
 
-    }
+
+    fetch("https://api.osudenken4dev.workers.dev/discord/invite", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("idToken")}`
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) setDiscordInviteUrl(data.code);
+      })
+      .catch(e => {
+        console.error("Failed to discord invite url:", e);
+      });
   }, []);
-
 
   return (
     <div className={styles.container}>
@@ -70,20 +103,17 @@ const PortalPage : NextPage = () => {
         <div className={portalStyles.tabContainer}>
           <button
             className={`${portalStyles.tabButton} ${activeTab === "main" ? portalStyles.active : ""}`}
-            onClick={() => setActiveTab("main")}
-          >
+            onClick={() => setActiveTab("main")} >
             ポータル
           </button>
           <button
             className={`${portalStyles.tabButton} ${activeTab === "settings" ? portalStyles.active : ""}`}
-            onClick={() => setActiveTab("settings")}
-          >
+            onClick={() => setActiveTab("settings")} >
             設定
           </button>
           <button
             className={`${portalStyles.tabButton} ${activeTab === "blog" ? portalStyles.active : ""}`}
-            onClick={() => setActiveTab("blog")}
-          >
+            onClick={() => setActiveTab("blog")} >
             ブログ
           </button>
         </div>
@@ -93,65 +123,73 @@ const PortalPage : NextPage = () => {
             <div className={portalStyles.tabPane}>
               <h1 id="title">ようこそ、{userName} さん</h1>
               <p className={styles.description}>
+                <Link href={discordInviteUrl}>Discordへ参加する</Link>
               </p>
             </div>
           )}
           {activeTab === "settings" && (
             <div className={portalStyles.tabPane}>
-              <h2>ユーザー設定</h2>
-              <h3>ユーザー名</h3>
+              <h1>ユーザー設定</h1>
+              <h2>ユーザー名</h2>
               <p className={styles.description}>
                 デフォルトでは学籍番号が設定されています。<br />変更する場合は以下の入力欄に新しいユーザー名を入力し、更新ボタンを押してください。
               </p>
-
-              <div className={portalStyles.inputGroup}>
-                <input type="text" id="usernameInput" placeholder="ユーザー名" value={userName} onChange={(e) => setUserName(e.target.value)} className={portalStyles.portal} />
-                <button onClick={() => {
-                  const input = document.getElementById("usernameInput") as HTMLInputElement;
-                  const newName = input.value.trim() as string;
-                  if (newName) {
-                    localStorage.setItem("displayName", newName);
-
-                    updateUserData4api("displayName", newName).then(ok => {
-                      if (ok) {
-                        setMsg("ユーザー名を更新しました。");
-                      } else {
-                        alert("ユーザー名の更新に失敗しました。");
-                      }
-                    });
-                  } else {
-                    alert("有効なユーザー名を入力してください。");
-                  }
-                }} className={portalStyles.portal}>更新</button>
-              </div>
+              <form>
+                <div className={portalStyles.inputGroup}>
+                  <input type="text" id="usernameInput" placeholder="ユーザー名" value={userName} onChange={(e) => setUserName(e.target.value)} className={portalStyles.portal} />
+                  <button onClick={(e) => {
+                    e.preventDefault();
+                    const input = document.getElementById("usernameInput") as HTMLInputElement;
+                    const newName = input.value.trim() as string;
+                    if (newName) {
+                      updateUserData4api("displayName", newName).then(ok => {
+                        if (ok) {
+                          setMsg("ユーザー名を更新しました。");
+                          localStorage.setItem("displayName", newName);
+                        } else {
+                          console.log(ok);
+                          alert("ユーザー名の更新に失敗しました。");
+                        }
+                      });
+                    } else {
+                      alert("有効なユーザー名を入力してください。");
+                    }
+                  }} className={portalStyles.portal}>更新</button>
+                </div>
+              </form>
 
               <br />
 
-              <h3>メールアドレス</h3>
+              <h2>メールアドレス</h2>
               <p className={styles.description}>
                 デフォルトでは大学から付与されたメールアドレスが設定されています。<br />変更する場合は以下の入力欄に新しいメールアドレスを入力し、更新ボタンを押してください。
               </p>
 
-              <div className={portalStyles.inputGroup}>
-                <input type="text" id="emailInput" placeholder="メールアドレス" value={email} onChange={(e) => setEmail(e.target.value)} className={portalStyles.portal} />
-                <button onClick={() => {
-                  const input = document.getElementById("emailInput") as HTMLInputElement;
-                  const newEmail = input.value.trim() as string;
-                  if (newEmail) {
-                    updateUserData4api("email", newEmail).then(ok => {
-                      if (ok) {
-                        setMsg("メールアドレスを更新しました。");
-                      } else {
-                        alert("メールアドレスの更新に失敗しました。");
-                      }
-                    });
-                  } else {
-                    alert("有効なメールアドレスを入力してください。");
-                  }
-                }} className={portalStyles.portal}>更新</button>
-              </div>
+              <form>
+                <div className={portalStyles.inputGroup}>
+                  <input type="text" id="emailInput" placeholder="メールアドレス" value={email} onChange={(e) => setEmail(e.target.value)} className={portalStyles.portal} />
+                  <button onClick={(e) => {
+                    e.preventDefault();
+                    const input = document.getElementById("emailInput") as HTMLInputElement;
+                    const newEmail = input.value.trim() as string;
+                    if (newEmail) {
+                      updateUserData4api("email", newEmail).then(ok => {
+                        if (ok) {
+                          setMsg("メールアドレスを更新しました。");
+                        } else {
+                          alert("メールアドレスの更新に失敗しました。");
+                        }
+                      });
+                    } else {
+                      alert("有効なメールアドレスを入力してください。");
+                    }
+                  }} className={portalStyles.portal}>更新</button>
+                </div>
+              </form>
 
-              <h3>パスワードの再設定</h3>
+              <br />
+
+              <h2>パスワードの再設定</h2>
               <p className={styles.description}>
                 パスワードを再設定するには<Link href="/resetpass/">こちら</Link>からメールアドレスを入力してください。
               </p>
@@ -159,9 +197,21 @@ const PortalPage : NextPage = () => {
           )}
           {activeTab === "blog" && (
             <div className={portalStyles.tabPane}>
-              <h2>ブログ</h2>
+              <h1>ブログ</h1>
               <p className={styles.description}>
               </p>
+
+              <div className={portalStyles.grid}>
+                {blogList.map((page: any) => (
+                  <Link href={"/blog/editor/?page=" + page.name}>
+                    <div key={page.sha} className={portalStyles.card}>
+                      <h3>{page.name}</h3>
+                      <p>{page.summary}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
             </div>
           )}
         </div>
