@@ -2,6 +2,7 @@ import Image from "next/image";
 import styles from "@styles/Navbar.module.css";
 import Modal from "react-modal";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 const modalStyle: Modal.Styles = {
   overlay: {
@@ -134,16 +135,16 @@ const Navbar: React.FC = () => {
     rightNavItem = (
       <>
         <li className={styles.right}>
-          <a href="/portal/">{userName}</a>
+          <Link href="/portal/">{userName}</Link>
         </li>
         <li>
-          <a href="#logout" onClick={() => {
+          <Link href="#logout" onClick={() => {
             localStorage.removeItem("idToken");
             localStorage.removeItem("name");
             window.location.reload();
           }}>
             ログアウト
-          </a>
+          </Link>
         </li>
       </>
     );
@@ -151,10 +152,10 @@ const Navbar: React.FC = () => {
     rightNavItem = (
       <>
         <li className={styles.right}>
-          <a href="https://osu-denken.github.io/blog/join">入部</a>
+          <Link href="https://osu-denken.github.io/blog/join">入部</Link>
         </li>
         <li>
-          <a href="#login">ログイン</a>
+          <Link href="#login">ログイン</Link>
         </li>
       </>
     );
