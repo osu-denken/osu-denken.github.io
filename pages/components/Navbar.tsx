@@ -138,13 +138,13 @@ const Navbar: React.FC = () => {
           <Link href="/portal/">{userName}</Link>
         </li>
         <li>
-          <Link href="#logout" onClick={() => {
+          <a href="#logout" onClick={() => {
             localStorage.removeItem("idToken");
             localStorage.removeItem("name");
             window.location.reload();
           }}>
             ログアウト
-          </Link>
+          </a>
         </li>
       </>
     );
@@ -152,10 +152,10 @@ const Navbar: React.FC = () => {
     rightNavItem = (
       <>
         <li className={styles.right}>
-          <Link href="https://osu-denken.github.io/blog/join">入部</Link>
+          <a href="https://osu-denken.github.io/blog/join">入部</a>
         </li>
         <li>
-          <Link href="#login">ログイン</Link>
+          <a href="#login">ログイン</a>
         </li>
       </>
     );
