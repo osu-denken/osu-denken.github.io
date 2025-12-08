@@ -43,7 +43,7 @@ const PortalPage : NextPage = () => {
     const token = localStorage.getItem("idToken");
     if (!token) window.location.href = "/?i=portal/#login";
   
-    const name = localStorage.getItem("name");
+    const name = localStorage.getItem("displayName");
     if (name) setUserName(name);
 
 
@@ -110,9 +110,9 @@ const PortalPage : NextPage = () => {
                   const input = document.getElementById("usernameInput") as HTMLInputElement;
                   const newName = input.value.trim() as string;
                   if (newName) {
-                    localStorage.setItem("name", newName);
+                    localStorage.setItem("displayName", newName);
 
-                    updateUserData4api("name", newName).then(ok => {
+                    updateUserData4api("displayName", newName).then(ok => {
                       if (ok) {
                         setMsg("ユーザー名を更新しました。");
                       } else {

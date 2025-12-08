@@ -37,7 +37,7 @@ const Navbar: React.FC = () => {
     const token = localStorage.getItem("idToken");
     if (token) {
       setIsLogin(true);
-      setUserName(localStorage.getItem("name") || "Unknown");
+      setUserName(localStorage.getItem("displayName") || "Unknown");
     } else {
       setIsLogin(false);
     }
@@ -90,21 +90,21 @@ const Navbar: React.FC = () => {
       .then(data => {
         // console.log("data:", data);
 
-        if (!data.name) { // data.nameがない場合は メールアドレスemailの@より前、ユーザ名にする。
+        if (!data.displayName) { // data.nameがない場合は メールアドレスemailの@より前、ユーザ名にする。
           if (typeof email === "string") {
             const atIndex = email.indexOf("@");
-            data.name = atIndex !== -1 ? email.substring(0, atIndex) : email;
+            data.displayName = atIndex !== -1 ? email.substring(0, atIndex) : email;
           } else {
-            data.name = "Unknown";
+            data.displayName = "Unknown";
           }
         }
 
         // XSS対策のためのサニタイズ
-        data.name = data.name ? data.name.replace(/</g, "&lt;").replace(/>/g, "&gt;") : data.name;
+        data.displayName = data.displayName ? data.displayName.replace(/</g, "&lt;").replace(/>/g, "&gt;") : data.name;
 
         if (data.idToken) {
           localStorage.setItem("idToken", data.idToken);
-          localStorage.setItem("name", data.name);
+          localStorage.setItem("displayName", data.displayName);
           
           const params = new URLSearchParams(window.location.search);
           const param_i = params.get("i");
@@ -141,7 +141,7 @@ const Navbar: React.FC = () => {
         <li>
           <a href="#logout" onClick={() => {
             localStorage.removeItem("idToken");
-            localStorage.removeItem("name");
+            localStorage.removeItem("displayName");
             window.location.reload();
           }}>
             ログアウト
