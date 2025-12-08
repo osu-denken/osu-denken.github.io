@@ -60,6 +60,7 @@ const PortalPage : NextPage = () => {
     }
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const token = localStorage.getItem("idToken");
     if (!token) window.location.href = "/?i=portal/#login";
