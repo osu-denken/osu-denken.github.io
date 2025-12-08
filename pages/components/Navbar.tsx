@@ -118,6 +118,7 @@ const Navbar: React.FC = () => {
           history.replaceState(null, "", window.location.pathname + window.location.search); // #loginを外す
           window.location.reload();
         } else {
+          console.log(data);
           alert("ログイン失敗: " + data.message);
         }
       })
