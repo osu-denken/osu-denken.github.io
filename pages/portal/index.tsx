@@ -13,7 +13,8 @@ const PortalPage : NextPage = () => {
   const [blogList, setBlogList] = useState([]);
   const [loadedBlogList, setLoadedBlogList] = useState(false);
   const [discordInviteUrl, setDiscordInviteUrl] = useState("");
-
+  
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { // ブログタブを初回開いたときに動作する
     if (activeTab === "blog" && !loadedBlogList) {
       fetch("https://api.osudenken4dev.workers.dev/blog/list", {
@@ -60,7 +61,6 @@ const PortalPage : NextPage = () => {
     }
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const token = localStorage.getItem("idToken");
     if (!token) window.location.href = "/?i=portal/#login";
