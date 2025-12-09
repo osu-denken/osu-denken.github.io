@@ -21,7 +21,8 @@
       "@components/*": ["./pages/components/*"],
       "@styles/*": ["./styles/*"],
       "@api/*": ["./pages/api/*"],
-      "@hooks/*": ["./hooks/*"]
+      "@hooks/*": ["./hooks/*"],
+      "@types/*": ["./types/*"]
     }
   },
   "include": [

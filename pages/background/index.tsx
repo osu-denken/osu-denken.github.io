@@ -1,5 +1,5 @@
 import ParticleSpaceAnimationBackground from "@components/ParticleSpaceAnimationBackground";
-import type { NextPageWithLayout } from "@api/NextPageWithLayout";
+import type { NextPageWithLayout } from "../../types/NextPageWithLayout";
 
 const BackgroundPage : NextPageWithLayout = () => {
   return (
