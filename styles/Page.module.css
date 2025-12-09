@@ -6,12 +6,14 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  max-width: 100%;
 }
 
 .main {
   min-height: 85vh;
   padding-bottom: 4rem;
   width: 960px;
+  max-width: 100%;
 }
 
 .bold {
@@ -76,6 +78,22 @@
   color: inherit;
 }
 
+@media (max-width: 1020px) {
+  .main {
+    width: auto;
+    max-width: 960px;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    padding: 50px 2rem 0 2rem;
+    max-width: 100%;
+  }
+}
+
 @media (max-width: 600px) {
   .grid {
     width: 100%;
@@ -88,13 +106,6 @@
  
   .main {
     width: auto;
-    max-width: 960px;
-  }
-}
-
-@media (max-width: 1020px) {
-  .main {
-    width: auto;
-    max-width: 960px;
+    max-width: 600px;
   }
 }
