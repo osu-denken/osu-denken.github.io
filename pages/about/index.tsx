@@ -13,6 +13,14 @@ const AboutPage : NextPage = () => {
           年に一度、パソコンの組立てを行います。<br />
           また、大学祭 (阪駒祭) では、部員が開発したプログラムやゲーム体験、パソコン組立て体験、コンピュータ/サーバーなどの機器の展示を行っています。<br />
         </p>
+
+        <h2>Webサイト</h2>
+        <p className={styles.description}>
+          このサイトは電研の公式ウェブサイトです。<br />
+          TypeScriptでコーディングされており、フロントエンドはNext.jsをSSGとしてGitHub Pages上でホスティングされています。<br />
+          バックエンドはFirebase、Cloudflare Workersを用いています。<br />
+          ブログはJekyllで構築しています。<br />
+        </p>
       </main>
     </div>
   );
