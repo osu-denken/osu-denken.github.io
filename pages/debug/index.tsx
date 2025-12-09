@@ -8,6 +8,7 @@ const DebugPage : NextPage = () => {
     const [info, setInfo] = useState<any>(null);
     const [portalData, setPortalData] = useState<any>(null);
     const [blogList, setBlogList] = useState<any>(null);
+    const [blogData, setBlogData] = useState<string>();
 
     const [_localStorage, _setLocalStorage] = useState<any>(null);
 
@@ -64,6 +65,34 @@ const DebugPage : NextPage = () => {
 
                 <h2>/blog/list</h2>
                 <Pre language="json" style={okaidia}>{JSON.stringify(blogList, null, 2)}</Pre>
+
+                <h2>/blog/get</h2>
+                <form onSubmit={e => {
+                    e.preventDefault();
+                    const form = new FormData(e.currentTarget);
+                    const page = form.get("page") as string;
+                    fetch("https://api.osudenken4dev.workers.dev/blog/get?page=" + encodeURIComponent(page), {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setBlogData(data);
+                    }
+                    );
+                }}>
+                    <label>
+                        page: <input type="text" name="page" />
+                    </label>
+                    <br />
+                    <input type="submit" value="取得する" />
+
+                    <Pre language="json" style={okaidia} id="blogData">
+                        {JSON.stringify(blogData, null, 2)}
+                    </Pre>
+                </form>
             </main>
         </div>
     );
