@@ -7,59 +7,36 @@ import Link from "next/link";
 const PortalPage : NextPage = () => {
   const [activeTab, setActiveTab] = useState<"main" | "settings" | "blog">("main");
   const [msg, setMsg] = useState("");
+  
+  const [info, setInfo] = useState<any>(null);
+  const [_localStorage, _setLocalStorage] = useState<any>(null);
 
   const [userName, setUserName] = useState("Unknown");
   const [email, setEmail] = useState("");
   const [blogList, setBlogList] = useState([]);
   const [loadedBlogList, setLoadedBlogList] = useState(false);
   const [discordInviteUrl, setDiscordInviteUrl] = useState("");
-  
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { // ブログタブを初回開いたときに動作する
-    if (activeTab === "blog" && !loadedBlogList) {
-      fetch("https://api.osudenken4dev.workers.dev/blog/list", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        }
-      })
-        .then(res => res.json())
-        .then(data => {          
-          setBlogList(data ?? []);
-          setLoadedBlogList(true); // 2回目以降はロードしないようにする
-        })
-        .catch(e => {
-          console.error("Failed to load blog list:", e);
-        });
-  }
-}, [activeTab]);
+    
+  useEffect(() => {
+    _setLocalStorage(localStorage);
 
-  async function updateUserData4api(key: string, value: string): Promise<boolean> {
-    try {
-      const res = await fetch("https://api.osudenken4dev.workers.dev/user/update", {
+    fetch("https://api.osudenken4dev.workers.dev/portal", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("idToken")}`
-        },
-        body: JSON.stringify({ [key]: value })
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        console.log(`${key} updated successfully.`);
-        return true;
-      } else {
-        console.error(`Failed to update ${key}.`);
-        console.log(data);
-        return false;
-      }
-    } catch (e) {
-      console.error("Error:", e);
-      return false;
-    }
-  }
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("idToken")}`
+        }
+    }).then(res => res.json()).then(data => {
+        if (!data.success) {
+          if (data.status === 401) {
+            alert("セッションの有効期限が切れました。再度ログインしてください。");
+            window.location.href = "/?i=portal/#login";
+          }
+        }
+        setInfo(data);
+        setEmail(data.user.email || "");
+    });
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("idToken");
@@ -94,6 +71,53 @@ const PortalPage : NextPage = () => {
         console.error("Failed to discord invite url:", e);
       });
   }, []);
+  
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { // ブログタブを初回開いたときに動作する
+    if (activeTab === "blog" && !loadedBlogList) {
+      fetch("https://api.osudenken4dev.workers.dev/blog/list", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      })
+        .then(res => res.json())
+        .then(data => {          
+          setBlogList(data ?? []);
+          setLoadedBlogList(true); // 2回目以降はロードしないようにする
+        })
+        .catch(e => {
+          console.error("Failed to load blog list:", e);
+        });
+    }
+  }, [activeTab]);
+
+  async function updateUserData4api(key: string, value: string): Promise<boolean> {
+    try {
+      const res = await fetch("https://api.osudenken4dev.workers.dev/user/update", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("idToken")}`
+        },
+        body: JSON.stringify({ [key]: value })
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        console.log(`${key} updated successfully.`);
+        return true;
+      } else {
+        console.error(`Failed to update ${key}.`);
+        console.log(data);
+        return false;
+      }
+    } catch (e) {
+      console.error("Error:", e);
+      return false;
+    }
+  }
 
   return (
     <div className={styles.container}>
