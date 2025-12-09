@@ -22,7 +22,7 @@
       "@styles/*": ["./styles/*"],
       "@api/*": ["./pages/api/*"],
       "@hooks/*": ["./hooks/*"],
-      "@types/*": ["./types/*"]
+      "@lib/*": ["./lib/*"]
     }
   },
   "include": [

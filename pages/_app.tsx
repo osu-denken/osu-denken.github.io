@@ -1,6 +1,6 @@
 import "@styles/globals.css";
 import type { AppProps } from "next/app";
-import type { NextPageWithLayout } from "@types/NextPageWithLayout";
+import type { NextPageWithLayout } from "@lib/types/NextPageWithLayout";
 import Navbar from "@components/Navbar";
 import Footer from "@components/Footer";
 import Head from "next/head";
