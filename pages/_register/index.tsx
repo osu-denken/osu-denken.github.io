@@ -76,6 +76,10 @@ const DebugPage : NextPage = () => {
             if (passphraseInput) {
                 passphraseInput.value = code;
                 passphraseInput.style.display = "none";
+                const passphraseLabel = document.getElementById("passphrase-label");
+                if (passphraseLabel) {
+                    passphraseLabel.style.display = "none";
+                }
             }
         }
     }, []);
@@ -97,7 +101,7 @@ const DebugPage : NextPage = () => {
                         パスワード
                         <input type="password" name="password" />
                     </label>
-                    <label>
+                    <label id="passphrase-label">
                         合言葉
                         <input type="text" name="passphrase" />
                     </label>
