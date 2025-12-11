@@ -8,6 +8,7 @@ const DebugPage : NextPage = () => {
     const [info, setInfo] = useState<any>(null);
     const [portalData, setPortalData] = useState<any>(null);
     const [blogList, setBlogList] = useState<any>(null);
+    const [blogList2, setBlogList2] = useState<any>(null);
     const [blogData, setBlogData] = useState<string>();
     const [blogData2, setBlogData2] = useState<string>();
 
@@ -37,7 +38,7 @@ const DebugPage : NextPage = () => {
             setPortalData(data);
         });
 
-        fetch("https://api.osudenken4dev.workers.dev/blog/list", {
+        fetch("https://api.osudenken4dev.workers.dev/v1/blog/list", {
             method: "POST",
             headers: {
             "Content-Type": "application/json",
@@ -46,6 +47,17 @@ const DebugPage : NextPage = () => {
         }).then(res => res.json()).then(data => {
             setBlogList(data);
         });
+
+        fetch("https://api.osudenken4dev.workers.dev/v2/blog/list", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("idToken")}`
+            }
+        }).then(res => res.json()).then(data => {
+            setBlogList2(data);
+        });
+
     }, []);
 
     return (
@@ -64,8 +76,11 @@ const DebugPage : NextPage = () => {
                 <h2>/portal</h2>
                 <Pre language="json" style={okaidia}>{JSON.stringify(portalData, null, 2)}</Pre>
 
-                <h2>/blog/list</h2>
+                <h2>/v1/blog/list</h2>
                 <Pre language="json" style={okaidia}>{JSON.stringify(blogList, null, 2)}</Pre>
+
+                <h2>/v2/blog/list</h2>
+                <Pre language="json" style={okaidia}>{JSON.stringify(blogList2, null, 2)}</Pre>
 
                 <h2>/v1/blog/get</h2>
                 <form onSubmit={e => {

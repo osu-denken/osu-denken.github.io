@@ -16,7 +16,18 @@ const PortalPage : NextPage = () => {
   const [blogList, setBlogList] = useState([]);
   const [loadedBlogList, setLoadedBlogList] = useState(false);
   const [discordInviteUrl, setDiscordInviteUrl] = useState("");
-    
+  
+  const [activeTabInitialized, setActiveTabInitialized] = useState(false);
+  
+  useEffect(() => {
+    if (!activeTabInitialized) return;
+    const params = new URLSearchParams(window.location.search);
+    params.set("tab", activeTab);
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    window.history.replaceState({}, "", newUrl);
+  }, [activeTab]);
+
+
   useEffect(() => {
     _setLocalStorage(localStorage);
 
@@ -55,6 +66,7 @@ const PortalPage : NextPage = () => {
     const tab: any = params.get("tab")
     if (tab) setActiveTab(tab);
 
+    setActiveTabInitialized(true);
 
     fetch("https://api.osudenken4dev.workers.dev/discord/invite", {
       method: "POST",
@@ -75,7 +87,7 @@ const PortalPage : NextPage = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { // ブログタブを初回開いたときに動作する
     if (activeTab === "blog" && !loadedBlogList) {
-      fetch("https://api.osudenken4dev.workers.dev/blog/list", {
+      fetch("https://api.osudenken4dev.workers.dev/v2/blog/list", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -250,8 +262,8 @@ const PortalPage : NextPage = () => {
                 {blogList.map((page: any) => (
                   <Link key={page.sha} href={"/portal/blog/?action=edit&page=" + page.name}>
                     <div className={portalStyles.card}>
-                      <h3>{page.name}</h3>
-                      <p></p>
+                      <h3>{page.meta.title ? page.meta.title.slice(1, -1) : page.name}</h3>
+                      <p>{page.meta ? new Date(page.meta.date).toLocaleDateString() : "-"}</p>
                     </div>
                   </Link>
                 ))}
