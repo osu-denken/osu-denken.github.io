@@ -226,6 +226,26 @@ const PortalPage : NextPage = () => {
               <p className={styles.description}>
               </p>
 
+              <form>
+                <div className={portalStyles.inputGroup}>
+                  <input type="text" name="page" placeholder="ファイル名" className={portalStyles.portal} defaultValue={
+                    new Date().toISOString().split('T')[0] + "-" + (new Date().getHours() + new Date().getMinutes() + new Date().getSeconds())
+                  } required />
+                  <button type="button" className={portalStyles.portal} onClick={() => {
+                    const pageInput = document.querySelector('input[name="page"]') as HTMLInputElement;
+                    const page = pageInput.value.trim();
+                    if (!page) {
+                      setMsg("ファイル名を入力してください。");
+                      return;
+                    }
+                    const encoded = encodeURIComponent(page);
+                    window.location.href = `/portal/blog/?action=edit&page=${encoded}`;
+                  }}>
+                    新規作成
+                  </button>
+                </div>
+              </form>
+
               <div className={portalStyles.grid}>
                 {blogList.map((page: any) => (
                   <Link key={page.sha} href={"/portal/blog/?action=edit&page=" + page.name}>

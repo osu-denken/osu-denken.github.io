@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 
 const PortalPage : NextPage = () => {
+  const ymd = new Date().toISOString().split('T')[0];
+
+
   const [action, setAction] = useState("new");
   const [msg, setMsg] = useState("");
   const [page, setPage] = useState("");
@@ -42,7 +45,20 @@ const PortalPage : NextPage = () => {
           "Content-Type": "application/json",
         }
       }).then(res => res.json()).then(data => {
-        setBlogData(data);
+        if (data.content) {
+          setBlogData(data);
+        } else {
+          setBlogData({content: `---
+title: "今日の活動報告"
+date: ` + ymd + `
+categories: []
+tags: [活動報告]
+layout: default
+---
+
+ここからMarkdown記法で本文を記述します。
+`})
+        }
       });
     }
   }, []);
@@ -60,7 +76,7 @@ const PortalPage : NextPage = () => {
 
             <form>
               <div className={portalStyles.inputGroup}>
-                <input type="text" name="page" placeholder="ファイル名" className={portalStyles.portal} value={
+                <input type="text" name="page" placeholder="ファイル名" className={portalStyles.portal} defaultValue={
                   new Date().toISOString().split('T')[0] + "-" + (new Date().getHours() + new Date().getMinutes() + new Date().getSeconds())
                 } required />
                 <button type="button" className={portalStyles.portal} onClick={() => {
@@ -92,7 +108,7 @@ const PortalPage : NextPage = () => {
                 const contentInput = document.querySelector('textarea[name="content"]') as HTMLTextAreaElement;
                 const content = contentInput.value;
 
-                fetch("https://api.osudenken4dev.workers.dev/blog/update", {
+                fetch("https://api.osudenken4dev.workers.dev/v1/blog/update", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
@@ -134,6 +150,8 @@ const PortalPage : NextPage = () => {
               </button>
               <button type="button" className={portalStyles.portal} onClick={() => {
                 window.location.href = "/portal/?tab=blog";
+              }} style={{
+                marginLeft: "auto",
               }}>
                 キャンセル
               </button>
