@@ -68,7 +68,7 @@ const DebugPage : NextPage = () => {
             }).then(res => res.json()).then(data => {
                 if (!data.valid) {
                     alert("この招待コードは無効か期限切れです。");
-                    return;
+                    window.location.href = "/_register/";
                 }
             });
 
