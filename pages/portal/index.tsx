@@ -228,7 +228,7 @@ const PortalPage : NextPage = () => {
 
               <div className={portalStyles.grid}>
                 {blogList.map((page: any) => (
-                  <Link key={page.sha} href={"/blog/editor/?page=" + page.name}>
+                  <Link key={page.sha} href={"/portal/blog/?action=edit&page=" + page.name}>
                     <div className={portalStyles.card}>
                       <h3>{page.name}</h3>
                       <p></p>
