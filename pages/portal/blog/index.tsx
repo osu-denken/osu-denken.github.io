@@ -87,6 +87,7 @@ const PortalPage : NextPage = () => {
                   blogData ? blogData["content"] : ""
                 }></textarea>
               </div>
+              <div className={portalStyles.inputGroup}>
               <button type="button" className={portalStyles.portal} onClick={() => {
                 const contentInput = document.querySelector('textarea[name="content"]') as HTMLTextAreaElement;
                 const content = contentInput.value;
@@ -109,6 +110,34 @@ const PortalPage : NextPage = () => {
               }}>
                 保存
               </button>
+              <button type="button" className={portalStyles.portal} style={{ backgroundColor: "#a66666" }} onClick={() => {
+                const confirmed = confirm("本当に削除しますか？この操作は取り消せません。");
+                if (!confirmed) return;
+
+                fetch("https://api.osudenken4dev.workers.dev/blog/delete", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + localStorage.getItem("idToken"),
+                    "page": page
+                  },
+                }).then(res => res.json()).then(data => {
+                  if (data.success) {
+                    const encoded = encodeURIComponent("portal/blog/");
+                    window.location.href = "/?msg=" + encodeURIComponent("削除しました。") + "&i=" + encoded + "#portal/blog";
+                  } else {
+                    setMsg("削除に失敗しました。");
+                  }
+                });
+              }}>
+                削除
+              </button>
+              <button type="button" className={portalStyles.portal} onClick={() => {
+                window.location.href = "/portal/?tab=blog";
+              }}>
+                キャンセル
+              </button>
+              </div>
             </form>
           </div>
         )}
