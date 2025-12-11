@@ -161,6 +161,9 @@ const PortalPage : NextPage = () => {
               <h1 id="title">ようこそ、{userName} さん</h1>
               <p className={styles.description}>
                 <Link href={discordInviteUrl}>Discordへ参加する</Link>
+                <br />
+
+                <Link href="/portal/invite/">招待コードの作成</Link>
               </p>
             </div>
           )}
