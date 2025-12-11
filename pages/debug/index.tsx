@@ -9,6 +9,7 @@ const DebugPage : NextPage = () => {
     const [portalData, setPortalData] = useState<any>(null);
     const [blogList, setBlogList] = useState<any>(null);
     const [blogData, setBlogData] = useState<string>();
+    const [blogData2, setBlogData2] = useState<string>();
 
     const [_localStorage, _setLocalStorage] = useState<any>(null);
 
@@ -66,12 +67,12 @@ const DebugPage : NextPage = () => {
                 <h2>/blog/list</h2>
                 <Pre language="json" style={okaidia}>{JSON.stringify(blogList, null, 2)}</Pre>
 
-                <h2>/blog/get</h2>
+                <h2>/v1/blog/get</h2>
                 <form onSubmit={e => {
                     e.preventDefault();
                     const form = new FormData(e.currentTarget);
                     const page = form.get("page") as string;
-                    fetch("https://api.osudenken4dev.workers.dev/blog/get?page=" + encodeURIComponent(page), {
+                    fetch("https://api.osudenken4dev.workers.dev/v1/blog/get?page=" + encodeURIComponent(page), {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -91,6 +92,34 @@ const DebugPage : NextPage = () => {
 
                     <Pre language="json" style={okaidia} id="blogData">
                         {JSON.stringify(blogData, null, 2)}
+                    </Pre>
+                </form>
+
+                <h2>/v2/blog/get</h2>
+                <form onSubmit={e => {
+                    e.preventDefault();
+                    const form = new FormData(e.currentTarget);
+                    const page = form.get("page_v2") as string;
+                    fetch("https://api.osudenken4dev.workers.dev/v2/blog/get?page=" + encodeURIComponent(page), {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        setBlogData2(data);
+                    }
+                    );
+                }}>
+                    <label>
+                        page: <input type="text" name="page_v2" />
+                    </label>
+                    <br />
+                    <input type="submit" value="取得する" />
+
+                    <Pre language="json" style={okaidia} id="blogData_v2">
+                        {JSON.stringify(blogData2, null, 2)}
                     </Pre>
                 </form>
             </main>

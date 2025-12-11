@@ -36,7 +36,7 @@ const PortalPage : NextPage = () => {
     if (page) setPage(page);
 
     if (action === "edit") {
-      fetch("https://api.osudenken4dev.workers.dev/blog/get?page=" + page, {
+      fetch("https://api.osudenken4dev.workers.dev/v1/blog/get?page=" + page, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
