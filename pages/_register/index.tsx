@@ -91,6 +91,9 @@ const DebugPage : NextPage = () => {
                 <p className={styles.description}>
                     大産大 電研部員のみが利用できるユーザーを作成します。<br />
                     なお、部員ではない場合は却下されます。
+                    <br />
+                    <br />
+                    学籍番号は先頭にsを付けてください。
                 </p>
                 <form onSubmit={handleSubmit}>
                     <label>
