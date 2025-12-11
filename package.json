@@ -13,6 +13,7 @@
   "dependencies": {
     "firebase": "^11.9.1",
     "next": "^15.2.3",
+    "qrcode": "^1.5.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-modal": "^3.16.3",

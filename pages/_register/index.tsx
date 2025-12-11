@@ -54,6 +54,30 @@ const DebugPage : NextPage = () => {
             alert("すでにログインしているため、ポータルページに移動します。");
             window.location.href = "/portal";
         }
+
+        // 招待コード ?code=... があるときは合言葉は非表示にする。
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get("code");
+        if (code) {
+            fetch("https://api.osudenken4dev.workers.dev/invite/validate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ code })
+            }).then(res => res.json()).then(data => {
+                if (!data.valid) {
+                    alert("この招待コードは無効か期限切れです。");
+                    return;
+                }
+            });
+
+            const passphraseInput = document.querySelector('input[name="passphrase"]') as HTMLInputElement;
+            if (passphraseInput) {
+                passphraseInput.value = code;
+                passphraseInput.style.display = "none";
+            }
+        }
     }, []);
 
     return (
