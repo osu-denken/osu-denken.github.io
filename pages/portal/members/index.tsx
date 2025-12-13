@@ -30,7 +30,7 @@ const MembersPage : NextPage = () => {
       <main className={styles.main}>
         <h1>構成員名簿</h1>
         <p className={styles.description}>
-          情報に誤りがある場合、設定から変更してください。<br />
+          情報に誤りがある場合、ご連絡ください。<br />
         </p>
         <table>
           <thead>
