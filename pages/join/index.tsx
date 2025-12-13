@@ -1,8 +1,6 @@
 import type { NextPage } from "next";
 import styles from "@styles/Page.module.css";
 import { useEffect, useState } from "react";
-import { Prism as Pre } from 'react-syntax-highlighter';
-import { okaidia } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 const JoinPage : NextPage = () => {
 

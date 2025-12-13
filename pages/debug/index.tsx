@@ -7,6 +7,7 @@ import { okaidia } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 const DebugPage : NextPage = () => {
     const [info, setInfo] = useState<any>(null);
     const [portalData, setPortalData] = useState<any>(null);
+    const [membersData, setMembersData] = useState<any>(null);
     const [blogList, setBlogList] = useState<any>(null);
     const [blogList2, setBlogList2] = useState<any>(null);
     const [blogData, setBlogData] = useState<string>();
@@ -26,6 +27,16 @@ const DebugPage : NextPage = () => {
             }
         }).then(res => res.json()).then(data => {
             setInfo(data);
+        });
+
+        fetch("https://api.osudenken4dev.workers.dev/portal/members", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("idToken")}`
+            }
+        }).then(res => res.json()).then(data => {
+            setMembersData(data);
         });
 
         fetch("https://api.osudenken4dev.workers.dev/portal", {
@@ -75,6 +86,9 @@ const DebugPage : NextPage = () => {
 
                 <h2>/portal</h2>
                 <Pre language="json" style={okaidia}>{JSON.stringify(portalData, null, 2)}</Pre>
+
+                <h2>/portal/members</h2>
+                <Pre language="json" style={okaidia}>{JSON.stringify(membersData, null, 2)}</Pre>
 
                 <h2>/v1/blog/list</h2>
                 <Pre language="json" style={okaidia}>{JSON.stringify(blogList, null, 2)}</Pre>

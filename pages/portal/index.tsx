@@ -164,6 +164,9 @@ const PortalPage : NextPage = () => {
                 <br />
 
                 <Link href="/portal/invite/">招待コードの作成</Link>
+                <br />
+
+                <Link href="/portal/members/">構成員名簿</Link>
               </p>
             </div>
           )}
@@ -200,7 +203,7 @@ const PortalPage : NextPage = () => {
 
               <br />
 
-              <h2>メールアドレス</h2>
+              {/* <h2>メールアドレス</h2>
               <p className={styles.description}>
                 デフォルトでは大学から付与されたメールアドレスが設定されています。<br />変更する場合は以下の入力欄に新しいメールアドレスを入力し、更新ボタンを押してください。
               </p>
@@ -227,7 +230,7 @@ const PortalPage : NextPage = () => {
                 </div>
               </form>
 
-              <br />
+              <br /> */}
 
               <h2>パスワードの再設定</h2>
               <p className={styles.description}>
