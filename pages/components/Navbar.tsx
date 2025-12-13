@@ -119,6 +119,16 @@ const Navbar: React.FC = () => {
           window.location.reload();
         } else {
           console.log(data);
+          if (data.error) {
+            if (data.error.message === "INVALID_LOGIN_CREDENTIALS") {
+              alert("学籍番号またはパスワードが間違っています。");
+              return;
+            }
+
+            alert("ログイン失敗: " + data.error.message);
+            return;
+          }
+
           alert("ログイン失敗: " + data.message);
         }
       })

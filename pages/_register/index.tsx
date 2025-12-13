@@ -28,13 +28,14 @@ const DebugPage : NextPage = () => {
                     alert("そのメールアドレスは既に使われています。");
                     return;
                 }
-                console.error("Registration error:", data);
-                return;
-            }
 
             
-            if (data.body && data.body.error === "Invalid passphrase") {
-                alert("合言葉が間違っています。");
+                if (data.message === "Invalid passphrase or invite code") {
+                    alert("合言葉が間違っています。");
+                    return;
+                }
+
+                console.error("error:", data);
                 return;
             }
 
@@ -45,6 +46,10 @@ const DebugPage : NextPage = () => {
                 console.error("Registration failed:", data);
                 alert("ユーザー登録に失敗しました。");
             }
+        })
+        .catch(err => {
+            console.error("通信エラー or 想定外:", err);
+            alert("サーバーと通信できませんでした。");
         });
     }
 
