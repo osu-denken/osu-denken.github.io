@@ -3,16 +3,26 @@ import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+const ReactSimpleMdeEditor = dynamic(() => import("react-simplemde-editor"), {
+  ssr: false,
+});
+import "easymde/dist/easymde.min.css";
+import ReactMarkdown from "react-markdown";
+import breaks from 'remark-breaks';
+import remarkGfm from 'remark-gfm';
+import 'github-markdown-css/github-markdown.css';
+import rehypeRaw from 'rehype-raw';
 
 const PortalPage : NextPage = () => {
   const ymd = new Date().toISOString().split('T')[0];
 
-
   const [action, setAction] = useState("new");
   const [msg, setMsg] = useState("");
   const [page, setPage] = useState("");
+  const [source, setSource] = useState("");
   
-  const [info, setInfo] = useState<any>(null);
   const [_localStorage, _setLocalStorage] = useState<any>(null);
 
   const [blogData, setBlogData] = useState<any>(null);
@@ -47,6 +57,7 @@ const PortalPage : NextPage = () => {
       }).then(res => res.json()).then(data => {
         if (data.content) {
           setBlogData(data);
+          setSource(data.content);
         } else {
           setBlogData({content: `---
 title: "今日の活動報告"
@@ -58,14 +69,19 @@ layout: default
 
 ここからMarkdown記法で本文を記述します。
 `})
+          setSource(blogData.content);
         }
       });
     }
   }, []);
 
+  const getPreviewSource = (src: string) => {
+    return src.replace(/^---[\s\S]*?---\n?/, '');
+  };
+
   return (
     <div className={styles.container}>
-      <main className={styles.main}>
+      <main className={styles.main} style={{width: "100%", maxWidth: "1600px"}}>
         
         {msg ? <div className={portalStyles.notice}>{msg}</div> : ``}
 
@@ -98,16 +114,22 @@ layout: default
           <div>
             <h1>{page} の編集</h1>
             <form>
-              <div className={portalStyles.inputGroup}>
-                <textarea name="content" style={{width: "100%", height: "50vh"}} className={portalStyles.portal} defaultValue={
-                  blogData ? blogData["content"] : ""
-                }></textarea>
+              <div className={portalStyles.inputGroup} style={{width: "100%", height: "50vh", overflowY: "auto", resize: "vertical", border: "1px solid #fff", borderRadius: 5 }}>
+                <div style={{ width: "50%", borderRight: "1px solid #fff"}}>
+                  <ReactSimpleMdeEditor onChange={(str) => setSource(str)} value={source} className={portalStyles.portal}></ReactSimpleMdeEditor>
+                </div>
+
+                <div
+                  className="markdown-body p-4 border border-gray-300 h-72 overflow-y-auto"
+                  style={{ width: "50%", fontFamily: 'inherit', fontSize: 'inherit' }} >
+                  <ReactMarkdown remarkPlugins={[remarkGfm, breaks]} rehypePlugins={[rehypeRaw]}>{getPreviewSource(source)}</ReactMarkdown>
+                </div>
               </div>
+
+              
+
               <div className={portalStyles.inputGroup}>
               <button type="button" className={portalStyles.portal} onClick={() => {
-                const contentInput = document.querySelector('textarea[name="content"]') as HTMLTextAreaElement;
-                const content = contentInput.value;
-
                 fetch("https://api.osudenken4dev.workers.dev/v1/blog/update", {
                   method: "POST",
                   headers: {
@@ -115,7 +137,7 @@ layout: default
                     "Authorization": "Bearer " + localStorage.getItem("idToken"),
                     "page": page
                   },
-                  body: content,
+                  body: source,
                 }).then(res => res.json()).then(data => {
                   if (data.success) {
                     setMsg("保存しました。");

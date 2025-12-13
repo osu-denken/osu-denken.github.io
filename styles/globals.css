@@ -157,3 +157,76 @@ pre {
   font-size: 12px;
   font-family: monospace, Arial, Helvetica, sans-serif;
 }
+
+
+
+
+.CodeMirror {
+	color: rgb(var(--colors-secondary-dark)) !important;
+	background-color: rgb(var(--background-color-bg-white-dark)) !important;
+}
+
+.CodeMirror-sided {
+	border-radius: 0px !important;
+}
+
+.cm-s-easymde .CodeMirror-cursor {
+	border-color: rgb(var(--border-color-line-dark)) !important;
+}
+
+.editor-toolbar {
+	color: rgb(var(--colors-tertiary-dark)) !important;
+	border: none !important;
+	background-color: rgb(var(--background-color-bg-white-dark)) !important;
+}
+
+.separator {
+	border-color: rgb(var(--border-color-line-dark)) !important;
+}
+
+.editor-toolbar > .active,
+.editor-toolbar > button:hover,
+.editor-preview pre,
+.editor-preview-side,
+.cm-s-easymde .cm-comment {
+	color: rgb(var(--colors-secondary-dark)) !important;
+	border-color: rgb(var(--border-color-line-dark)) !important;
+	background-color: transparent !important;
+}
+
+.editor-preview {
+	background-color: rgb(var(--background-color-bg-white-dark)) !important;
+}
+
+.cm-header-1 {
+	font-weight: var(--font-weight-bold) !important;
+	font-size: var(--text-3xl) !important;
+}
+.cm-header-2 {
+	font-weight: var(--font-weight-bold) !important;
+	font-size: var(--text-2xl) !important;
+}
+.cm-header-3 {
+	font-weight: var(--font-weight-bold) !important;
+	font-size: var(--text-xl) !important;
+}
+.cm-header-4 {
+	font-weight: var(--font-weight-bold) !important;
+	font-size: 1rem !important;
+}
+
+.editor-toolbar i {
+  color: #fff !important;
+}
+
+.editor-toolbar i.separator {
+  color: transparent !important;
+  border-left: solid 1px #333 !important;
+  border-right: solid 1px #333 !important;
+  
+}
+
+.editor-toolbar {
+  background-color: #222 !important;
+  border-bottom: 1px solid rgb(var(--border-color-line-dark)) !important;
+}
