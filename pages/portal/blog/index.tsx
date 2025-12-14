@@ -114,14 +114,14 @@ layout: default
           <div>
             <h1>{page} の編集</h1>
             <form>
-              <div className={portalStyles.inputGroup} style={{width: "100%", height: "50vh", overflowY: "auto", resize: "vertical", border: "1px solid #fff", borderRadius: 5 }}>
-                <div style={{ width: "50%", borderRight: "1px solid #fff"}}>
+              <div className={portalStyles.inputGroup} style={{width: "100%", height: "50vh", resize: "vertical", border: "1px solid #fff", borderRadius: 5 }}>
+                <div style={{ width: "50%", borderRight: "1px solid #fff", overflowY: "auto", colorScheme: "dark" }}>
                   <ReactSimpleMdeEditor onChange={(str) => setSource(str)} value={source} className={portalStyles.portal}></ReactSimpleMdeEditor>
                 </div>
 
                 <div
                   className="markdown-body p-4 border border-gray-300 h-72 overflow-y-auto"
-                  style={{ width: "50%", fontFamily: 'inherit', fontSize: 'inherit' }} >
+                  style={{ width: "50%", fontFamily: 'inherit', fontSize: 'inherit', overflowY: "auto", colorScheme: "dark" }} >
                   <ReactMarkdown remarkPlugins={[remarkGfm, breaks]} rehypePlugins={[rehypeRaw]}>{getPreviewSource(source)}</ReactMarkdown>
                 </div>
               </div>

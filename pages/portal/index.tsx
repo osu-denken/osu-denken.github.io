@@ -38,14 +38,22 @@ const PortalPage : NextPage = () => {
         "Authorization": `Bearer ${localStorage.getItem("idToken")}`
         }
     }).then(res => res.json()).then(data => {
-        if (!data.success) {
-          if (data.status === 401) {
-            alert("セッションの有効期限が切れました。再度ログインしてください。");
-            window.location.href = "/?i=portal/#login";
-          }
+      console.log(data)
+      if (data.user && data.user.error) {
+        if (data.user.error.message === "INVALID_ID_TOKEN") {
+          alert("セッションの有効期限が切れました。再度ログインしてください。");
+          window.location.href = "/?i=portal/#login";
         }
-        setInfo(data);
-        setEmail(data.user.email || "");
+      }
+
+      if (!data.success) {
+        if (data.status === 401) {
+          alert("セッションの有効期限が切れました。再度ログインしてください。");
+          window.location.href = "/?i=portal/#login";
+        }
+      }
+      setInfo(data);
+      setEmail(data.user.email || "");
     });
   }, []);
 

@@ -8,11 +8,12 @@
   justify-content: center;
   align-items: center;
   max-width: 100%;
+  background-color: #121212;
 }
 
 .main {
-  min-height: 85vh;
-  padding-bottom: 4rem;
+  min-height: 77.5vh;
+  padding-bottom: 2rem;
   width: 960px;
   max-width: 100%;
   margin-top: 0;

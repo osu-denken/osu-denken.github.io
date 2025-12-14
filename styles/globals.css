@@ -6,7 +6,15 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   /* color: #333; */
   color: white;
-  background-color: #121212;
+  /* background-color: #252525; */
+    background: linear-gradient(
+    to bottom,
+    #121212 0%,
+    #121212 50%,
+    #252525 50%,
+    #252525 100%
+  );
+  min-height: 100vh;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -70,6 +78,7 @@ textarea {
   margin-bottom: 1rem;
   width: 100%;
   min-height: 200px;
+  color-scheme: dark;
 }
 
 table {
@@ -164,6 +173,7 @@ pre {
 .CodeMirror {
 	color: rgb(var(--colors-secondary-dark)) !important;
 	background-color: rgb(var(--background-color-bg-white-dark)) !important;
+  border: none !important;
 }
 
 .CodeMirror-sided {
