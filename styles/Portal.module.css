@@ -58,6 +58,17 @@ button.portal:hover {
   margin-top: 1rem;
 }
 
+.inputGroup2 {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  width: 100%;
+  height: 50vh;
+  resize: vertical;
+  border: 1px solid #fff;
+  border-radius: 5; 
+}
+
 .notice {
   padding: 8px;
   background-color: #ffffff2f;
@@ -73,6 +84,21 @@ button.portal:hover {
   justify-content: center;
   flex-wrap: wrap;
   max-width: 800px;
+}
+
+.mdeeditor {
+  width: 50%;
+  border-right: 1px solid #fff;
+  overflow-y: auto;
+  color-scheme: dark
+}
+
+.mdepreview {
+  width: 50%;
+  font-family: inherit;
+  font-size: inherit;
+  overflow-y: auto;
+  color-scheme: dark;
 }
 
 .card {
@@ -92,5 +118,39 @@ button.portal:hover {
   input[type="text"].portal {
     width: calc(100% - 100px) !important;
     max-width: 16rem !important;
+  }
+
+  .inputGroup2 {
+    display: block;
+    height: auto;
+    gap: 0;
+    margin-top: 1rem;
+    width: 100%;
+    resize: none;
+    font-size: 15px;
+    border: 1px solid #fff;
+    border-radius: 5;
+  }
+
+  .mdeeditor {
+    display: block;
+    width: 100%;
+    height: 50vh;
+    resize: vertical;
+    border-right: none;
+    overflow-y: auto;
+    color-scheme: dark
+  }
+
+  .mdepreview {
+    display: block;
+    width: 100%;
+    height: 50vh;
+    border-top: 1px solid #fff;
+    resize: vertical;
+    font-family: inherit;
+    font-size: inherit;
+    overflow-y: auto;
+    color-scheme: dark;
   }
 }
