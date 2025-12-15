@@ -55,7 +55,7 @@ const PortalPage : NextPage = () => {
           "Content-Type": "application/json",
         }
       }).then(res => res.json()).then(data => {
-        if (data.content) {
+        if (data && data.content) {
           setBlogData(data);
           setSource(data.content);
         } else {
