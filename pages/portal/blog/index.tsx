@@ -59,7 +59,7 @@ const PortalPage : NextPage = () => {
           setBlogData(data);
           setSource(data.content);
         } else {
-          setBlogData({content: `---
+          const source = `---
 title: "今日の活動報告"
 date: ` + ymd + `
 categories: []
@@ -68,8 +68,9 @@ layout: default
 ---
 
 ここからMarkdown記法で本文を記述します。
-`})
-          setSource(blogData.content);
+`;
+          setBlogData({content: source});
+          setSource(source);
         }
       });
     }
