@@ -10,7 +10,8 @@ const HomePage: NextPage = () => {
       <ParticleSpaceAnimationBackground />
       <main className={styles.main} style={{ position: 'relative', zIndex: 3 }}>
         <h1 className={styles.title}>電子計算研究部</h1>
-        <h2 className={styles.bold}>大阪産業大学</h2>
+        <h2 className={styles.subtitle}><img src="osaka-sandai-kawaii-logo-transparent-resize.png" width={180} alt="大阪産業大学" title="大阪産業大学" /></h2>
+        {/* <h2 className={styles.bold}>大阪産業大学</h2> */}
 
         <div className={styles.iconContainer}>
           <a href="https://www.osaka-sandai.ac.jp/club_circle/club/233" title="大阪産業大学公式サイト" target="_blank">
