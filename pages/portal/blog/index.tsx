@@ -71,7 +71,6 @@ const PortalPage : NextPage = () => {
           const defaultSource = `---
 title: "今日の活動報告"
 date: ` + ymd + `
-categories: []
 tags: [活動報告]
 author: osu-denken
 layout: default
