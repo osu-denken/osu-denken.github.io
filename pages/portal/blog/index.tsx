@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 
@@ -118,11 +118,16 @@ layout: default
     return src.replace(/^---[\s\S]*?---\n?/, '');
   };
 
-  let isUploading = false;
+  const isUploading = useRef(false);
+  const cmInstanceRef = useRef<any>(null);
 
-  const registerPaste = (cm: any) => {
-    cm.on("paste", async (cmEvent: any, e: ClipboardEvent) => {
-      if (isUploading) return;
+  useEffect(() => {
+    if (!cmInstanceRef.current) return;
+
+    const cm = cmInstanceRef.current;
+
+    const handlePaste = async (cmEvent: any, e: ClipboardEvent) => {
+      if (isUploading.current) return;
 
       const items = e.clipboardData?.items;
       if (!items) return;
@@ -130,27 +135,25 @@ layout: default
       for (const item of items) {
         if (item.type.startsWith("image/")) {
           e.preventDefault();
-
           const file = item.getAsFile();
           if (!file) return;
 
+          isUploading.current = true;
           try {
             const formData = new FormData();
             formData.append("file", file);
 
             const res = await fetch("https://api.osudenken4dev.workers.dev/v1/image/upload", {
-                method: "POST",
-                headers: {
-                  Authorization: "Bearer " + localStorage.getItem("idToken"),
-                },
-                body: formData,
-              }
-            );
+              method: "POST",
+              headers: {
+                Authorization: "Bearer " + localStorage.getItem("idToken"),
+              },
+              body: formData,
+            });
 
             const data = await res.json();
-
             if (!data.url) {
-              alert("画像のアップロードに失敗しました");
+              alert("アップロード失敗");
               return;
             }
 
@@ -161,17 +164,21 @@ layout: default
             const from = { line: cursorPos.line, ch: cursorPos.ch };
             const to = { line: cursorPos.line, ch: cursorPos.ch + placeholder.length };
             cm.replaceRange(`![image](/blog${data.url})`, from, to);
-            break;
-          } catch (err) {
-            console.error(err);
-            alert("画像のアップロード中にエラーが発生しました");
-            return;
+          } finally {
+            isUploading.current = false;
           }
+
+          break;
         }
       }
-    });
-  };
+    };
 
+    cm.on("paste", handlePaste);
+
+    return () => {
+      cm.off("paste", handlePaste); // クリーンアップ
+    };
+  }, [cmInstanceRef.current]);
 
   return (
     <div className={styles.container}>
@@ -211,7 +218,9 @@ layout: default
               <div className={portalStyles.inputGroup2}>
                 <div className={portalStyles.mdeeditor}>
                   <ReactSimpleMdeEditor onChange={(str) => setSource(str)} value={source} className={portalStyles.portal} getMdeInstance={
-                    (mde: any) => registerPaste(mde.codemirror)
+                    (mde: any) => {
+                      if (!cmInstanceRef.current) cmInstanceRef.current = mde.codemirror;
+                    }
                   }></ReactSimpleMdeEditor>
                 </div>
 
