@@ -118,6 +118,55 @@ layout: default
     return src.replace(/^---[\s\S]*?---\n?/, '');
   };
 
+  const registerPaste = (cm: any) => {
+    cm.on("paste", async (cmEvent: any, e: ClipboardEvent) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+
+      for (const item of items) {
+        if (item.type.startsWith("image/")) {
+          e.preventDefault();
+
+          const file = item.getAsFile();
+          if (!file) return;
+
+          try {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            const res = await fetch("https://api.osudenken4dev.workers.dev/v1/image/upload", {
+                method: "POST",
+                headers: {
+                  Authorization: "Bearer " + localStorage.getItem("idToken"),
+                },
+                body: formData,
+              }
+            );
+
+            const data = await res.json();
+
+            if (!data?.url) {
+              alert("画像のアップロードに失敗しました");
+              return;
+            }
+
+            const placeholder = `![image](uploading...)`;
+            cm.replaceSelection(placeholder);
+            const pos = cm.getCursor();
+
+            const from = {line: pos.line, ch: pos.ch - placeholder.length};
+            const to = {line: pos.line, ch: pos.ch};
+            cm.replaceRange(`![image](/blog${data.url})`, from, to);
+          } catch (err) {
+            console.error(err);
+            alert("画像のアップロード中にエラーが発生しました");
+          }
+        }
+      }
+    });
+  };
+
+
   return (
     <div className={styles.container}>
       <main className={styles.main} style={{width: "100%", maxWidth: "1600px"}}>
@@ -155,7 +204,9 @@ layout: default
             <form>
               <div className={portalStyles.inputGroup2}>
                 <div className={portalStyles.mdeeditor}>
-                  <ReactSimpleMdeEditor onChange={(str) => setSource(str)} value={source} className={portalStyles.portal}></ReactSimpleMdeEditor>
+                  <ReactSimpleMdeEditor onChange={(str) => setSource(str)} value={source} className={portalStyles.portal} getMdeInstance={
+                    (mde: any) => registerPaste(mde.codemirror)
+                  }></ReactSimpleMdeEditor>
                 </div>
 
                 <div
