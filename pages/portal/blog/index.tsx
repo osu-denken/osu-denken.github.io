@@ -118,8 +118,12 @@ layout: default
     return src.replace(/^---[\s\S]*?---\n?/, '');
   };
 
+  let isUploading = false;
+
   const registerPaste = (cm: any) => {
     cm.on("paste", async (cmEvent: any, e: ClipboardEvent) => {
+      if (isUploading) return;
+
       const items = e.clipboardData?.items;
       if (!items) return;
 
@@ -145,7 +149,7 @@ layout: default
 
             const data = await res.json();
 
-            if (!data?.url) {
+            if (!data.url) {
               alert("画像のアップロードに失敗しました");
               return;
             }
