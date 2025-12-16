@@ -45,11 +45,11 @@ const PortalPage : NextPage = () => {
     const action: any = params.get("action")
     if (action) setAction(action);
 
-    const page: any = params.get("page")
+    const page: string = params.get("page")
     if (page) setPage(page);
 
     if (action === "edit") {
-      fetch("https://api.osudenken4dev.workers.dev/v1/blog/get?page=" + page, {
+      fetch("https://api.osudenken4dev.workers.dev/v1/blog/" + (page.startsWith("_") ? "get-static" + "?page=" + page.slice(1) : "get" + "?page=" + page), {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -113,7 +113,7 @@ layout: default
           </div>
         ) : (
           <div>
-            <h1>{page} の編集</h1>
+            <h1>{page.startsWith("_") ? "固定ページ " + page.slice(1) : page} の編集</h1>
             <form>
               <div className={portalStyles.inputGroup2}>
                 <div className={portalStyles.mdeeditor}>
@@ -128,12 +128,12 @@ layout: default
 
               <div className={portalStyles.inputGroup}>
               <button type="button" className={portalStyles.portal} onClick={() => {
-                fetch("https://api.osudenken4dev.workers.dev/v1/blog/update", {
+                fetch("https://api.osudenken4dev.workers.dev/v1/blog/" + (page.startsWith("_") ? "update-static" : "update"), {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + localStorage.getItem("idToken"),
-                    "page": page
+                    "page": page.startsWith("_") ? page.slice(1) : page
                   },
                   body: source,
                 }).then(res => res.json()).then(data => {
