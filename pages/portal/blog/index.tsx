@@ -151,15 +151,17 @@ layout: default
             }
 
             const placeholder = `![image](uploading...)`;
+            const cursorPos = cm.getCursor();
             cm.replaceSelection(placeholder);
-            const pos = cm.getCursor();
 
-            const from = {line: pos.line, ch: pos.ch - placeholder.length};
-            const to = {line: pos.line, ch: pos.ch};
+            const from = { line: cursorPos.line, ch: cursorPos.ch };
+            const to = { line: cursorPos.line, ch: cursorPos.ch + placeholder.length };
             cm.replaceRange(`![image](/blog${data.url})`, from, to);
+            break;
           } catch (err) {
             console.error(err);
             alert("画像のアップロード中にエラーが発生しました");
+            return;
           }
         }
       }
