@@ -1,9 +1,8 @@
 .footer {
   position: relative;
   z-index: 3;
-  padding: 2rem 0;
   border-top: 1px solid #e8e8e8;
-  padding: 20px 0;
+  padding: 8px 0;
   color: #eaeaea;
   background-color: #252525;
   box-shadow: inset 0 5px 5px 0px #000;
@@ -20,7 +19,7 @@
 
 .footerHeading {
   font-size: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.0rem;
   color: #fafafa;
 }
 
@@ -72,6 +71,12 @@
 
 .footerCol2 a:hover {
   color: #eaeaea;
+}
+
+.copyright {
+  text-align: center;
+  font-size: 12px;
+  margin-bottom: -4px
 }
 
 @media (max-width: 768px) {
