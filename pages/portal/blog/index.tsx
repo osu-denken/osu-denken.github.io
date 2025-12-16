@@ -176,7 +176,7 @@ layout: default
         {action === "new" ? (
           <div>
             <h1>新しく投稿</h1>
-            <p>新しいブログ記事を作成します。</p>
+            <p>新しいブログ記事を作成します。リポジトリに変更履歴がコミットとして残るため、機密情報などを誤って記述しないよう気をつけてください。</p>
 
             <form>
               <div className={portalStyles.inputGroup}>
