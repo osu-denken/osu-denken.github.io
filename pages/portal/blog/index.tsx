@@ -14,6 +14,7 @@ import breaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
 import 'github-markdown-css/github-markdown.css';
 import rehypeRaw from 'rehype-raw';
+import { useRouter } from "next/router";
 
 const PortalPage : NextPage = () => {
   const ymd = new Date().toISOString().split('T')[0];
@@ -22,10 +23,45 @@ const PortalPage : NextPage = () => {
   const [msg, setMsg] = useState("");
   const [page, setPage] = useState("");
   const [source, setSource] = useState("");
+  const [savedSource, setSavedSource] = useState("");
   
   const [_localStorage, _setLocalStorage] = useState<any>(null);
 
   const [blogData, setBlogData] = useState<any>(null);
+
+  const isDirty = source !== savedSource;
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (!isDirty) return;
+
+      e.preventDefault();
+      e.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [isDirty]);
+
+  useEffect(() => {
+    const handleRouteChange = (url: string) => {
+      if (!isDirty) return;
+
+      if (!confirm("変更が保存されていません。本当にページを離れますか？")) {
+        router.events.emit("routeChangeError");
+        throw "Route change aborted.";
+      }
+    };
+
+    router.events.on("routeChangeStart", handleRouteChange);
+    return () => {
+      router.events.off("routeChangeStart", handleRouteChange);
+    };
+  }, [isDirty]);
 
   useEffect(() => {
     _setLocalStorage(localStorage);
@@ -58,6 +94,7 @@ const PortalPage : NextPage = () => {
         if (data && data.content) {
           setBlogData(data);
           setSource(data.content);
+          setSavedSource(data.content);
         } else {
           const source = `---
 title: "今日の活動報告"
@@ -71,6 +108,7 @@ layout: default
 `;
           setBlogData({content: source});
           setSource(source);
+          setSavedSource(source);
         }
       });
     }
@@ -139,6 +177,7 @@ layout: default
                 }).then(res => res.json()).then(data => {
                   if (data.success) {
                     setMsg("保存しました。");
+                    setSavedSource(source);
                   } else {
                     setMsg("保存に失敗しました。");
                   }
@@ -147,7 +186,7 @@ layout: default
                 保存
               </button>
               <button type="button" className={portalStyles.portal} style={{ backgroundColor: "#a66666" }} onClick={() => {
-                const confirmed = confirm("本当に削除しますか？この操作は取り消せません。");
+                const confirmed = confirm("本当に削除しますか？");
                 if (!confirmed) return;
 
                 fetch("https://api.osudenken4dev.workers.dev/blog/delete", {
@@ -169,6 +208,9 @@ layout: default
                 削除
               </button>
               <button type="button" className={portalStyles.portal} onClick={() => {
+                if (isDirty && !confirm("変更が保存されていません。本当にページを離れますか？"))
+                  return;
+
                 window.location.href = "/portal/?tab=blog";
               }} style={{
                 marginLeft: "auto",

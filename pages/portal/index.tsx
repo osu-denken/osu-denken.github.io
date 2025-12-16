@@ -32,11 +32,11 @@ const PortalPage : NextPage = () => {
     _setLocalStorage(localStorage);
 
     fetch("https://api.osudenken4dev.workers.dev/portal", {
-        method: "POST",
-        headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("idToken")}`
-        }
+      method: "POST",
+      headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("idToken")}`
+      }
     }).then(res => res.json()).then(data => {
       console.log(data)
       if (data.user && data.user.error) {
