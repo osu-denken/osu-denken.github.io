@@ -81,6 +81,10 @@
   margin: 0;
 }
 
+.subtitle img {
+  width: 180px;
+}
+
 .bold {
   font-weight: bold;
 }
@@ -187,5 +191,9 @@
   
   .title {
     font-size: 2.5rem;
+  }
+
+  .subtitle img {
+    width: 75px;
   }
 }

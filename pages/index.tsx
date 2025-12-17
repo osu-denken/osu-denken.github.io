@@ -10,7 +10,7 @@ const HomePage: NextPage = () => {
       <ParticleSpaceAnimationBackground />
       <main className={styles.main} style={{ position: 'relative', zIndex: 3 }}>
         <h1 className={styles.title}>電子計算研究部</h1>
-        <h2 className={styles.subtitle}><img src="osaka-sandai-kawaii-logo-transparent-resize.png" width={180} alt="大阪産業大学" title="大阪産業大学" /></h2>
+        <h2 className={styles.subtitle}><img src="osaka-sandai-kawaii-logo-transparent-resize.png" alt="大阪産業大学" title="大阪産業大学" /></h2>
         {/* <h2 className={styles.bold}>大阪産業大学</h2> */}
 
         <div className={styles.iconContainer}>
