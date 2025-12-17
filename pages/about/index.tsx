@@ -8,7 +8,7 @@ const AboutPage : NextPage = () => {
         <h1>電子計算研究部@大阪産業大学</h1>
         <p className={styles.description}>
           電子計算研究部（通称：電研、Denken）は大阪産業大学のコンピュータ系の部活。<br />
-          英名は Electronic Computing Research Division です。<br />
+          英名は Electronic Computing Research Division です。
         </p>
 
         <ul>
@@ -19,7 +19,9 @@ const AboutPage : NextPage = () => {
         </ul>
 
         <p className={styles.description}>
-          自由参加ですので、ぜひ空きコマに活用してみてください！パソコンを持っていない、わからない方ももちろん歓迎！
+          自由参加ですので、ぜひ空きコマに活用してみてください！パソコンを持っていない、わからない方ももちろん歓迎！<br />
+          <br />
+          電子計算研究部は昭和43年6月10日に創部され、2018年には創立50周年を迎えました。
         </p>
 
         <h2>設備について</h2>
