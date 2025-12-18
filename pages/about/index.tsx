@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import styles from "@styles/Page.module.css";
+import Link from "next/link";
 
 const AboutPage : NextPage = () => {
   return (
@@ -40,7 +41,7 @@ const AboutPage : NextPage = () => {
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d487.5639611901969!2d135.64075920083081!3d34.7070388583328!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x600121001a2e2f4f%3A0xff11c0497681af09!2z5a2m55Sf5Lya6aSoIEFDVCBTdGE!5e0!3m2!1sja!2sjp!4v1765945851783!5m2!1sja!2sjp" width="400" height="300" style={{border:0}} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
         <p className={styles.description}>
           部室は、大阪産業大学の南キャンパスにある学生会館 (ACT Sta.) 6階 部室8 です。<br />
-          詳細は<a href="/access/">こちら</a>をご覧ください。
+          詳細は<Link href="/access/">こちら</Link>をご覧ください。
         </p>
 
         <h2>Webサイト</h2>

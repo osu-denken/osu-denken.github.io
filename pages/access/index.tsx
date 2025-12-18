@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import styles from "@styles/Page.module.css";
+import Link from "next/link";
 
 const AboutPage : NextPage = () => {
   return (
@@ -15,7 +16,7 @@ const AboutPage : NextPage = () => {
 
         <p className={styles.description}>
           大阪産業大学へのアクセス方法の詳細は以下の大学公式サイトからご覧ください。<br />
-          <a href="https://www.osaka-sandai.ac.jp/access/access.html">https://www.osaka-sandai.ac.jp/access/access.html</a>
+          <Link href="https://www.osaka-sandai.ac.jp/access/access.html">https://www.osaka-sandai.ac.jp/access/access.html</Link>
         </p>
 
         <h2>部室へのアクセス</h2>

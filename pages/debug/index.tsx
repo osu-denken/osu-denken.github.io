@@ -14,6 +14,7 @@ const DebugPage: NextPage = () => {
     const [blogList2, setBlogList2] = useState<any>(null);
     const [blogData, setBlogData] = useState<any>(null);
     const [blogData2, setBlogData2] = useState<any>(null);
+    const [userData, setUserData] = useState<any>(null);
     const [_localStorage, _setLocalStorage] = useState<any>(null);
 
     const fetchWithAuth = (url: string) => {
@@ -117,6 +118,29 @@ const DebugPage: NextPage = () => {
                     <input type="submit" value="取得" />
                     <Pre language="json" style={okaidia}>{JSON.stringify(blogData2, null, 2)}</Pre>
                 </form>
+
+                <h2>/user/login</h2>
+                <form onSubmit={e => {
+                    e.preventDefault();
+                    const formData = new FormData(e.currentTarget);
+                    const email = formData.get("username");
+                    const password = formData.get("password");
+  
+                    fetch("https://api.osudenken4dev.workers.dev/user/login", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            email: email,
+                            password: password
+                        })
+                    }).then(res => res.json()).then(setUserData);
+                }}>
+                    <input type="text" name="username" />
+                    <input type="password" name="password" />
+                    <input type="submit" value="取得" />
+                    <Pre language="json" style={okaidia}>{JSON.stringify(userData, null, 2)}</Pre>
+                </form>
+
             </main>
         </div>
     );

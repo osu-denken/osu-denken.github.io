@@ -104,6 +104,8 @@ const Navbar: React.FC = () => {
 
         if (data.idToken) {
           localStorage.setItem("idToken", data.idToken);
+          if (data.refreshToken)
+            localStorage.setItem("refreshToken", data.refreshToken);
           localStorage.setItem("displayName", data.displayName);
           
           const params = new URLSearchParams(window.location.search);
