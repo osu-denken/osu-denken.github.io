@@ -11,6 +11,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
       - name: Check commit message
         id: check_msg
         run: |
@@ -21,10 +23,6 @@ jobs:
       - name: Skip if commit message contains [skip-ci]
         if: contains(steps.check_msg.outputs.commit_msg, '[skip-ci]')
         run: exit 0
-
-      - name: Init only terminal submodule
-        run: |
-          git submodule update --init public/terminal
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
