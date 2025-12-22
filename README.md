@@ -1,5 +1,11 @@
 # 電研ウェブサイト
-Next.jsを用いてGitHub Pagesへデプロイして作成
+Next.jsを用いてGitHub Pagesへデプロイしてフロントエンド側を作成<br>
+
+## サブモジュール
+- バックエンド - https://github.com/osu-denken/web-api
+- ECRD Fake Terminal - https://github.com/osu-denken/ecrd-fake-terminal
+
+
 
 ## 発生した問題点
 1. CSSが適用されない
