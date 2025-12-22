@@ -8,11 +8,11 @@ const PortalPage : NextPage = () => {
   const [activeTab, setActiveTab] = useState<"main" | "settings" | "blog">("main");
   const [msg, setMsg] = useState("");
   
-  const [info, setInfo] = useState<any>(null);
+  const [portalData, setPortalData] = useState<any>(null);
   const [_localStorage, _setLocalStorage] = useState<any>(null);
 
   const [userName, setUserName] = useState("Unknown");
-  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("");
   const [blogList, setBlogList] = useState([]);
   const [loadedBlogList, setLoadedBlogList] = useState(false);
   const [discordInviteUrl, setDiscordInviteUrl] = useState("");
@@ -52,8 +52,13 @@ const PortalPage : NextPage = () => {
           window.location.href = "/?i=portal/#login";
         }
       }
-      setInfo(data);
-      setEmail(data.user.email || "");
+      setPortalData(data);
+      // setEmail(data.user.email || "");
+
+      if (data.limits) {
+        setDiscordInviteUrl(data.limits.discordInviteCode)
+      }
+
     });
   }, []);
 
@@ -76,20 +81,20 @@ const PortalPage : NextPage = () => {
 
     setActiveTabInitialized(true);
 
-    fetch("https://api.osudenken4dev.workers.dev/discord/invite", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("idToken")}`
-      },
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) setDiscordInviteUrl(data.code);
-      })
-      .catch(e => {
-        console.error("Failed to discord invite url:", e);
-      });
+    // fetch("https://api.osudenken4dev.workers.dev/discord/invite", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "Authorization": `Bearer ${localStorage.getItem("idToken")}`
+    //   },
+    // })
+    //   .then(res => res.json())
+    //   .then(data => {
+    //     if (data.success) setDiscordInviteUrl(data.code);
+    //   })
+    //   .catch(e => {
+    //     console.error("Failed to discord invite url:", e);
+    //   });
   }, []);
   
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -130,6 +135,59 @@ const PortalPage : NextPage = () => {
         return true;
       } else {
         console.error(`Failed to update ${key}.`);
+        console.log(data);
+        return false;
+      }
+    } catch (e) {
+      console.error("Error:", e);
+      return false;
+    }
+  }
+
+  async function updateGitHubToken(value: string): Promise<boolean> {
+    try {
+      const res = await fetch("https://api.osudenken4dev.workers.dev/github/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("idToken")}`
+        },
+        body: JSON.stringify({ githubToken: value })
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        console.log(`GitHub Token updated successfully.`);
+        return true;
+      } else {
+        console.error(`Failed to update GitHub Token.`);
+        console.log(data);
+        return false;
+      }
+    } catch (e) {
+      console.error("Error:", e);
+      return false;
+    }
+  }
+
+  async function deleteGitHubToken(): Promise<boolean> {
+    try {
+      const res = await fetch("https://api.osudenken4dev.workers.dev/github/token", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("idToken")}`
+        }
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        console.log(`GitHub Token deleted successfully.`);
+        return true;
+      } else {
+        console.error(`Failed to delete GitHub Token.`);
         console.log(data);
         return false;
       }
@@ -205,7 +263,7 @@ const PortalPage : NextPage = () => {
                     } else {
                       alert("有効なユーザー名を入力してください。");
                     }
-                  }} className={portalStyles.portal}>更新</button>
+                  }} className={portalStyles.portal}>変更</button>
                 </div>
               </form>
 
@@ -244,6 +302,48 @@ const PortalPage : NextPage = () => {
               <p className={styles.description}>
                 パスワードを再設定するには<Link href="/resetpass/">こちら</Link>からメールアドレスを入力してください。
               </p>
+
+              <h2>GitHub PAT</h2>
+              <p className={styles.description}>
+                デフォルトではosu-denken-adminのトークンを利用しますが、こちらを設定することで自身のGitHubアカウントとしてOSU-Denken-Web API経由でコミットすることが可能です。
+              </p>
+              <form>
+                <div className={portalStyles.inputGroup}>
+                  <input type="text" id="ghtokenInput" placeholder="GitHub PAT" className={portalStyles.portal} />
+                  <button onClick={(e) => {
+                    e.preventDefault();
+                    const input = document.getElementById("ghtokenInput") as HTMLInputElement;
+                    const newToken = input.value.trim() as string;
+                    if (newToken) {
+                      updateGitHubToken(newToken).then(ok => {
+                        if (ok) {
+                          setMsg("GitHub PATを更新しました。");
+                          return;
+                        }
+                        console.log(ok);
+                        alert("GitHub PATの更新に失敗しました。");
+                      });
+                    } else {
+                      alert("有効なGitHub PATを入力してください。");
+                    }
+                  }} className={portalStyles.portal}>変更</button>
+                  
+                  {portalData?.hasGitHubToken &&
+                    <button onClick={(e) => {
+                      e.preventDefault();
+                      deleteGitHubToken().then(ok => {
+                        if (ok) {
+                          setMsg("GitHub PATを削除しました。");
+                          return;
+                        }
+                        console.log(ok);
+                        alert("GitHub PATの削除に失敗しました。");
+                      });
+                    }} className={portalStyles.portal}>削除</button>
+                  }
+                </div>
+              </form>
+              
             </div>
           )}
           {activeTab === "blog" && (
