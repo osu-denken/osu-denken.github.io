@@ -1,6 +1,9 @@
 [submodule "web-api"]
 	path = web-api
 	url = git@github.com:osu-denken/web-api.git
+	branch = main
+
 [submodule "public/terminal"]
 	path = public/terminal
 	url = git@github.com:osu-denken/ecrd-fake-terminal.git
+	branch = main
