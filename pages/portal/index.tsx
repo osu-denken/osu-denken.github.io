@@ -37,7 +37,7 @@ const PortalPage : NextPage = () => {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${localStorage.getItem("idToken")}`
       }
-    }).then(res => res.json()).then(data => {
+    }).then(res => res.json()).then((data: any) => {
       console.log(data)
       if (data.user && data.user.error) {
         if (data.user.error.message === "INVALID_ID_TOKEN") {
@@ -107,7 +107,7 @@ const PortalPage : NextPage = () => {
         }
       })
         .then(res => res.json())
-        .then(data => {          
+        .then((data: any) => {          
           setBlogList(data ?? []);
           setLoadedBlogList(true); // 2回目以降はロードしないようにする
         })
@@ -128,7 +128,7 @@ const PortalPage : NextPage = () => {
         body: JSON.stringify({ [key]: value })
       });
 
-      const data = await res.json();
+      const data: any = await res.json();
 
       if (data.success) {
         console.log(`${key} updated successfully.`);
@@ -155,7 +155,7 @@ const PortalPage : NextPage = () => {
         body: JSON.stringify({ githubToken: value })
       });
 
-      const data = await res.json();
+      const data: any = await res.json();
 
       if (data.success) {
         console.log(`GitHub Token updated successfully.`);
@@ -181,7 +181,7 @@ const PortalPage : NextPage = () => {
         }
       });
 
-      const data = await res.json();
+      const data: any = await res.json();
 
       if (data.success) {
         console.log(`GitHub Token deleted successfully.`);

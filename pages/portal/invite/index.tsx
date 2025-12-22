@@ -50,7 +50,7 @@ const InvitePage : NextPage = () => {
             }
           })
             .then(res => res.json())
-            .then(data => {
+            .then((data: any) => {
               if (data.success) {
                 const inviteLink = "https://osu-denken.github.io/_register/?code=" + data.code;
                 const inviteUrlElement = document.getElementById("invite-url") as HTMLInputElement;

@@ -22,7 +22,7 @@ const DebugPage : NextPage = () => {
                 password,
                 passphrase
             })
-        }).then(res => res.json()).then(data => {
+        }).then(res => res.json()).then((data: any) => {
             if (data.error) {
                 if (data.error.message === "EMAIL_EXISTS") {
                     alert("そのメールアドレスは既に使われています。");
@@ -70,7 +70,7 @@ const DebugPage : NextPage = () => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({ code })
-            }).then(res => res.json()).then(data => {
+            }).then(res => res.json()).then((data: any) => {
                 if (!data.valid) {
                     alert("この招待コードは無効か期限切れです。");
                     window.location.href = "/_register/";

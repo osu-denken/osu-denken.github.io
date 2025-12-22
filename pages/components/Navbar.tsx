@@ -87,7 +87,7 @@ const Navbar: React.FC = () => {
       })
     })
       .then(response => response.json())
-      .then(data => {
+      .then((data: any) => {
         // console.log("data:", data);
 
         if (!data.displayName) { // data.nameがない場合は メールアドレスemailの@より前、ユーザ名にする。

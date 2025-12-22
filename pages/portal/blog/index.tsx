@@ -62,7 +62,7 @@ const PortalPage : NextPage = () => {
         headers: {
           "Content-Type": "application/json",
         }
-      }).then(res => res.json()).then(data => {
+      }).then(res => res.json()).then((data: any) => {
         if (data && data.content) {
           setBlogData(data);
           setSource(data.content);
@@ -136,7 +136,7 @@ layout: default
           headers: { Authorization: "Bearer " + localStorage.getItem("idToken") },
           body: formData,
         });
-        const data = await res.json();
+        const data: any = await res.json();
         if (!data?.url) { 
           isUploading.current = false;
           alert("アップロード失敗");
@@ -245,7 +245,7 @@ layout: default
                   "page": page.startsWith("_") ? page.slice(1) : page
                 },
                 body: source,
-              }).then(res => res.json()).then(data => {
+              }).then(res => res.json()).then((data: any) => {
                 if (data.success) {
                   setMsg("保存しました。");
                   setSavedSource(source);
@@ -267,7 +267,7 @@ layout: default
                   "Authorization": "Bearer " + localStorage.getItem("idToken"),
                   "page": page
                 },
-              }).then(res => res.json()).then(data => {
+              }).then(res => res.json()).then((data: any) => {
                 if (data.success) {
                   const encoded = encodeURIComponent("portal/blog/");
                   window.location.href = "/?msg=" + encodeURIComponent("削除しました。") + "&i=" + encoded + "#portal/blog";
