@@ -1,0 +1,67 @@
+@import url('https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css');
+
+html, body {
+  background-color: transparent;
+  color: #fff;
+  color-scheme: dark;
+}
+
+* {
+  background-color: transparent;
+  color: inherit;
+}
+
+div.cli {
+  font-family: 'Fira Code', monospace;
+  white-space: pre-wrap;
+}
+
+div.line {
+  display: block;
+}
+
+span.text {
+  color: #23df1e;
+  height: 17px;
+  font-size: 15px;
+  text-shadow:0 0 3px #23df1eaa,0 0 6px #23df1eaa;
+}
+
+span.text a {
+  color: #23df1e;
+  text-shadow:0 0 3px #23df1eaa,0 0 6px #23df1eaa;
+}
+
+span.text a.dir {
+  color: #9c86ff;
+  text-shadow:0 0 3px #9c86ffaa,0 0 6px #9c86ffaa;
+}
+
+.cursor {
+  border-right: 4px solid #fff;
+  animation: blink-cursor .85s step-end infinite;
+}
+
+.user {
+  display: inline-block;
+  color: #2adfdf;
+  height: 17px;
+  font-size: 15px;
+  text-shadow: 0 0 3px #2adfdfaa, 0 0 6px #2adfdfaa;
+}
+
+.user .sp {
+  color: #fff;
+}
+
+.prefix {
+  color: #fff;
+  height: 17px;
+  font-size: 15px;
+  text-shadow: 0 0 3px #ffffffaa, 0 0 6px #ffffffaa;
+}
+
+@keyframes blink-cursor {
+  0%, 100% { border-color: #fff; }
+  50% { border-color: transparent; }
+}
