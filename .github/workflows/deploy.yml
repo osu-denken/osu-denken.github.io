@@ -24,7 +24,12 @@ jobs:
         if: contains(steps.check_msg.outputs.commit_msg, '[skip-ci]')
         run: exit 0
 
-      - name: Init only terminal submodule
+      - name: Change submodule URL protocol to https from git (Actions only)
+        run: |
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
+
+
+      - name: Init terminal submodule
         run: git submodule update --init public/terminal
 
       - name: Setup Node.js
