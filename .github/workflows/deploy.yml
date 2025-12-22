@@ -11,20 +11,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
       - name: Check commit message
         id: check_msg
         run: |
           echo "commit_msg<<EOF" >> $GITHUB_OUTPUT
           echo "$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-
+          
       - name: Skip if commit message contains [skip-ci]
         if: contains(steps.check_msg.outputs.commit_msg, '[skip-ci]')
         run: exit 0
 
-      - name: Update submodule
-        run: git submodule update --remote
+      - name: Init only terminal submodule
+        run: |
+          git submodule update --init public/terminal
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
