@@ -49,7 +49,7 @@ const HomePage: NextPage = () => {
         </div>
 
         <div className={styles.terminalContainer}>
-        <iframe className={styles.terminal} src="./terminal.html"></iframe>
+          <iframe className={styles.terminal} src="./terminal/main.html"></iframe>
         </div>
 
         <div className={styles.grid}>
