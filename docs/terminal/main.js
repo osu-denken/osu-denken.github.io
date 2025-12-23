@@ -1,251 +1,216 @@
-const texts = ["$ ls /var/www/html/",
-`<a class="dir" href="/about/" target="_parent">about/</a>\t<a class="dir" href="/background/" target="_parent">background/</a>\t<a class="dir" href="/blog/" target="_parent">blog/</a>\t<a href="/denken-pub.asc" target="_parent">denken-pub.asc</a>\t<a href="/favicon.ico" target="_parent">favicon.ico</a>\t<a href="/icon.png" target="_parent">icon.png</a>\t<a href="./" target="_parent">index.html</a>\t<a href="./welcome.md" target="_parent">welcome.md</a>`,
-"$ cd /var/www/html/",
-"$ cat welcome.md",
-"__GET__welcome.md"
-];
-const cli = document.getElementsByClassName("cli")[0];
-const targets = [];
+class Terminal {
+    constructor(cliElement, inputElement) {
+        this.cli = cliElement;
+        this.hiddenInput = inputElement;
+        this.currentLine = null;
+        this.cd = "~";
+        this.canInput = false;
+        this.history = [];
+        this.historyIndex = -1;
 
-let textIndex = 0;
-let charIndex = 2;
+        this.commands = {
+            "ls": this.ls.bind(this),
+            "cd": this.cd.bind(this),
+            "cat": this.cat.bind(this),
+            "help": this.help.bind(this),
+            "clear": this.clear.bind(this),
+        };
 
-var cd = "~";
-var canInput = false;
+        this.init();
+    }
 
-// init first line
-const firstLine = document.createElement("div");
-firstLine.classList.add("line");
-firstLine.innerHTML = `<span class="user">denken@osu<span class="sp">:</span>${cd}</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
-cli.appendChild(firstLine);
-targets.push(firstLine.getElementsByClassName("text")[0]);
+    init() {
+        this.cli.addEventListener('click', () => this.hiddenInput.focus());
+        this.hiddenInput.addEventListener('input', this.handleInput.bind(this));
+        this.hiddenInput.addEventListener('keydown', this.handleKeyDown.bind(this));
+        this.playInitAnimation();
+    }
 
-function getFile(path) {
-  return fetch(path)
-    .then(response => {
-      if (!response.ok)
-        throw new Error(`status-${response.status}`);
+    async playInitAnimation() {
+        this.canInput = false;
+        try {
+            this.createNewLine();
+            await new Promise(resolve => setTimeout(resolve, 500));
 
-      return response.text();
-    })
-    .then(data => {
-      return data;
-    })
-    .catch(error => {
-      return `error-${error.message}`;
-    });
+            const initialCommands = [
+                "ls /var/www/html/",
+                "cd /var/www/html/",
+                "cat welcome.md"
+            ];
+
+            for (const command of initialCommands) {
+                await this.type(command, 80);
+                this.currentLine.classList.remove("cursor");
+                await this.executeCommand(command);
+                if (initialCommands.indexOf(command) < initialCommands.length - 1) {
+                    this.createNewLine();
+                }
+            }
+            this.createNewLine();
+        } finally {
+            this.canInput = true;
+            this.hiddenInput.focus();
+        }
+    }
+
+    createNewLine() {
+        if (this.currentLine) {
+            this.currentLine.classList.remove("cursor");
+        }
+        const line = document.createElement("div");
+        line.classList.add("line");
+        line.innerHTML = `<span class="user">denken@osu<span class="sp">:</span>${this.cd}</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
+        this.cli.appendChild(line);
+        this.currentLine = line.querySelector(".text");
+        this.hiddenInput.value = '';
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+    
+    async type(text, speed) {
+        for (let i = 0; i < text.length; i++) {
+            this.currentLine.textContent += text[i];
+            await new Promise(resolve => setTimeout(resolve, speed));
+        }
+    }
+
+    handleInput(e) {
+        if (!this.canInput) return;
+        this.currentLine.textContent = e.target.value;
+    }
+
+    async handleKeyDown(e) {
+        if (!this.canInput) return;
+        
+        switch (e.key) {
+            case "Enter":
+                e.preventDefault();
+                this.canInput = false;
+                try {
+                    const text = this.hiddenInput.value;
+                    this.history.push(text);
+                    this.historyIndex = this.history.length;
+                    this.currentLine.classList.remove("cursor");
+                    await this.executeCommand(text);
+                    this.createNewLine();
+                } finally {
+                    this.canInput = true;
+                    this.hiddenInput.focus();
+                }
+                break;
+            case "ArrowUp":
+                e.preventDefault();
+                if (this.historyIndex > 0) {
+                    this.historyIndex--;
+                    this.hiddenInput.value = this.history[this.historyIndex];
+                    this.currentLine.textContent = this.hiddenInput.value;
+                }
+                break;
+            case "ArrowDown":
+                e.preventDefault();
+                if (this.historyIndex < this.history.length - 1) {
+                    this.historyIndex++;
+                    this.hiddenInput.value = this.history[this.historyIndex];
+                    this.currentLine.textContent = this.hiddenInput.value;
+                } else {
+                    this.historyIndex = this.history.length;
+                    this.hiddenInput.value = "";
+                    this.currentLine.textContent = "";
+                }
+                break;
+            case "Tab":
+                e.preventDefault();
+                break;
+        }
+    }
+
+    async executeCommand(commandText) {
+        const [command, ...args] = commandText.trim().split(" ");
+
+        if (command in this.commands) {
+            await this.commands[command](args);
+        } else if(command !== "") {
+            this.writeLine(`-bash: ${command}: command not found`);
+        }
+    }
+
+    writeLine(text) {
+        const line = document.createElement("div");
+        line.classList.add("line");
+        line.innerHTML = `<span class="text">${text}</span>`;
+        this.cli.appendChild(line);
+    }
+
+    writeHtml(html) {
+        const line = document.createElement("div");
+        line.classList.add("line");
+        line.innerHTML = `<span class="text">${html}</span>`;
+        this.cli.appendChild(line);
+    }
+    
+    async getFile(path) {
+        try {
+            const response = await fetch(path);
+            if (!response.ok) {
+                return `cat: ${path}: No such file or directory`;
+            }
+            return await response.text();
+        } catch (error) {
+            return `cat: ${path}: No such file or directory`;
+        }
+    }
+
+    escapeHtml(text) {
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    // Commands
+    async ls(args) {
+        const path = args[0] || this.cd;
+        if (path === '/var/www/html/' || path === '~/') {
+             this.writeHtml(`<a class="dir" href="/about/" target="_parent">about/</a>\t<a class="dir" href="/background/" target="_parent">background/</a>\t<a class="dir" href="/blog/" target="_parent">blog/</a>\t<a href="/denken-pub.asc" target="_parent">denken-pub.asc</a>\t<a href="/favicon.ico" target="_parent">favicon.ico</a>\t<a href="/icon.png" target="_parent">icon.png</a>\t<a href="./" target="_parent">index.html</a>\t<a href="./welcome.md" target="_parent">welcome.md</a>`);
+        } else {
+             this.writeLine(`ls: cannot access '${path}': No such file or directory`);
+        }
+    }
+
+    async cd(args) {
+        const path = args[0];
+        if (!path || path === '~') {
+            this.cd = "~";
+        } else {
+            this.cd = path;
+        }
+    }
+
+    async cat(args) {
+        const path = args[0];
+        if (!path) {
+            this.writeLine("cat: missing operand");
+            return;
+        }
+        const content = await this.getFile(path);
+        const escapedContent = this.escapeHtml(content);
+        escapedContent.split('\n').forEach(line => this.writeLine(line));
+    }
+
+    async help() {
+        const helpLines = [
+            "Available commands:",
+            "  ls [path]   - List files",
+            "  cd [path]   - Change directory",
+            "  cat [file]  - Display contents of a file",
+            "  help        - Show this help message",
+            "  clear       - Clear the terminal",
+        ];
+        helpLines.forEach(line => this.writeLine(line));
+    }
+    
+    async clear() {
+        this.cli.innerHTML = "";
+    }
 }
-
-function escapeHtml(text) {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/&lt;br&gt;/g, '<br>')
-    .replace(/&lt;br \/&gt;/g, '<br />')
-    .replace(/&lt;a /g, '<a ')
-    .replace(/&lt;\/a&gt;/g, '</a>')
-    .replace(/&lt;img /g, '<img ')
-    .replace(/&gt;/g, '>');
-}
-
-let undo = 0;
-
-function cliLoop() {
-  canInput = false;
-  window.scrollTo(0, document.body.scrollHeight);
-  if (textIndex === texts.length) { // Last text
-    console.log("Done");
-    canInput = true;
-    return;
-  } else if (charIndex < texts[textIndex].length) { // Still typing
-    targets[targets.length - 1].textContent += texts[textIndex][charIndex++];
-    setTimeout(cliLoop, 80);
-  } else { // Move to next text
-    targets[textIndex].classList.remove("cursor");
-
-    const newLine = document.createElement("div");
-    newLine.classList.add("line");
-    const nextText = texts[textIndex + 1];
-
-    if (nextText.startsWith("$ ")) {
-      newLine.innerHTML = `<span class="user">denken@osu<span class="sp">:</span>${cd}</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
-      cli.appendChild(newLine);
-      targets.push(newLine.getElementsByClassName("text")[0]);
-      
-      if (nextText.startsWith("$ cd ")) { // Change directory
-        cd = nextText.replace("$ cd ", "");
-      }
-
-    } else if (nextText.startsWith("__GET__")) {
-      // Fetch file
-      const filePath = nextText.replace("__GET__", "");
-      getFile(filePath).then(fileContent => {
-        if (fileContent == `error-status-404`) {
-          fileContent = `cat: ${filePath}: No such file or directory`;
-        }
-
-        const fileLines = fileContent.split("\n");
-        fileLines.forEach((lineContent, index) => {
-          const fileLine = document.createElement("div");
-          fileLine.classList.add("line");
-          fileLine.innerHTML = `<span class="text">` + lineContent + `</span>`;
-          cli.appendChild(fileLine);
-        });
-
-        const cmdLine = document.createElement("div");
-        cmdLine.classList.add("line");
-        cmdLine.innerHTML = `<span class="user">denken@osu<span class="sp">:</span>${cd}</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
-        cli.appendChild(cmdLine);
-        targets.push(cmdLine.getElementsByClassName("text")[0]);
-        charIndex = 2;
-        textIndex += 2;
-
-        //console.log("textIndex:", textIndex);
-        cliLoop();
-      });
-
-      return;
-    } else {
-        // View
-        newLine.innerHTML = `<span class="text">` + nextText + `</span>`;
-        cli.appendChild(newLine);
-        targets.push(newLine.getElementsByClassName("text")[0]);
-        charIndex = nextText.length;
-        textIndex++;
-        cliLoop();
-        return;
-    }
-
-    setTimeout(() => {
-      charIndex = 2;
-      textIndex = (textIndex + 1) % texts.length;
-      setTimeout(cliLoop, 500);
-    }, 100);
-  }
-}
-
-cliLoop();
-window.addEventListener("keydown", async (e) => {
-  if (!canInput) return;
-  //e.preventDefault();
-  
-  //console.log(e.key);
-  if (e.key.toLowerCase() == "backspace") {
-    e.preventDefault();
-    if (document.getElementsByClassName("text cursor")[0].textContent.length === 0) return;
-
-    const currentText = document.getElementsByClassName("text cursor")[0].textContent;
-    document.getElementsByClassName("text cursor")[0].textContent = currentText.slice(0, -1);
-    return;
-  }
-
-  if (e.key.toLowerCase() === "arrowup") {
-    e.preventDefault();
-    let count = 0;
-    for (let i = cli.children.length - 2; i >= 0; i--) {
-      const line = cli.children[i];
-      const prefix = line.getElementsByClassName("prefix")[0];
-      if (prefix && prefix.textContent.trim() === "$") {
-        if (count === undo) {
-          const commandText = line.getElementsByClassName("text")[0].textContent;
-          document.getElementsByClassName("text cursor")[0].textContent = commandText;
-          break;
-
-        }
-        count++;
-      }
-    }
-
-    undo++;
-    return;
-  }
-
-  if (e.key.toLowerCase() === "arrowdown") {
-    e.preventDefault();
-    if (undo > 0) undo--;
-    let count = 0;
-    for (let i = cli.children.length - 2; i >= 0; i--) {
-      const line = cli.children[i];
-      const prefix = line.getElementsByClassName("prefix")[0];
-      if (prefix && prefix.textContent.trim() === "$") {
-        if (count === undo) {
-          const commandText = line.getElementsByClassName("text")[0].textContent;
-          document.getElementsByClassName("text cursor")[0].textContent = commandText;
-          break;
-
-        }
-        count++;
-      }
-    }
-    return;
-  }
-
-  if (e.key.toLowerCase() === "enter") {
-    e.preventDefault();
-    const currentText = document.getElementsByClassName("text cursor")[0].textContent;
-    document.getElementsByClassName("text cursor")[0].classList.remove("cursor");
-
-    canInput = false;
-
-    if (currentText.startsWith("cd ")) { // cd command
-      const path = currentText.replace("cd ", "").trim();
-      cd = path;
-    } else if (currentText.startsWith("cat ")) { // cat command
-      const filePath = currentText.replace("cat ", "").trim();
-      await getFile(filePath).then(fileContent => {
-        fileContent = escapeHtml(fileContent);
-        if (fileContent == `error-status-404`) {
-          fileContent = `cat: ${filePath}: No such file or directory`;
-        }
-        const fileLines = fileContent.split("\n");
-        fileLines.forEach((lineContent, index) => {
-          const fileLine = document.createElement("div");
-          fileLine.classList.add("line");
-          fileLine.innerHTML = `<span class="text">` + lineContent + `</span>`;
-
-          cli.appendChild(fileLine);
-        });
-      });
-    } else if (currentText === "ls /var/www/html/") { // ls command (TODO: 動的にする)
-      const lsLine = document.createElement("div");
-      lsLine.classList.add("line");
-      lsLine.innerHTML = `<span class="text"><a class="dir" href="/about/" target="_parent">about/</a>\t<a class="dir" href="/background/" target="_parent">background/</a>\t<a class="dir" href="/blog/" target="_parent">blog/</a>\t<a href="/denken-pub.asc" target="_parent">denken-pub.asc</a>\t<a href="/favicon.ico" target="_parent">favicon.ico</a>\t<a href="/icon.png" target="_parent">icon.png</a>\t<a href="./" target="_parent">index.html</a>\t<a href="./welcome.md" target="_parent">welcome.md</a></span>`;
-      cli.appendChild(lsLine);
-    } else if (currentText === "help") { // help command
-      const helpLines = [
-        "Available commands:",
-        "  ls ([path]) - List files (/var/www/html/ only)",
-        "  cd [path]   - Change directory",
-        "  cat [file]  - Display contents of a file",
-        "  help        - Show this help message"
-      ];
-      helpLines.forEach(lineContent => {
-        const helpLine = document.createElement("div");
-        helpLine.classList.add("line");
-        helpLine.innerHTML = `<span class="text">` + lineContent + `</span>`;
-        cli.appendChild(helpLine);
-      });
-    } else if (currentText.trim() === "") {
-      // 
-    } else {
-      const errLine = document.createElement("div");
-      errLine.classList.add("line");
-      errLine.innerHTML = `<span class="text">bash: ${currentText}: command not found</span>`;
-      cli.appendChild(errLine);
-    }
-
-    const newLine = document.createElement("div");
-    newLine.classList.add("line");
-    newLine.innerHTML = `<span class="user">denken@osu<span class="sp">:</span>${cd}</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
-    cli.appendChild(newLine);
-
-    canInput = true;
-
-    return;
-  }
-
-  if (e.key.length > 1) return;
-  e.preventDefault();
-  document.getElementsByClassName("text cursor")[0].textContent += e.key;
-});

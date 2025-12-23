@@ -6,6 +6,13 @@
   </head>
   <body>
     <div class="cli"></div>
+    <input type="text" id="terminal-input" style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;">
     <script src="main.js"></script>
+    <script>
+      const terminal = new Terminal(
+        document.querySelector('.cli'),
+        document.querySelector('#terminal-input')
+      );
+    </script>
   </body>
 </html>
