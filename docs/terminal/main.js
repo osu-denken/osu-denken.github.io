@@ -7,6 +7,7 @@ class Terminal {
         this.canInput = false;
         this.history = [];
         this.historyIndex = -1;
+        this.isInterrupted = false;
 
         this.commands = {
             "ls": this.ls.bind(this),
@@ -14,13 +15,19 @@ class Terminal {
             "cat": this.cat.bind(this),
             "help": this.help.bind(this),
             "clear": this.clear.bind(this),
+            "pwd": this.pwd.bind(this),
+            "yes": this.yes.bind(this),
         };
 
         this.init();
     }
 
     init() {
-        this.cli.addEventListener('click', () => this.hiddenInput.focus());
+        this.cli.addEventListener('click', () => {
+            if (window.getSelection().toString() === "") {
+                this.hiddenInput.focus();
+            }
+        });
         this.hiddenInput.addEventListener('input', this.handleInput.bind(this));
         this.hiddenInput.addEventListener('keydown', this.handleKeyDown.bind(this));
         this.playInitAnimation();
@@ -39,6 +46,7 @@ class Terminal {
             ];
 
             for (const command of initialCommands) {
+                this.history.push(command);
                 await this.type(command, 80);
                 this.currentLine.classList.remove("cursor");
                 await this.executeCommand(command);
@@ -46,6 +54,7 @@ class Terminal {
                     this.createNewLine();
                 }
             }
+            this.historyIndex = this.history.length;
             this.createNewLine();
         } finally {
             this.canInput = true;
@@ -79,6 +88,15 @@ class Terminal {
     }
 
     async handleKeyDown(e) {
+        if (e.ctrlKey && e.key === 'c') {
+            e.preventDefault();
+            if (!this.canInput) {
+                this.isInterrupted = true;
+                this.writeLine('^C');
+            }
+            return;
+        }
+
         if (!this.canInput) return;
         
         switch (e.key) {
@@ -87,8 +105,10 @@ class Terminal {
                 this.canInput = false;
                 try {
                     const text = this.hiddenInput.value;
-                    this.history.push(text);
-                    this.historyIndex = this.history.length;
+                    if(text) {
+                        this.history.push(text);
+                        this.historyIndex = this.history.length;
+                    }
                     this.currentLine.classList.remove("cursor");
                     await this.executeCommand(text);
                     this.createNewLine();
@@ -125,11 +145,12 @@ class Terminal {
 
     async executeCommand(commandText) {
         const [command, ...args] = commandText.trim().split(" ");
+        this.isInterrupted = false;
 
         if (command in this.commands) {
             await this.commands[command](args);
         } else if(command !== "") {
-            this.writeLine(`-bash: ${command}: command not found`);
+            this.writeLine(`bash: ${command}: command not found`);
         }
     }
 
@@ -168,7 +189,7 @@ class Terminal {
             .replace(/'/g, "&#039;");
     }
 
-    // Commands
+    // --- Commands ---
     async ls(args) {
         const path = args[0] || this.currentDir;
         if (path === '/var/www/html/' || path === '~/') {
@@ -198,14 +219,38 @@ class Terminal {
         escapedContent.split('\n').forEach(line => this.writeLine(line));
     }
 
+    async pwd() {
+        this.writeLine(this.currentDir);
+    }
+
+    async yes(args) {
+        const text = args.join(' ') || 'y';
+        return new Promise(resolve => {
+            const printYes = () => {
+                if (this.isInterrupted) {
+                    resolve();
+                    return;
+                }
+                this.writeLine(text);
+                window.scrollTo(0, document.body.scrollHeight);
+                setTimeout(printYes, 10);
+            };
+            printYes();
+        });
+    }
+
     async help() {
         const helpLines = [
-            "Available commands:",
-            "  ls [path]   - List files",
-            "  cd [path]   - Change directory",
-            "  cat [file]  - Display contents of a file",
-            "  help        - Show this help message",
-            "  clear       - Clear the terminal",
+            "ecrd-fake-terminal, version 25.12-release",
+            "These shell commands are defined internally. Type `help' to see this list.",
+            "",
+            " ls [path]      - List files",
+            " cd [path]      - Change directory",
+            " cat [file]     - Display contents of a file",
+            " pwd            - Print working directory",
+            " yes [string]   - Output a string repeatedly",
+            " help           - Show this help message",
+            " clear          - Clear the terminal",
         ];
         helpLines.forEach(line => this.writeLine(line));
     }
