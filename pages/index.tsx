@@ -1,4 +1,5 @@
 import type { NextPage } from "next";
+import { useState } from "react";
 import styles from "@styles/Home.module.css";
 import { Icon } from "@iconify/react";
 import ParticleSpaceAnimationBackground from "@components/ParticleSpaceAnimationBackground";
@@ -51,14 +52,26 @@ const LINK_CARDS = [
 
 
 const HomePage: NextPage = () => {
+  const [rotation, setRotation] = useState(0);
 
   return (
     <div className={styles.container}>
       <ParticleSpaceAnimationBackground />
       <main className={styles.main} style={{ position: 'relative', zIndex: 3 }}>
         <h1 className={styles.title}>電子計算研究部</h1>
-        <h2 className={styles.subtitle}><img src="osaka-sandai-kawaii-logo-transparent-resize.png" alt="大阪産業大学" title="大阪産業大学" /></h2>
-        {/* <h2 className={styles.bold}>大阪産業大学</h2> */}
+
+        <div className={styles.flipContainer} onClick={() => setRotation(rotation + 360)}>
+          <div className={styles.flipper} style={{ transform: `rotateY(${rotation}deg)` }}>
+            <div className={styles.front}>
+              <img src="osaka-sandai-kawaii-logo-transparent-resize.png" alt="大阪産業大学" title="大阪産業大学" />
+            </div>
+            <div className={styles.back}>
+              <img src="osaka-sandai-kawaii-logo-transparent-resize-back.png" alt="大阪産業大学" title="大阪産業大学" />
+            </div>
+          </div>
+        </div>
+
+        {/* <h2 className={styles.bold}>大阪産業大学の一部 */}
 
         <div className={styles.iconContainer}>
           {SOCIAL_LINKS.map((link) => (

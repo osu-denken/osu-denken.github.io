@@ -76,17 +76,38 @@
   }
 }
 
-.subtitle {
-  font-weight: bold;
-  margin: 0;
-}
-
-.subtitle img {
+.flipContainer {
   width: 180px;
+  height: 100px;
+  perspective: 1000px;
+  cursor: pointer;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
-.bold {
-  font-weight: bold;
+.flipper {
+  position: relative;
+  width: 100%;
+  transition: transform 0.8s ease;
+  transform-style: preserve-3d;
+}
+
+.front,
+.back {
+  position: absolute;
+  width: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.front img,
+.back img {
+  width: 100%;
+  height: 100%;
+}
+
+.back {
+  transform: rotateY(180deg);
 }
 
 .title,
@@ -194,7 +215,10 @@
     font-size: 2.5rem;
   }
 
-  .subtitle img {
-    width: 75px;
+  .flipContainer {
+    width: 100px;
+    height: 56px;
+    margin-top: 0px;
+    margin-bottom: 16px;
   }
 }
