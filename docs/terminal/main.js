@@ -3,7 +3,7 @@ class Terminal {
         this.cli = cliElement;
         this.hiddenInput = inputElement;
         this.currentLine = null;
-        this.cd = "~";
+        this.currentDir = "~";
         this.canInput = false;
         this.history = [];
         this.historyIndex = -1;
@@ -59,7 +59,7 @@ class Terminal {
         }
         const line = document.createElement("div");
         line.classList.add("line");
-        line.innerHTML = `<span class="user">denken@osu<span class="sp">:</span>${this.cd}</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
+        line.innerHTML = `<span class="user">denken@osu<span class="sp">:</span>${this.currentDir}</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
         this.cli.appendChild(line);
         this.currentLine = line.querySelector(".text");
         this.hiddenInput.value = '';
@@ -170,7 +170,7 @@ class Terminal {
 
     // Commands
     async ls(args) {
-        const path = args[0] || this.cd;
+        const path = args[0] || this.currentDir;
         if (path === '/var/www/html/' || path === '~/') {
              this.writeHtml(`<a class="dir" href="/about/" target="_parent">about/</a>\t<a class="dir" href="/background/" target="_parent">background/</a>\t<a class="dir" href="/blog/" target="_parent">blog/</a>\t<a href="/denken-pub.asc" target="_parent">denken-pub.asc</a>\t<a href="/favicon.ico" target="_parent">favicon.ico</a>\t<a href="/icon.png" target="_parent">icon.png</a>\t<a href="./" target="_parent">index.html</a>\t<a href="./welcome.md" target="_parent">welcome.md</a>`);
         } else {
@@ -181,9 +181,9 @@ class Terminal {
     async cd(args) {
         const path = args[0];
         if (!path || path === '~') {
-            this.cd = "~";
+            this.currentDir = "~";
         } else {
-            this.cd = path;
+            this.currentDir = path;
         }
     }
 
