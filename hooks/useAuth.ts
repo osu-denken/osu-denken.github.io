@@ -34,6 +34,56 @@ export const useAuth = () => {
     window.location.reload();
   }, []);
 
+  // トークンリフレッシュ処理
+  const refreshToken = useCallback(async (): Promise<string | null> => {
+    const currentRefreshToken = localStorage.getItem('refreshToken');
+    if (!currentRefreshToken) {
+      logout();
+      return null;
+    }
+
+    try {
+      const response = await fetch('https://api.osudenken4dev.workers.dev/user/refresh', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          refreshToken: currentRefreshToken,
+        }),
+      });
+
+      const data: AuthResponse = await response.json();
+
+      if (data.idToken && data.refreshToken) {
+        localStorage.setItem('idToken', data.idToken);
+        localStorage.setItem('refreshToken', data.refreshToken);
+        return data.idToken;
+      } else {
+        console.error('Failed to refresh token:', data);
+        // トークンのリフレッシュに失敗した場合、refreshTokenが無効である可能性が高い
+        if (data.error?.message === 'INVALID_REFRESH_TOKEN' || data.error?.message === "TOKEN_EXPIRED") {
+          logout();
+        }
+        return null;
+      }
+    } catch (error) {
+      console.error('Error refreshing token:', error);
+      return null;
+    }
+  }, [logout]);
+  
+  // 定期的なトークンリフレッシュ
+  useEffect(() => {
+    if (isLoggedIn) {
+      const interval = setInterval(() => {
+        refreshToken();
+      }, 55 * 60 * 1000); // 55 minutes
+
+      return () => clearInterval(interval);
+    }
+  }, [isLoggedIn, refreshToken]);
+
   // ログイン処理
   const login = useCallback(async (email: string, password: string): Promise<void> => {
     try {
@@ -91,5 +141,9 @@ export const useAuth = () => {
     }
   }, []);
 
-  return { isLoggedIn, userName, login, logout };
+  const getIdToken = useCallback(() => {
+    return localStorage.getItem('idToken');
+  }, []);
+
+  return { isLoggedIn, userName, login, logout, refreshToken, getIdToken };
 };
