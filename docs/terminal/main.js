@@ -1,13 +1,13 @@
 class Terminal {
-    constructor(cliElement, inputElement) {
-        this.cli = cliElement;
-        this.hiddenInput = inputElement;
-        this.currentLine = null;
+    constructor(cliElement, hiddenInputElement) {
+        this.cliElement = cliElement; // ターミナル表示部の要素
+        this.hiddenInputElement = hiddenInputElement; // コマンド入力用の非表示入力要素
+        this.currentLine = null; // 現在の入力
         this.currentDir = "~";
         this.canInput = false;
         this.history = [];
         this.historyIndex = -1;
-        this.isInterrupted = false;
+        this.isInterrupted = false; // 中断フラグ
 
         this.commands = {
             "ls": this.ls.bind(this),
@@ -23,13 +23,13 @@ class Terminal {
     }
 
     init() {
-        this.cli.addEventListener('click', () => {
+        this.cliElement.addEventListener('click', () => {
             if (window.getSelection().toString() === "") {
-                this.hiddenInput.focus();
+                this.hiddenInputElement.focus();
             }
         });
-        this.hiddenInput.addEventListener('input', this.handleInput.bind(this));
-        this.hiddenInput.addEventListener('keydown', this.handleKeyDown.bind(this));
+        this.hiddenInputElement.addEventListener('input', this.handleInput.bind(this));
+        this.hiddenInputElement.addEventListener('keydown', this.handleKeyDown.bind(this));
         this.playInitAnimation();
     }
 
@@ -58,7 +58,7 @@ class Terminal {
             this.createNewLine();
         } finally {
             this.canInput = true;
-            this.hiddenInput.focus();
+            this.hiddenInputElement.focus();
         }
     }
 
@@ -69,9 +69,9 @@ class Terminal {
         const line = document.createElement("div");
         line.classList.add("line");
         line.innerHTML = `<span class="user">denken@osu<span class="sp">:</span>${this.currentDir}</span><span class="prefix">$&nbsp;</span><span class="text cursor"></span>`;
-        this.cli.appendChild(line);
+        this.cliElement.appendChild(line);
         this.currentLine = line.querySelector(".text");
-        this.hiddenInput.value = '';
+        this.hiddenInputElement.value = '';
         window.scrollTo(0, document.body.scrollHeight);
     }
     
@@ -104,7 +104,7 @@ class Terminal {
                 e.preventDefault();
                 this.canInput = false;
                 try {
-                    const text = this.hiddenInput.value;
+                    const text = this.hiddenInputElement.value;
                     if(text) {
                         this.history.push(text);
                         this.historyIndex = this.history.length;
@@ -114,26 +114,26 @@ class Terminal {
                     this.createNewLine();
                 } finally {
                     this.canInput = true;
-                    this.hiddenInput.focus();
+                    this.hiddenInputElement.focus();
                 }
                 break;
             case "ArrowUp":
                 e.preventDefault();
                 if (this.historyIndex > 0) {
                     this.historyIndex--;
-                    this.hiddenInput.value = this.history[this.historyIndex];
-                    this.currentLine.textContent = this.hiddenInput.value;
+                    this.hiddenInputElement.value = this.history[this.historyIndex];
+                    this.currentLine.textContent = this.hiddenInputElement.value;
                 }
                 break;
             case "ArrowDown":
                 e.preventDefault();
                 if (this.historyIndex < this.history.length - 1) {
                     this.historyIndex++;
-                    this.hiddenInput.value = this.history[this.historyIndex];
-                    this.currentLine.textContent = this.hiddenInput.value;
+                    this.hiddenInputElement.value = this.history[this.historyIndex];
+                    this.currentLine.textContent = this.hiddenInputElement.value;
                 } else {
                     this.historyIndex = this.history.length;
-                    this.hiddenInput.value = "";
+                    this.hiddenInputElement.value = "";
                     this.currentLine.textContent = "";
                 }
                 break;
@@ -158,14 +158,14 @@ class Terminal {
         const line = document.createElement("div");
         line.classList.add("line");
         line.innerHTML = `<span class="text">${text}</span>`;
-        this.cli.appendChild(line);
+        this.cliElement.appendChild(line);
     }
 
     writeHtml(html) {
         const line = document.createElement("div");
         line.classList.add("line");
         line.innerHTML = `<span class="text">${html}</span>`;
-        this.cli.appendChild(line);
+        this.cliElement.appendChild(line);
     }
     
     async getFile(path) {
@@ -256,6 +256,6 @@ class Terminal {
     }
     
     async clear() {
-        this.cli.innerHTML = "";
+        this.cliElement.innerHTML = "";
     }
 }
