@@ -151,7 +151,7 @@ class Terminal {
         if (command in this.commands) {
             await this.commands[command](args);
         } else if(command !== "") {
-            this.writeLine(`bash: ${command}: command not found`);
+            this.writeLine(`-bash: ${command}: command not found`);
         }
     }
 
