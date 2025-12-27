@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import { useState } from "react";
-import styles from "@styles/Home.module.css";
+import styles from "@styles/Top.module.css";
 import { Icon } from "@iconify/react";
 import ParticleSpaceAnimationBackground from "@components/ParticleSpaceAnimationBackground";
 
@@ -51,7 +51,7 @@ const LINK_CARDS = [
 ];
 
 
-const HomePage: NextPage = () => {
+const TopPage: NextPage = () => {
   const [rotation, setRotation] = useState(0);
 
   return (
@@ -103,4 +103,4 @@ const HomePage: NextPage = () => {
   );
 };
 
-export default HomePage;
+export default TopPage;

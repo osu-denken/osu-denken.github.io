@@ -1,9 +1,9 @@
 import type { NextPage } from "next";
 import Image from "next/image";
-import styles from "../styles/Home.module.css";
+import styles from "../styles/Top.module.css";
 import { Icon } from "@iconify/react";
 
-const HomePage: NextPage = () => {
+const TopPage: NextPage = () => {
   return (
     <div className={styles.container}>
       <main className={styles.main}>
@@ -70,4 +70,4 @@ const HomePage: NextPage = () => {
   );
 };
 
-export default HomePage;
+export default TopPage;
