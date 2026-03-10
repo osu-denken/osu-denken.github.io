@@ -9,8 +9,7 @@ const AboutPage : NextPage = () => {
         <h1>電子計算研究部@大阪産業大学</h1>
         <p className={styles.description}>
           電子計算研究部（通称：電研、Denken）は大阪産業大学のコンピュータ系の部活。<br />
-          英名は Electronic Computing Research Division です。
-          
+          英名は Processing of Information Club (Electronic Computing Research Division) です。
         </p>
 
         <ul>
