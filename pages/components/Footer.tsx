@@ -23,7 +23,7 @@ const Footer = () => {
           </div>
         </div>
         <div className={styles.copyright}>
-          © 2025 Electronic Computing Research Division at Osaka Sangyo University, Code: MIT License / Image: CC BY 4.0
+          © 2025-2026 Processing of Information Club at Osaka Sangyo University, Code: MIT License / Image: CC BY 4.0
         </div>
       </div>
     </footer>
