@@ -16,6 +16,11 @@ const SOCIAL_LINKS = [
     icon: "mdi:twitter",
   },
   {
+    href: "https://www.instagram.com/osu_denken/",
+    title: "Instagram",
+    icon: "mdi:instagram"
+  },
+  {
     href: "https://osu-denken.github.io/blog/2025/11/03/sandai-discord.html",
     title: "Discordサーバーへの参加方法 (大産大生限定)",
     icon: "mdi:discord",
@@ -24,7 +29,7 @@ const SOCIAL_LINKS = [
     href: "https://github.com/osu-denken",
     title: "GitHub",
     icon: "mdi:github",
-  },
+  }
 ];
 
 const LINK_CARDS = [
