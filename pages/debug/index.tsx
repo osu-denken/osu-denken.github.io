@@ -154,7 +154,6 @@ const DebugPage: NextPage = () => {
                 <h2>v1/switchbot/validate</h2>
                 <input type="submit" onClick={fetchSwitchBotValidate} value="取得" />
                 <Pre language="json" style={okaidia}>{JSON.stringify(switchBotValidate, null, 2)}</Pre>
-            
             </main>
         </div>
     );
