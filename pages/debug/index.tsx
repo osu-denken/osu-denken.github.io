@@ -147,13 +147,13 @@ const DebugPage: NextPage = () => {
                     <Pre language="json" style={okaidia}>{JSON.stringify(userData, null, 2)}</Pre>
                 </form>
 
-                <h2>v1/switchbot/list</h2>
-                <input type="submit" onClick={fetchSwitchBotList} value="取得" />
-                <Pre language="json" style={okaidia}>{JSON.stringify(switchBotList, null, 2)}</Pre>
-
                 <h2>v1/switchbot/validate</h2>
                 <input type="submit" onClick={fetchSwitchBotValidate} value="取得" />
                 <Pre language="json" style={okaidia}>{JSON.stringify(switchBotValidate, null, 2)}</Pre>
+
+                <h2>v1/switchbot/list</h2>
+                <input type="submit" onClick={fetchSwitchBotList} value="取得" />
+                <Pre language="json" style={okaidia}>{JSON.stringify(switchBotList, null, 2)}</Pre>
             </main>
         </div>
     );
