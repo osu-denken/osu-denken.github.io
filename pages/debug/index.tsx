@@ -53,10 +53,10 @@ const DebugPage: NextPage = () => {
         }).then(res => res.json()).then(setBlogData2);
     };
 
-    const fetchSwitchBotList = () => fetchWithAuth("https://api.osudenken4dev.workers.dev/v1/switchbot/list").then(setSwitchBotList);
+    const fetchSwitchBotList = () => fetchWithAuth("https://api.osudenken4dev.workers.dev/switchbot/list").then(setSwitchBotList);
     const [switchBotList, setSwitchBotList] = useState<any>(null);
 
-    const fetchSwitchBotValidate = () => fetchWithAuth("https://api.osudenken4dev.workers.dev/v1/switchbot/validate").then(setSwitchBotValidate);
+    const fetchSwitchBotValidate = () => fetchWithAuth("https://api.osudenken4dev.workers.dev/switchbot/validate").then(setSwitchBotValidate);
     const [switchBotValidate, setSwitchBotValidate] = useState<any>(null);
 
     const initLocalStorage = () => _setLocalStorage(localStorage);
