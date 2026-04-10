@@ -73,10 +73,12 @@ const TopPage: NextPage = () => {
           setSocialLinks(prev => 
             prev.map(link => {
               if (link.href == 'https://osu-denken.github.io/blog/2025/11/03/sandai-discord.html') {
-                link.href = data.code;
-                link.title = "Discord";
                 console.log("replaced discord invite url")
-                return link;
+                return {
+                  ...link,
+                  href: data.code,
+                  title: "Discord",
+                };
               }
               return link;
             })
