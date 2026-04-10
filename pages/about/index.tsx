@@ -36,6 +36,12 @@ const AboutPage : NextPage = () => {
 
         </p>
 
+        <h2>年間スケジュール</h2>
+        <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Asia%2FTokyo&showPrint=0&showTz=0&showTitle=0&showTabs=0&showCalendars=0&src=ZTg5NGMxOWUwYjQ3NGY0YjdjNWQxYjVmNmE1MDA0Yjk3YjE3ZDAxYjM0YTExOTdiODcxMzUwZTgwZWI0ZDQzMEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23039be5" style={{borderWidth: "0px", filter: "invert(1) hue-rotate(180deg)", maxWidth: 960, minHeight: 300, width: "100%"}} width="800" height="600" frameBorder="0" scrolling="no"></iframe>
+        <p className={styles.description}>
+          このカレンダーは3ヶ月分の予定を表示しています。
+        </p>
+
         <h2>アクセス</h2>
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d487.5639611901969!2d135.64075920083081!3d34.7070388583328!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x600121001a2e2f4f%3A0xff11c0497681af09!2z5a2m55Sf5Lya6aSoIEFDVCBTdGE!5e0!3m2!1sja!2sjp!4v1765945851783!5m2!1sja!2sjp" width="400" height="300" style={{border:0}} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
         <p className={styles.description}>
