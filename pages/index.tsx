@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "@styles/Top.module.css";
 import { Icon } from "@iconify/react";
 import ParticleSpaceAnimationBackground from "@components/ParticleSpaceAnimationBackground";
@@ -55,9 +55,33 @@ const LINK_CARDS = [
   },
 ];
 
-
 const TopPage: NextPage = () => {
   const [rotation, setRotation] = useState(0);
+
+  useEffect(() => {
+    fetch("https://api.osudenken4dev.workers.dev/discord/invite", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("idToken")}`
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          SOCIAL_LINKS.map((link) => {
+            if (link.href == 'https://osu-denken.github.io/blog/2025/11/03/sandai-discord.html') {
+              link.href = data.code;
+              link.title = "Discord";
+              console.log("replaced discord invite url")
+              return;
+            }
+          });
+        }
+      })
+      .catch(_ => {
+      });
+  }, [])
 
   return (
     <div className={styles.container}>
