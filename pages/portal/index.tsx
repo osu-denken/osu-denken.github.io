@@ -44,7 +44,7 @@ const PortalPage : NextPage = () => {
           // トークンのリフレッシュを試してみる
           const refreshToken = localStorage.getItem("refreshToken");
           if (refreshToken) {
-            fetch("https://securetoken.googleapis.com/user/refresh", {
+            fetch("https://api.osudenken4dev.workers.dev/user/refresh", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -74,7 +74,7 @@ const PortalPage : NextPage = () => {
           // トークンのリフレッシュを試してみる
           const refreshToken = localStorage.getItem("refreshToken");
           if (refreshToken) {
-            fetch("https://securetoken.googleapis.com/user/refresh", {
+            fetch("https://api.osudenken4dev.workers.dev/user/refresh", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
