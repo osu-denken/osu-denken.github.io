@@ -41,6 +41,29 @@ const PortalPage : NextPage = () => {
       console.log(data)
       if (data.user && data.user.error) {
         if (data.user.error.message === "INVALID_ID_TOKEN") {
+          // トークンのリフレッシュを試してみる
+          const refreshToken = localStorage.getItem("refreshToken");
+          if (refreshToken) {
+            fetch("https://securetoken.googleapis.com/user/refresh", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                refreshToken: refreshToken
+              })
+            }).then(res => res.json()).then((refreshData: any) => {
+              if (refreshData.id_token) {
+                localStorage.setItem("idToken", refreshData.id_token);
+                localStorage.setItem("refreshToken", refreshData.refresh_token);
+                window.location.reload();
+              }
+            }).catch(e => {
+              console.error("Failed to refresh token:", e);
+            });
+          }
+
+          // トークンの期限が切れている場合は再ログインを促す
           alert("セッションの有効期限が切れました。再度ログインしてください。");
           window.location.href = "/?i=portal/#login";
         }
