@@ -13,7 +13,8 @@ export default async (ctx, args) => {
         " clear               - Clear the terminal",
         " sudo [command]      - Execute a command as root",
         " rm [file]           - Remove files (options: -r, -f, --no-preserve-root)",
-        " grep [regex] [file] - Search for a pattern in a file (options: -i, -v, -r)"
+        " grep [regex] [file] - Search for a pattern in a file (options: -i, -v, -r)",
+        " date                - Show current date and time",
     ];
     helpLines.forEach(line => ctx.writeLine(line));
 };
