@@ -7,6 +7,7 @@ import help from "./help.js"
 import rm from "./rm.js"
 import sudo from "./sudo.js"
 import echo from "./echo.js"
+import clear from "./clear.js"
 
 export default {
   ls,
@@ -18,4 +19,5 @@ export default {
   rm,
   sudo,
   echo,
+  clear,
 }
