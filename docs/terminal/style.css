@@ -14,6 +14,7 @@ html, body {
 div.cli {
   font-family: 'Fira Code', monospace;
   white-space: pre-wrap;
+  cursor: text;
 }
 
 div.line {

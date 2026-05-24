@@ -12,7 +12,8 @@ export default async (ctx, args) => {
         " help                - Show this help message",
         " clear               - Clear the terminal",
         " sudo [command]      - Execute a command as root",
-        " rm [options] [file] - Remove files (options: -r, -f, --no-preserve-root)",
+        " rm [file]           - Remove files (options: -r, -f, --no-preserve-root)",
+        " grep [regex] [file] - Search for a pattern in a file (options: -i, -v, -r)"
     ];
     helpLines.forEach(line => ctx.writeLine(line));
 };
