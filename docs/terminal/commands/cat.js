@@ -1,10 +1,20 @@
 export default async (ctx, args) => {    
-    const path = args[0];
-    if (!path) {
+    if (args.length === 0) {
+        if (ctx.stdin) {
+            ctx.stdin.forEach(line => ctx.writeLine(line));
+            return;
+        }
+
         ctx.writeLine("cat: missing operand");
         return;
     }
-    const content = await ctx.getFile(path);
-    // const escapedContent = ctx.escapeHtml(content);
-    content.split('\n').forEach(line => ctx.writeLine(line));
+    
+    for (const path of args) {
+        try {
+            const content = await ctx.getFile(path);
+            content.split('\n').forEach(line => ctx.writeLine(line));
+        } catch (err) {
+            ctx.writeLine(`cat: ${path}: ${err.message}`);
+        }
+    }
 };

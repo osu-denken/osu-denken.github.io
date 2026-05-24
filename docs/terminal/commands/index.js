@@ -8,6 +8,7 @@ import rm from "./rm.js"
 import sudo from "./sudo.js"
 import echo from "./echo.js"
 import clear from "./clear.js"
+import grep from "./grep.js"
 
 export default {
   ls,
@@ -20,4 +21,5 @@ export default {
   sudo,
   echo,
   clear,
+  grep,
 }
