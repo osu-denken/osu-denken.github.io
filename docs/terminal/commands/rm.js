@@ -43,11 +43,15 @@ export default async (ctx, args) => {
 
         await ctx.sleep(500);
 
+        let title = encodeURIComponent("電研のフェイクターミナルでrm -rf /の実行に成功してしまった！");
+
+
         ctx.writeLine("");
         ctx.writeLine("[   14.228491] Kernel panic - not syncing:");
         ctx.writeLine("VFS: Unable to mount root fs on unknown-block(0,0)");
         ctx.writeLine("");
         ctx.writeLine("System halted.");
+        ctx.writeLine(`<a href='https://twitter.com/intent/tweet?text=${title}&url=${encodeURIComponent(window.location.href)}&hashtags=OSU電研' target='_blank'>Xで共有する</a>`);
 
         document.body.style.background = "black";
         document.body.style.color = "red";

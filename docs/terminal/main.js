@@ -33,6 +33,7 @@ class Terminal {
         this.canInput = false;
         try {
             this.createNewLine();
+            this.currentLine.innerHTML = ''; // Hide cursor during animation
             await this.sleep(500); // 500ms待機
 
             const initialCommands = [
@@ -45,12 +46,11 @@ class Terminal {
                 this.history.push(command);
                 this.hiddenInputElement.value = "";
                 await this.type(command, 80);
-                const oldCursor = this.currentLine.querySelector(".cursor");
-                if (oldCursor) oldCursor.classList.remove("cursor");
                 await this.executeCommand(command);
                 await this.sleep(200); // 200ms待機
                 if (initialCommands.indexOf(command) < initialCommands.length - 1) {
                     this.createNewLine();
+                    this.currentLine.innerHTML = '';
                 }
             }
             this.historyIndex = this.history.length;
@@ -138,7 +138,11 @@ class Terminal {
                         this.history.push(text);
                         this.historyIndex = this.history.length;
                     }
-                    this.currentLine.classList.remove("cursor");
+                    if (this.currentLine) {
+                        const oldCursor = this.currentLine.querySelector(".cursor");
+                        if (oldCursor) oldCursor.classList.remove("cursor");
+                        this.currentLine.innerHTML = this.escapeHtml(text); // Show typed text without cursor
+                    }
                     await this.executeCommand(text);
                     this.createNewLine();
                 } finally {
@@ -304,6 +308,16 @@ class Terminal {
     }
 
     async readPassword(promptText) {
+        // Temporarily freeze the main input so `updateInputDisplay` won't
+        // render in the original command line area during password entry.
+        if (this.currentLine) {
+            const oldCursor = this.currentLine.querySelector(".cursor");
+            if (oldCursor) oldCursor.classList.remove("cursor");
+            this.currentLine.innerHTML = this.escapeHtml(this.hiddenInputElement.value);
+            // Forget current line temporarily so updates don't affect it
+            this.currentLine = null;
+        }
+
         const line = document.createElement("div");
         line.classList.add("line");
         line.innerHTML = `<span class="text">${promptText}</span><span class="password-input cursor"></span>`;
