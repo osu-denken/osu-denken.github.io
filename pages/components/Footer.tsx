@@ -15,6 +15,12 @@ const Footer = () => {
           </div>
 
           <div className={`${styles.footerCol} ${styles.footerCol2}`}>
+            <p style={{ marginTop: '-0.8em' }}>
+              <a href="https://osu-denken.github.io/"><img src="/banner.png" alt="電研バナー"/></a>
+            </p>
+          </div>
+
+          <div className={`${styles.footerCol} ${styles.footerCol2}`}>
             <p>
               <a href="/denken-pub.asc">
                 PGP公開鍵
