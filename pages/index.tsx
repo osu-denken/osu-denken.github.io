@@ -1,10 +1,10 @@
 import type { NextPage } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "@styles/Top.module.css";
 import { Icon } from "@iconify/react";
 import ParticleSpaceAnimationBackground from "@components/ParticleSpaceAnimationBackground";
 
-const SOCIAL_LINKS = [
+const DEFAULT_SOCIAL_LINKS = [
   {
     href: "https://www.osaka-sandai.ac.jp/club_circle/club/233",
     title: "大阪産業大学公式サイト",
@@ -55,9 +55,39 @@ const LINK_CARDS = [
   },
 ];
 
-
 const TopPage: NextPage = () => {
   const [rotation, setRotation] = useState(0);
+  const [socialLinks, setSocialLinks] = useState(DEFAULT_SOCIAL_LINKS);
+
+  useEffect(() => {
+    fetch("https://api.osudenken4dev.workers.dev/discord/invite", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("idToken")}`
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setSocialLinks(prev => 
+            prev.map(link => {
+              if (link.href == 'https://osu-denken.github.io/blog/2025/11/03/sandai-discord.html') {
+                console.log("replaced discord invite url")
+                return {
+                  ...link,
+                  href: data.code,
+                  title: "Discord",
+                };
+              }
+              return link;
+            })
+          );
+        }
+      })
+      .catch(_ => {
+      });
+  }, [])
 
   return (
     <div className={styles.container}>
@@ -79,7 +109,7 @@ const TopPage: NextPage = () => {
         {/* <h2 className={styles.bold}>大阪産業大学の一部 */}
 
         <div className={styles.iconContainer}>
-          {SOCIAL_LINKS.map((link) => (
+          {socialLinks.map((link) => (
             <a href={link.href} title={link.title} target="_blank" key={link.href} rel="noopener noreferrer">
               <Icon
                 icon={link.icon}
