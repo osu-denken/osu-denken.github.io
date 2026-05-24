@@ -1,0 +1,10 @@
+[
+    "bin/",
+    "boot/",
+    "dev/",
+    "etc/",
+    "home/",
+    "lib/",
+    "root/",
+    "var/"
+]

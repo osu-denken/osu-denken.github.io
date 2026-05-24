@@ -1,3 +1,5 @@
+import commands from "./commands/index.js"
+
 class Terminal {
     constructor(cliElement, hiddenInputElement) {
         this.cliElement = cliElement; // ターミナル表示部の要素
@@ -9,16 +11,6 @@ class Terminal {
         this.historyIndex = -1;
         this.isInterrupted = false; // 中断フラグ
 
-        this.commands = {
-            "ls": this.ls.bind(this),
-            "cd": this.cd.bind(this),
-            "cat": this.cat.bind(this),
-            "help": this.help.bind(this),
-            "clear": this.clear.bind(this),
-            "pwd": this.pwd.bind(this),
-            "yes": this.yes.bind(this),
-        };
-
         this.init();
     }
 
@@ -28,6 +20,7 @@ class Terminal {
                 this.hiddenInputElement.focus();
             }
         });
+        
         this.hiddenInputElement.addEventListener('input', this.handleInput.bind(this));
         this.hiddenInputElement.addEventListener('keydown', this.handleKeyDown.bind(this));
         this.playInitAnimation();
@@ -37,7 +30,7 @@ class Terminal {
         this.canInput = false;
         try {
             this.createNewLine();
-            await new Promise(resolve => setTimeout(resolve, 500)); // 500ms待機
+            await this.sleep(500); // 500ms待機
 
             const initialCommands = [
                 "ls /var/www/html/",
@@ -50,7 +43,7 @@ class Terminal {
                 await this.type(command, 80);
                 this.currentLine.classList.remove("cursor");
                 await this.executeCommand(command);
-                await new Promise(resolve => setTimeout(resolve, 200)); // 200ms待機
+                await this.sleep(200); // 200ms待機
                 if (initialCommands.indexOf(command) < initialCommands.length - 1) {
                     this.createNewLine();
                 }
@@ -79,8 +72,12 @@ class Terminal {
     async type(text, speed) {
         for (let i = 0; i < text.length; i++) {
             this.currentLine.textContent += text[i];
-            await new Promise(resolve => setTimeout(resolve, speed));
+            await this.sleep(speed);
         }
+    }
+
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     handleInput(e) {
@@ -94,6 +91,9 @@ class Terminal {
             if (!this.canInput) {
                 this.isInterrupted = true;
                 this.writeLine('^C');
+                if (this.passwordInterrupt) {
+                    this.passwordInterrupt();
+                }
             }
             return;
         }
@@ -148,10 +148,10 @@ class Terminal {
         const [command, ...args] = commandText.trim().split(" ");
         this.isInterrupted = false;
 
-        if (command in this.commands) {
-            await this.commands[command](args);
+        if (command in commands) {
+            await commands[command](this, args);
         } else if(command !== "") {
-            this.writeLine(`-bash: ${command}: command not found`);
+            this.writeLine(`-fash: ${command}: command not found`);
         }
     }
 
@@ -171,7 +171,11 @@ class Terminal {
     
     async getFile(path) {
         try {
-            const response = await fetch(path);
+            const url = this.getFetchUrl(path);
+            if (!url) {
+                return `cat: ${path}: Permission denied or No such file or directory`;
+            }
+            const response = await fetch(url);
             if (!response.ok) {
                 return `cat: ${path}: No such file or directory`;
             }
@@ -179,6 +183,95 @@ class Terminal {
         } catch (error) {
             return `cat: ${path}: No such file or directory`;
         }
+    }
+
+    resolvePath(targetPath) {
+        if (!targetPath) return this.currentDir;
+        
+        let path = targetPath;
+        if (path.startsWith('~')) {
+            path = '/home/denken' + path.substring(1);
+        }
+
+        let basePath = this.currentDir;
+        if (basePath.startsWith('~')) {
+            basePath = '/home/denken' + basePath.substring(1);
+        }
+
+        if (path.startsWith('/')) {
+            basePath = '';
+        }
+
+        const baseParts = basePath.split('/').filter(p => p !== '');
+        const targetParts = path.split('/').filter(p => p !== '');
+
+        for (const part of targetParts) {
+            if (part === '.') continue;
+            if (part === '..') {
+                if (baseParts.length > 0) baseParts.pop();
+            } else {
+                baseParts.push(part);
+            }
+        }
+
+        // 特別なディレクトリとして扱うために、末尾のスラッシュは適宜調整するが、
+        // CDなどしやすいように基本は末尾スラッシュなしまたはありで統一。
+        // ここでは通常通りくっつける。
+        let result = '/' + baseParts.join('/');
+        if (targetPath.endsWith('/') && result !== '/') {
+            result += '/';
+        }
+        return result;
+    }
+
+    getFetchUrl(targetPath) {
+        const absPath = this.resolvePath(targetPath);
+        if (absPath.startsWith('/var/www/html')) {
+            const relPath = absPath.substring('/var/www/html'.length);
+            // Certain files in /var/www/html are actually served from the terminal folder
+            if (relPath === '/welcome.md' || relPath === '/welcome-log.md' || relPath === '/index.html' || relPath === '/style.css' || relPath === '/main.js' || relPath === '/main.html') {
+                return '.' + relPath;
+            }
+            // Other files map to the root directory (../ from /terminal/)
+            return '..' + (relPath === '' ? '/' : relPath);
+        }
+        
+        // Everything else maps to the local root/ folder
+        return './root' + absPath;
+    }
+
+    async readPassword(promptText) {
+        const line = document.createElement("div");
+        line.classList.add("line");
+        line.innerHTML = `<span class="text">${promptText}</span><span class="password-input cursor"></span>`;
+        this.cliElement.appendChild(line);
+        const passSpan = line.querySelector('.password-input');
+        
+        this.hiddenInputElement.value = '';
+        this.canInput = false;
+
+        return new Promise((resolve) => {
+            const finish = (value) => {
+                passSpan.classList.remove('cursor');
+                this.hiddenInputElement.removeEventListener('keydown', keydownHandler);
+                this.hiddenInputElement.value = '';
+                this.canInput = true;
+                this.passwordInterrupt = null;
+                resolve(value);
+            };
+
+            this.passwordInterrupt = () => finish(null);
+
+            const keydownHandler = (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    finish(this.hiddenInputElement.value);
+                }
+            };
+
+            this.hiddenInputElement.addEventListener('keydown', keydownHandler);
+            this.hiddenInputElement.focus();
+        });
     }
 
     escapeHtml(text) {
@@ -189,74 +282,9 @@ class Terminal {
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
     }
-
-    // --- Commands ---
-    async ls(args) {
-        const path = args[0] || this.currentDir;
-        if (path === '/var/www/html/' || path === '~/') {
-             this.writeHtml(`<a class="dir" href="/about/" target="_parent">about/</a>\t<a class="dir" href="/background/" target="_parent">background/</a>\t<a class="dir" href="/blog/" target="_parent">blog/</a>\t<a href="/denken-pub.asc" target="_parent">denken-pub.asc</a>\t<a href="/favicon.ico" target="_parent">favicon.ico</a>\t<a href="/icon.png" target="_parent">icon.png</a>\t<a href="./" target="_parent">index.html</a>\t<a href="./welcome.md" target="_parent">welcome.md</a>`);
-        } else {
-             this.writeLine(`ls: cannot access '${path}': No such file or directory`);
-        }
-    }
-
-    async cd(args) {
-        const path = args[0];
-        if (!path || path === '~') {
-            this.currentDir = "~";
-        } else {
-            this.currentDir = path;
-        }
-    }
-
-    async cat(args) {
-        const path = args[0];
-        if (!path) {
-            this.writeLine("cat: missing operand");
-            return;
-        }
-        const content = await this.getFile(path);
-        // const escapedContent = this.escapeHtml(content);
-        content.split('\n').forEach(line => this.writeLine(line));
-    }
-
-    async pwd() {
-        this.writeLine(this.currentDir);
-    }
-
-    async yes(args) {
-        const text = args.join(' ') || 'y';
-        return new Promise(resolve => {
-            const printYes = () => {
-                if (this.isInterrupted) {
-                    resolve();
-                    return;
-                }
-                this.writeLine(text);
-                window.scrollTo(0, document.body.scrollHeight);
-                setTimeout(printYes, 10);
-            };
-            printYes();
-        });
-    }
-
-    async help() {
-        const helpLines = [
-            "ecrd-fake-terminal, version 25.12-release",
-            "These shell commands are defined internally. Type `help' to see this list.",
-            "",
-            " ls [path]      - List files",
-            " cd [path]      - Change directory",
-            " cat [file]     - Display contents of a file",
-            " pwd            - Print working directory",
-            " yes [string]   - Output a string repeatedly",
-            " help           - Show this help message",
-            " clear          - Clear the terminal",
-        ];
-        helpLines.forEach(line => this.writeLine(line));
-    }
-    
-    async clear() {
-        this.cliElement.innerHTML = "";
-    }
 }
+
+const terminal = new Terminal(
+    document.querySelector('.cli'),
+    document.querySelector('#terminal-input')
+);
