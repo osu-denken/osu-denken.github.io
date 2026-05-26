@@ -10,6 +10,7 @@ import echo from "./echo.js"
 import clear from "./clear.js"
 import grep from "./grep.js"
 import date from "./date.js"
+import snake from "./snake.js"
 
 export default {
   ls,
@@ -24,4 +25,5 @@ export default {
   clear,
   grep,
   date,
+  snake,
 }

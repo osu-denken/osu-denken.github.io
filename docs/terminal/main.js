@@ -10,6 +10,7 @@ class Terminal {
         this.history = [];
         this.historyIndex = -1;
         this.isInterrupted = false; // 中断フラグ
+        this.wait = false; // コマンド実行中フラグ
 
         this.init();
     }
@@ -78,6 +79,7 @@ class Terminal {
     }
     
     updateInputDisplay() {
+        if (this.wait) return;
         if (!this.currentLine) return;
         const text = this.hiddenInputElement.value;
         const pos = typeof this.hiddenInputElement.selectionStart === 'number' ? this.hiddenInputElement.selectionStart : text.length;
@@ -126,7 +128,8 @@ class Terminal {
             return;
         }
 
-        if (!this.canInput) return;
+        // if (!this.canInput) return;
+        if (this.wait) return;
         
         switch (e.key) {
             case "Enter":
@@ -144,7 +147,9 @@ class Terminal {
                         this.currentLine.innerHTML = this.escapeHtml(text); // Show typed text without cursor
                     }
                     await this.executeCommand(text);
-                    this.createNewLine();
+                    if (!this.wait)
+                        this.createNewLine();
+
                 } finally {
                     this.canInput = true;
                     this.hiddenInputElement.focus();
@@ -219,6 +224,29 @@ class Terminal {
         line.classList.add("line");
         line.innerHTML = `<span class="text">${text}</span>`;
         this.cliElement.appendChild(line);
+    }
+
+    getCurrentLineNumber() {
+        return this.cliElement.querySelectorAll('.line').length;
+    }
+
+    changeLine(n, text) {
+        if (this.captureOutput) {
+            const temp = document.createElement("div");
+            temp.innerHTML = text;
+            const items = Array.from(temp.childNodes).map(node => node.textContent).filter(t => t.trim() !== '');
+            this.capturedOutput.push(...items);
+            return;
+        }
+        const lines = this.cliElement.querySelectorAll('.line');
+        if (n < lines.length) {
+            lines[n].innerHTML = `<span class="text">${text}</span>`;
+        } else {
+            const line = document.createElement("div");
+            line.classList.add("line");
+            line.innerHTML = `<span class="text">${text}</span>`;
+            this.cliElement.appendChild(line);
+        }
     }
 
     writeHtml(html) {

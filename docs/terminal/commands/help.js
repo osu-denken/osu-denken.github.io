@@ -15,6 +15,7 @@ export default async (ctx, args) => {
         " rm [file]           - Remove files (options: -r, -f, --no-preserve-root)",
         " grep [regex] [file] - Search for a pattern in a file (options: -i, -v, -r)",
         " date                - Show current date and time",
+        " snake               - Play the snake game",
     ];
     helpLines.forEach(line => ctx.writeLine(line));
 };
