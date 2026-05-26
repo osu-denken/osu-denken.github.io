@@ -48,23 +48,29 @@ export default async (ctx, args) => {
     };
 
     draw();
+    const cleanup = () => {
+        clearInterval(interval);
+        window.removeEventListener('keydown', keyHandler);
+    };
+
     const interval = setInterval(() => {
         ctx.canInput = false;
-
-        if (exitGame) {
+        
+        if (exitGame || ctx.isInterrupted) {
             ctx.wait = false;
             ctx.canInput = true;
             ctx.createNewLine();
-            clearInterval(interval);
+            cleanup();
             return;
         }
         if (!moveSnake()) {
-            clearInterval(interval);
+            cleanup();
             return;
         }
 
         draw();
     }, 200);
+
     const keyHandler = (e) => {
         switch (e.key) {
             case 'ArrowUp': direction = {x: 0, y: -1}; break;
@@ -74,15 +80,14 @@ export default async (ctx, args) => {
             case 'c': 
                 if (e.ctrlKey) {
                     e.preventDefault();
-                    ctx.writeLine('^C');
+                    if (!exitGame && !ctx.isInterrupted)
+                        ctx.writeLine('^C');
+                    
                     exitGame = true;
+                    ctx.isInterrupted = true;
                 }
                 break;
         }
     };
     window.addEventListener('keydown', keyHandler);
-    return () => {
-        clearInterval(interval);
-        window.removeEventListener('keydown', keyHandler);
-    };
 };
