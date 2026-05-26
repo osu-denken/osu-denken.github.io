@@ -129,7 +129,7 @@ class Terminal {
         }
 
         // if (!this.canInput) return;
-        if (this.wait) return;
+        if (this.wait || this.passwordInterrupt) return;
         
         switch (e.key) {
             case "Enter":

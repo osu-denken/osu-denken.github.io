@@ -26,6 +26,7 @@ export default async (ctx, args) => {
         }
         // ctx.cliElement.innerHTML = "";
         ctx.changeLine(current, output);
+        window.scrollTo(0, document.body.scrollHeight);
     };
 
     const moveSnake = () => {
@@ -49,7 +50,7 @@ export default async (ctx, args) => {
     draw();
     const interval = setInterval(() => {
         ctx.canInput = false;
-        
+
         if (exitGame) {
             ctx.wait = false;
             ctx.canInput = true;
