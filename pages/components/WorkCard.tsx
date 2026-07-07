@@ -14,6 +14,8 @@ type Props = {
 };
 
 const WorkCard = ({ work }: Props) => {
+  if (!work) return null;
+
   // ループと、ドラッグでの切り替えを有効に
   const [emblaRef] = useEmblaCarousel({ loop: true }, [
     Autoplay({ delay: 3000, stopOnInteraction: false })
