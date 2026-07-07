@@ -7,8 +7,10 @@ const AboutPage : NextPage = () => {
       <main className={styles.main}>
         <h1>作品</h1>
         <p className={styles.description}>
-          部員が創作したものを記載する予定です。
+          部員が創作したものを紹介します！
         </p>
+
+        
 
 
       </main>
