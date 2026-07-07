@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "easymde": "^2.20.0",
+    "embla-carousel-autoplay": "^8.6.0",
+    "embla-carousel-react": "^8.6.0",
     "firebase": "^11.9.1",
     "github-markdown-css": "^5.8.1",
     "import": "^0.0.6",

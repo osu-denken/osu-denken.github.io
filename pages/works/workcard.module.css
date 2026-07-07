@@ -1,0 +1,70 @@
+/* 縦に1列で並べる */
+.worksList {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem; /* 作品ごとの間隔（背景がないので広めに開けるとすっきりします） */
+  width: 100%;
+}
+
+/* 作品アイテム（背景色や枠線、丸みは一切なし） */
+.card {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* カルーセル外枠 */
+.embla {
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+  cursor: grab;
+}
+.embla:active {
+  cursor: grabbing;
+}
+
+/* スライドのコンテナ */
+.emblaContainer {
+  display: flex;
+}
+
+/* スライド（丸みなし） */
+.emblaSlide {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+
+/* カルーセルの中の画像 */
+.workImage {
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+  display: block;
+  border-radius: 0; /* 画像の丸みもなし */
+}
+
+/* テキストエリア（余計なパディングを削り、左揃えに） */
+.workInfo {
+  padding: 1.5rem 0 0 0;
+}
+
+.workTitle {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.4rem;
+  color: #ffffff;
+}
+
+.workLink:hover {
+  color: #1e90ff;
+}
+
+.workDescription {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #cccccc; /* 説明文は少しグレーにしてコントラストをつける */
+  line-height: 1.6;
+}
