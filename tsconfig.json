@@ -18,7 +18,7 @@
     "jsx": "preserve",
     "target": "ES2017",
     "paths": {
-      "@components/*": ["./pages/components/*"],
+      "@components/*": ["./components/*"],
       "@styles/*": ["./styles/*"],
       "@api/*": ["./pages/api/*"],
       "@hooks/*": ["./hooks/*"],
