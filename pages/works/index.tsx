@@ -1,6 +1,4 @@
 import type { NextPage } from "next";
-import useEmblaCarousel from "embla-carousel-react";
-import Autoplay from "embla-carousel-autoplay";
 import styles from "@styles/Page.module.css";
 import WorkCard from "@components/WorkCard";
 
@@ -88,12 +86,6 @@ const WORKS = [
 ];
 
 const WorksPage: NextPage = () => {
-  
-  // カルーセルの設定
-  const [emblaRef] = useEmblaCarousel({ loop: true }, [
-    Autoplay({ delay: 3000, stopOnInteraction: false })
-  ]);
-
   return (
     <div className={styles.container}>
       <main className={styles.main}>
