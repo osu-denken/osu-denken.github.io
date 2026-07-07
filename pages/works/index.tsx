@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import styles from "@styles/Page.module.css";
-import WorkCard from "./WorkCard";
+import WorkCard from "../components/WorkCard";
 
 // 作品データ
 const WORKS = [
@@ -87,7 +87,7 @@ const WORKS = [
   }
 ];
 
-const AboutPage: NextPage = () => {
+const WorksPage: NextPage = () => {
   
   // カルーセルの設定
   const [emblaRef] = useEmblaCarousel({ loop: true }, [
@@ -114,4 +114,4 @@ const AboutPage: NextPage = () => {
   );
 };
 
-export default AboutPage;
+export default WorksPage;
