@@ -6,11 +6,10 @@ import {
   hasPermission,
   MemberDetail,
   Permission,
-  PERMISSION_ENTRIES,
-  ROLE_ENTRIES,
   roleLabel,
   statusLabel,
 } from "@lib/member";
+import { MemberEditor } from "./MemberEditor";
 
 interface MemberRowProps {
   member: AdminMember;
@@ -22,43 +21,27 @@ interface MemberRowProps {
   onError: (message: string) => void;
 }
 
-/** チェックボックスでビットを組み立てる */
-const BitCheckboxes = ({ entries, value, onChange, disabled }: {
-  entries: readonly [number, string][];
-  value: number;
-  onChange: (next: number) => void;
-  disabled: boolean;
-}) => (
-  <div className={portalStyles.inputGroup}>
-    {entries.map(([bit, label]) => (
-      <label key={bit} style={{ marginRight: 8, whiteSpace: "nowrap" }}>
-        <input
-          type="checkbox"
-          checked={Boolean(value & bit)}
-          disabled={disabled}
-          onChange={e => onChange(e.target.checked ? value | bit : value & ~bit)} />
-        {label}
-      </label>
-    ))}
-  </div>
-);
+interface DetailResponse {
+  member: MemberDetail;
+  canEditTel: boolean;
+}
 
 export const MemberRow = ({ member, permissions, defaultExpanded, onChanged, onError }: MemberRowProps) => {
   const [expanded, setExpanded] = useState(false);
-  const [detail, setDetail] = useState<MemberDetail | null>(null);
-  const [roleBits, setRoleBits] = useState(member.roleBits);
-  const [permBits, setPermBits] = useState(member.permBits);
+  const [detail, setDetail] = useState<DetailResponse | null>(null);
+
+  const canApprove = hasPermission(permissions, Permission.MemberApprove);
 
   // 電話番号は一覧には載らない。開いたときだけ取りに行き、サーバ側で閲覧が記録される
   const open = useCallback(() => {
     setExpanded(true);
     if (detail) return;
 
-    apiJson<{ member: MemberDetail }>("/members/detail", {
+    apiJson<DetailResponse>("/members/detail", {
       method: "POST",
       body: JSON.stringify({ id: member.id })
     })
-      .then(data => setDetail(data.member))
+      .then(setDetail)
       .catch(e => {
         console.error("Failed to load member detail:", e);
         onError("部員情報の取得に失敗しました。");
@@ -71,20 +54,16 @@ export const MemberRow = ({ member, permissions, defaultExpanded, onChanged, onE
 
   const toggle = () => expanded ? setExpanded(false) : open();
 
-  const canApprove = hasPermission(permissions, Permission.MemberApprove);
-  const canEditRoles = hasPermission(permissions, Permission.MemberRoleEdit);
-  const canEditPerms = hasPermission(permissions, Permission.MemberPermissionEdit);
-  const canLeave = hasPermission(permissions, Permission.MemberDelete);
-
-  const call = async (path: string, body: Record<string, unknown>) => {
-    try {
-      const data: any = await apiJson(path, { method: "POST", body: JSON.stringify({ id: member.id, ...body }) });
-      if (!data.success) throw new Error(data.message ?? "失敗しました");
-      onChanged();
-    } catch (e) {
-      console.error(`Failed to call ${path}:`, e);
-      onError(e instanceof Error ? e.message : "失敗しました");
-    }
+  const decide = (action: "approve" | "reject") => {
+    apiJson(`/members/${action}`, { method: "POST", body: JSON.stringify({ id: member.id }) })
+      .then((data: any) => {
+        if (!data.success) throw new Error(data.message ?? "失敗しました");
+        onChanged();
+      })
+      .catch(e => {
+        console.error(`Failed to ${action} member:`, e);
+        onError(action === "approve" ? "承認に失敗しました。" : "却下に失敗しました。");
+      });
   };
 
   return (
@@ -94,6 +73,7 @@ export const MemberRow = ({ member, permissions, defaultExpanded, onChanged, onE
         <td><ruby>{member.name}<rp>（</rp><rt>{member.furigana}</rt><rp>）</rp></ruby></td>
         <td>{roleLabel(member.roleBits)}</td>
         <td>{statusLabel(member.status)}</td>
+        <td>{member.hasAccount ? "あり" : "なし"}</td>
         <td>{member.joinDate?.slice(0, 10) ?? "-"}</td>
         <td>
           <button type="button" className={portalStyles.portal} onClick={toggle}>
@@ -104,46 +84,25 @@ export const MemberRow = ({ member, permissions, defaultExpanded, onChanged, onE
 
       {expanded && (
         <tr>
-          <td colSpan={6}>
-            <p>{member.email}{detail?.tel ? ` / ${detail.tel}` : ""}</p>
+          <td colSpan={7}>
+            {!detail && <p>読み込み中…</p>}
 
-            {member.status === "pre-active" && canApprove && (
+            {detail && member.status === "pre-active" && canApprove && (
               <div className={portalStyles.inputGroup}>
                 <button type="button" className={portalStyles.portal}
-                  onClick={() => call("/members/approve", {})}>承認</button>
+                  onClick={() => decide("approve")}>承認</button>
                 <button type="button" className={portalStyles.portal} style={{ backgroundColor: "#a66666" }}
-                  onClick={() => call("/members/reject", {})}>却下</button>
+                  onClick={() => confirm(`${member.name} の仮登録を却下しますか？`) && decide("reject")}>却下</button>
               </div>
             )}
 
-            <h4>役職</h4>
-            <BitCheckboxes entries={ROLE_ENTRIES} value={roleBits} onChange={setRoleBits} disabled={!canEditRoles} />
-            {canEditRoles && (
-              <button type="button" className={portalStyles.portal}
-                onClick={() => call("/members/roles", { roleBits })}>役職を保存</button>
-            )}
-
-            <h4>追加権限 (役職のデフォルト権限に上乗せされます)</h4>
-            <BitCheckboxes entries={PERMISSION_ENTRIES} value={permBits} onChange={setPermBits} disabled={!canEditPerms} />
-            {canEditPerms && (
-              <button type="button" className={portalStyles.portal}
-                onClick={() => call("/members/permissions", { permBits })}>権限を保存</button>
-            )}
-
-            {member.status === "active" && canLeave && (
-              <>
-                <h4>在籍終了</h4>
-                <div className={portalStyles.inputGroup}>
-                  <button type="button" className={portalStyles.portal}
-                    onClick={() => confirm(`${member.name} を卒業にしますか？`) && call("/members/leave", { status: "graduated" })}>
-                    卒業
-                  </button>
-                  <button type="button" className={portalStyles.portal} style={{ backgroundColor: "#a66666" }}
-                    onClick={() => confirm(`${member.name} を退部にしますか？`) && call("/members/leave", { status: "withdrawn" })}>
-                    退部
-                  </button>
-                </div>
-              </>
+            {detail && (
+              <MemberEditor
+                detail={detail.member}
+                permissions={permissions}
+                canEditTel={detail.canEditTel}
+                onSaved={onChanged}
+                onError={onError} />
             )}
           </td>
         </tr>

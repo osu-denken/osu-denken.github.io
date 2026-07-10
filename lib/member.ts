@@ -49,6 +49,38 @@ export const ROLE_ENTRIES: readonly [number, string][] = [
   [Role.Other, "その他"],
 ];
 
+// web-api の util/permission.ts と一致させること
+const MEMBER_DEFAULT_PERMISSIONS =
+  Permission.DiscordInviteView | Permission.MemberView | Permission.BlogEdit;
+
+const EXECUTIVE_DEFAULT_PERMISSIONS =
+  MEMBER_DEFAULT_PERMISSIONS |
+  Permission.MemberManage |
+  Permission.MemberApprove |
+  Permission.MemberPermissionEdit |
+  Permission.MemberRoleEdit |
+  Permission.MemberDelete |
+  Permission.PageEdit |
+  Permission.SwitchBotControl;
+
+const EXECUTIVE_ROLES =
+  Role.Manager | Role.Accountant | Role.ChiefClerk | Role.ViceLeader | Role.Leader;
+
+/**
+ * 役職だけで既に与えられる権限。個人単位で足す意味がないものを隠すのに使う
+ * @param roleBits 役職ビット
+ */
+export function rolePermissions(roleBits: number): number {
+  const roles = roleBits & EXECUTIVE_ROLES ? roleBits | Role.Executive : roleBits;
+
+  let permissions = 0;
+  if (roles & Role.Member) permissions |= MEMBER_DEFAULT_PERMISSIONS;
+  if (roles & Role.Other) permissions |= MEMBER_DEFAULT_PERMISSIONS;
+  if (roles & Role.Executive) permissions |= EXECUTIVE_DEFAULT_PERMISSIONS;
+
+  return permissions;
+}
+
 /**
  * 必要な権限をすべて持っているか
  * @param permissions 実効権限ビット
@@ -83,6 +115,7 @@ export interface AdminMember extends PublicMember {
   email: string;
   permBits: number;
   approvedAt: string | null;
+  hasAccount: boolean;
 }
 
 /** /members/detail が返す1名分。電話番号を含む */
@@ -90,6 +123,9 @@ export interface MemberDetail extends AdminMember {
   tel: string | null;
   customData: Record<string, any>;
 }
+
+/** 承認・却下を経ずに直接切り替えてよい在籍状態 */
+export const EDITABLE_STATUSES: MemberStatus[] = ["active", "withdrawn", "graduated"];
 
 /**
  * 役職ビットを表示用の文字列にする

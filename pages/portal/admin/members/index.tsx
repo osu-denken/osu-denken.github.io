@@ -105,6 +105,7 @@ const AdminMembersPage: NextPage = () => {
               <th>氏名</th>
               <th>役職</th>
               <th>在籍</th>
+              <th>アカウント</th>
               <th>入部日</th>
               <th></th>
             </tr>
