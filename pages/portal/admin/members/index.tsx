@@ -5,6 +5,7 @@ import portalStyles from "@styles/Portal.module.css";
 import { apiFetch, apiJson, readIdToken, redirectToLogin } from "@lib/api";
 import { AdminMember, hasPermission, MemberStatus, Permission } from "@lib/member";
 import { MemberRow } from "@components/portal/MemberRow";
+import { MemberPanel } from "@components/portal/MemberPanel";
 
 const FILTERS: { id: MemberStatus | "all"; label: string }[] = [
   { id: "pre-active", label: "承認待ち" },
@@ -19,6 +20,10 @@ const AdminMembersPage: NextPage = () => {
   const [permissions, setPermissions] = useState(0);
   const [filter, setFilter] = useState<MemberStatus | "all">("pre-active");
   const [msg, setMsg] = useState("");
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  // 一覧から引き直すので、再読込やフィルタ切替で消えた部員のパネルは自然に閉じる
+  const selected = members.find(m => m.id === selectedId) ?? null;
 
   const load = useCallback(async (status: MemberStatus | "all") => {
     const query = status === "all" ? "" : `?status=${status}`;
