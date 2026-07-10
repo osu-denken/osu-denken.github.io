@@ -1,0 +1,102 @@
+.multiSelect {
+  position: relative;
+  width: 16rem;
+}
+
+.control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.5rem;
+  background-color: #ffffff0f;
+  color: #fff;
+  border: 1px solid #ffffff3f;
+  border-radius: 4px;
+  font-size: 15px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.control > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.control:hover:not(:disabled),
+.control.open {
+  border-color: #23df1e;
+}
+
+.control:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.placeholder {
+  opacity: 0.5;
+}
+
+.caret {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.menu {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 2px);
+  left: 0;
+  width: 100%;
+  max-height: 14rem;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0.25rem;
+  list-style: none;
+  background-color: #1c1c1c;
+  border: 1px solid #ffffff3f;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px #0000007f;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.4rem 0.5rem;
+  background: none;
+  border: none;
+  border-radius: 3px;
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.option:hover {
+  background-color: #ffffff1f;
+}
+
+.option.selected {
+  color: #23df1e;
+}
+
+.check {
+  flex-shrink: 0;
+  width: 1rem;
+  font-size: 0.85rem;
+}
+
+.empty {
+  margin: 0.25rem 0 0;
+  font-size: 0.8rem;
+  opacity: 0.6;
+}
