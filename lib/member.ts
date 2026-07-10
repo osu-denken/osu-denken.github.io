@@ -128,11 +128,12 @@ export interface MemberDetail extends AdminMember {
 export const EDITABLE_STATUSES: MemberStatus[] = ["active", "withdrawn", "graduated"];
 
 /**
- * 役職ビットを表示用の文字列にする
+ * 役職ビットを表示用の文字列にする。
+ * ROLE_ENTRIES は上位の役職から並んでいるので、最上位のものだけを返す
  * @param roleBits 役職ビット
  */
 export const roleLabel = (roleBits: number): string =>
-  ROLE_ENTRIES.filter(([bit]) => roleBits & bit).map(([, label]) => label).join("/") || "-";
+  ROLE_ENTRIES.find(([bit]) => roleBits & bit)?.[1] ?? "-";
 
 /**
  * 在籍状態を表示用の文字列にする
