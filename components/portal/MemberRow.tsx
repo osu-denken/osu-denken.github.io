@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import portalStyles from "@styles/Portal.module.css";
 import { apiJson } from "@lib/api";
 import {
@@ -15,8 +15,6 @@ interface MemberRowProps {
   member: AdminMember;
   /** 操作する側の実効権限 */
   permissions: number;
-  /** 名簿一覧の「編集」から来たときは最初から開く */
-  defaultExpanded?: boolean;
   onChanged: () => void;
   onError: (message: string) => void;
 }
@@ -26,14 +24,14 @@ interface DetailResponse {
   canEditTel: boolean;
 }
 
-export const MemberRow = ({ member, permissions, defaultExpanded, onChanged, onError }: MemberRowProps) => {
+export const MemberRow = ({ member, permissions, onChanged, onError }: MemberRowProps) => {
   const [expanded, setExpanded] = useState(false);
   const [detail, setDetail] = useState<DetailResponse | null>(null);
 
   const canApprove = hasPermission(permissions, Permission.MemberApprove);
 
   // 電話番号は一覧には載らない。開いたときだけ取りに行き、サーバ側で閲覧が記録される
-  const open = useCallback(() => {
+  const open = () => {
     setExpanded(true);
     if (detail) return;
 
@@ -46,11 +44,7 @@ export const MemberRow = ({ member, permissions, defaultExpanded, onChanged, onE
         console.error("Failed to load member detail:", e);
         onError("部員情報の取得に失敗しました。");
       });
-  }, [detail, member.id, onError]);
-
-  useEffect(() => {
-    if (defaultExpanded) open();
-  }, [defaultExpanded, open]);
+  };
 
   const toggle = () => expanded ? setExpanded(false) : open();
 

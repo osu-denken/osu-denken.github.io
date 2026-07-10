@@ -113,6 +113,17 @@ button.portal:disabled {
   margin-top: 1rem;
 }
 
+.pageHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.pageHeader > h1 {
+  margin: 0;
+}
+
 /* 列数の多い表は、ページ全体ではなく表だけを横スクロールさせる */
 .tableScroll {
   width: 100%;

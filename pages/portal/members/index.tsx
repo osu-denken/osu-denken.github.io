@@ -6,9 +6,6 @@ import { useEffect, useState } from "react";
 import { apiJson, readIdToken } from "@lib/api";
 import { hasPermission, Permission, PublicMember, roleLabel, statusLabel } from "@lib/member";
 
-const editorHref = (studentId: string) =>
-  `/portal/admin/members/?student=${encodeURIComponent(studentId)}`;
-
 const MembersPage : NextPage = () => {
   const [members, setMembers] = useState<PublicMember[]>([]);
   const [permissions, setPermissions] = useState(0);
@@ -34,7 +31,12 @@ const MembersPage : NextPage = () => {
   return (
     <div className={styles.container}>
       <main className={styles.main}>
-        <h1>構成員名簿</h1>
+        <div className={portalStyles.pageHeader}>
+          <h1>構成員名簿</h1>
+          {canManage && (
+            <Link className={portalStyles.portal} href="/portal/admin/members/">編集</Link>
+          )}
+        </div>
         <p className={styles.description}>
           情報に誤りがある場合、ご連絡ください。<br />
         </p>
@@ -47,7 +49,6 @@ const MembersPage : NextPage = () => {
               <th>役割</th>
               <th>在籍</th>
               <th>入部日</th>
-              {canManage && <th></th>}
             </tr>
           </thead>
           <tbody>
@@ -58,11 +59,6 @@ const MembersPage : NextPage = () => {
                 <td>{roleLabel(member.roleBits)}</td>
                 <td>{statusLabel(member.status)}</td>
                 <td>{member.joinDate?.slice(0, 10)}</td>
-                {canManage && (
-                  <td>
-                    <Link className={portalStyles.portal} href={editorHref(member.studentId)}>編集</Link>
-                  </td>
-                )}
               </tr>
             ))}
           </tbody>
