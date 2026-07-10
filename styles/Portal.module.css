@@ -193,6 +193,37 @@ button.portal:disabled {
   opacity: 0.6;
 }
 
+.textArea,
+.jsonEditor {
+  width: 100%;
+  margin: 0;
+  padding: 0.5rem;
+  background-color: #222;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  font-size: 15px;
+  font-family: inherit;
+  color-scheme: dark;
+  resize: vertical;
+}
+
+/* JSON は折り返すと構造が読めないので、横スクロールで逃がす */
+.jsonEditor {
+  min-height: 50vh;
+  font-family: Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: auto;
+}
+
+.textArea:focus,
+.jsonEditor:focus {
+  outline: none;
+  border-color: #23df1e;
+}
+
 .notice {
   padding: 8px;
   background-color: #ffffff2f;
