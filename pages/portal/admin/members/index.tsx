@@ -7,36 +7,54 @@ import { AdminMember, hasPermission, MemberStatus, Permission } from "@lib/membe
 import { MemberRow } from "@components/portal/MemberRow";
 import { MemberPanel } from "@components/portal/MemberPanel";
 
-const FILTERS: { id: MemberStatus | "all"; label: string }[] = [
+type Tab = MemberStatus | "all";
+
+const FILTERS: { id: Tab; label: string }[] = [
+  { id: "all", label: "すべて" },
   { id: "pre-active", label: "承認待ち" },
   { id: "active", label: "在籍" },
   { id: "graduated", label: "卒業" },
   { id: "withdrawn", label: "退部" },
-  { id: "all", label: "すべて" },
 ];
+
+const isTab = (value: string | null): value is Tab => FILTERS.some(f => f.id === value);
 
 const AdminMembersPage: NextPage = () => {
   const [members, setMembers] = useState<AdminMember[]>([]);
   const [permissions, setPermissions] = useState(0);
-  const [filter, setFilter] = useState<MemberStatus | "all">("pre-active");
+  const [filter, setFilter] = useState<Tab>("all");
   const [msg, setMsg] = useState("");
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [filterInitialized, setFilterInitialized] = useState(false);
 
   // 一覧から引き直すので、再読込やフィルタ切替で消えた部員のパネルは自然に閉じる
   const selected = members.find(m => m.id === selectedId) ?? null;
 
-  const load = useCallback(async (status: MemberStatus | "all") => {
+  const load = useCallback(async (status: Tab) => {
     const query = status === "all" ? "" : `?status=${status}`;
     const data: any = await apiJson(`/members/list${query}`, { method: "POST" });
 
     setMembers(data.members ?? []);
   }, []);
 
+  // ?tab= を URL に載せて、リロードや共有で同じタブが開くようにする
+  useEffect(() => {
+    if (!filterInitialized) return;
+
+    const params = new URLSearchParams(window.location.search);
+    params.set("tab", filter);
+    window.history.replaceState({}, "", `${window.location.pathname}?${params.toString()}`);
+  }, [filter, filterInitialized]);
+
   useEffect(() => {
     if (!readIdToken()) {
       window.location.href = `/?i=${encodeURIComponent("portal/admin/members/")}#login`;
       return;
     }
+
+    const tab = new URLSearchParams(window.location.search).get("tab");
+    if (isTab(tab)) setFilter(tab);
+    setFilterInitialized(true);
 
     // 自分の実効権限は /portal が返す。403 ならこの画面を開く資格がない
     apiFetch("/portal", { method: "POST" })
@@ -88,7 +106,7 @@ const AdminMembersPage: NextPage = () => {
             <button
               key={f.id}
               className={`${portalStyles.tabButton} ${filter === f.id ? portalStyles.active : ""}`}
-              onClick={() => setFilter(f.id)}>
+              onClick={() => { setSelectedId(null); setFilter(f.id); }}>
               {f.label}
             </button>
           ))}

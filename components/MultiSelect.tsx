@@ -1,5 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { CSSProperties, useCallback, useEffect, useRef, useState } from "react";
 import styles from "@styles/MultiSelect.module.css";
+
+/** メニューの最大高さ。styles.menu と揃えること */
+const MENU_MAX_HEIGHT = 224;
 
 export interface MultiSelectOption<T> {
   value: T;
@@ -26,9 +29,29 @@ export function MultiSelect<T extends string | number>({
   onChange,
 }: MultiSelectProps<T>) {
   const [open, setOpen] = useState(false);
+  const [menuStyle, setMenuStyle] = useState<CSSProperties>({});
   const root = useRef<HTMLDivElement>(null);
 
-  // 外側のクリックと Esc で閉じる
+  // ダイアログの overflow に切り取られないよう、メニューはビューポート基準で置く
+  const placeMenu = useCallback(() => {
+    const rect = root.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    const below = window.innerHeight - rect.bottom;
+    const dropUp = below < MENU_MAX_HEIGHT && rect.top > below;
+
+    setMenuStyle({
+      left: rect.left,
+      width: rect.width,
+      maxHeight: Math.min(MENU_MAX_HEIGHT, (dropUp ? rect.top : below) - 8),
+      ...(dropUp
+        ? { bottom: window.innerHeight - rect.top + 2 }
+        : { top: rect.bottom + 2 }),
+    });
+  }, []);
+
+  // 外側のクリックと Esc で閉じる。
+  // モーダルの内側は stopPropagation することがあり、document まで届かないので捕捉フェーズで拾う
   useEffect(() => {
     if (!open) return;
 
@@ -36,16 +59,27 @@ export function MultiSelect<T extends string | number>({
       if (!root.current?.contains(e.target as Node)) setOpen(false);
     };
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+      // 先に閉じるのはメニュー。モーダルはその次の Esc で閉じる
+      if (e.key !== "Escape") return;
+
+      e.stopPropagation();
+      setOpen(false);
     };
 
-    document.addEventListener("mousedown", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
+    // メニューはビューポート基準なので、祖先がスクロールしたら追従させる
+    const onReflow = () => placeMenu();
+
+    document.addEventListener("mousedown", onPointerDown, true);
+    document.addEventListener("keydown", onKeyDown, true);
+    document.addEventListener("scroll", onReflow, true);
+    window.addEventListener("resize", onReflow);
     return () => {
-      document.removeEventListener("mousedown", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("mousedown", onPointerDown, true);
+      document.removeEventListener("keydown", onKeyDown, true);
+      document.removeEventListener("scroll", onReflow, true);
+      window.removeEventListener("resize", onReflow);
     };
-  }, [open]);
+  }, [open, placeMenu]);
 
   if (options.length === 0)
     return <p className={styles.empty}>{placeholder ?? "選択できる項目はありません。"}</p>;
@@ -56,6 +90,11 @@ export function MultiSelect<T extends string | number>({
   const toggleOption = (value: T) =>
     onChange(isSelected(value) ? selected.filter(v => v !== value) : [...selected, value]);
 
+  const toggleOpen = () => {
+    if (!open) placeMenu();
+    setOpen(!open);
+  };
+
   return (
     <div className={styles.multiSelect} ref={root}>
       <button
@@ -63,7 +102,7 @@ export function MultiSelect<T extends string | number>({
         disabled={disabled}
         aria-expanded={open}
         className={`${styles.control} ${open ? styles.open : ""}`}
-        onClick={() => setOpen(!open)}>
+        onClick={toggleOpen}>
         <span className={summary ? "" : styles.placeholder}>
           {summary || placeholder || "なし"}
         </span>
@@ -71,7 +110,7 @@ export function MultiSelect<T extends string | number>({
       </button>
 
       {open && (
-        <ul className={styles.menu} role="listbox" aria-multiselectable>
+        <ul className={styles.menu} style={menuStyle} role="listbox" aria-multiselectable>
           {options.map(option => (
             <li key={String(option.value)}>
               <button

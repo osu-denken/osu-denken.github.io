@@ -52,6 +52,9 @@
 .body {
   overflow-y: auto;
   padding: 1rem;
+  color-scheme: dark;
+  scrollbar-color: #555 #1c1c1c;
+  scrollbar-width: thin;
 }
 
 @media screen and (max-width: 640px) {
