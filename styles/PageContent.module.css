@@ -1,0 +1,41 @@
+/* Markdown には className を書けないので、囲みの中の要素へまとめて当てる。
+   Page.module.css の .description と同じ見た目になるよう揃えること */
+.pageContent a {
+  color: #4fafff;
+}
+
+.pageContent a:hover {
+  text-decoration: underline;
+  color: inherit;
+}
+
+/* 元は img ごとに style で指定していた。本文から見た目の指定を追い出す */
+.pageContent img {
+  max-width: min(400px, 100%);
+}
+
+.pageContent iframe {
+  max-width: 100%;
+  border: 0;
+}
+
+/* カレンダーは白背景のまま埋め込まれるので、暗い配色へ寄せる。
+   本文が書く class 名は CSS Modules のハッシュと一致しないため :global で受ける */
+.pageContent iframe:global(.invert) {
+  filter: invert(1) hue-rotate(180deg);
+  width: 100%;
+  max-width: 960px;
+  min-height: 300px;
+}
+
+.pageContent table {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.pageContent pre {
+  overflow-x: auto;
+  max-width: 100%;
+}
