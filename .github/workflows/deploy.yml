@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+  # 管理画面から fake terminal を編集したとき、web-api がこれを叩いて再ビルドさせる
+  workflow_dispatch:
+
 jobs:
   build-and-export:
     runs-on: ubuntu-latest
@@ -29,8 +32,9 @@ jobs:
         run: |
           git config --global url."https://github.com/".insteadOf "git@github.com:"
 
+      # --remote で main の先頭を取り込む。管理画面からの welcome.md の編集がここで反映される
       - name: Init terminal submodule
-        run: git submodule update --init public/terminal
+        run: git submodule update --init --remote public/terminal
 
       - name: Setup Node.js
         uses: actions/setup-node@v3

@@ -65,6 +65,10 @@ export const BlogTab = ({ setMsg }: BlogTabProps) => {
         </div>
       </form>
 
+      <p className={styles.description}>
+        <Link href={editorHref("@welcome")}>トップページのターミナルに表示される welcome.md を編集する</Link>
+      </p>
+
       <div className={portalStyles.grid}>
         {blogList.map((page) => (
           <Link key={page.sha} href={editorHref(page.name)}>

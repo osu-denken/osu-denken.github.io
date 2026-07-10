@@ -16,9 +16,17 @@ const ReactSimpleMdeEditor = dynamic(() => import("react-simplemde-editor"), {
 import "easymde/dist/easymde.min.css";
 import 'github-markdown-css/github-markdown.css';
 
-// 先頭が _ のページ名は固定ページを指し、API のエンドポイントとスラッグが変わる
+// 先頭が _ のページ名は固定ページ、@ は fake terminal のファイルを指す。
+// いずれも API のエンドポイントとスラッグが変わる
 const isStaticPage = (page: string) => page.startsWith("_");
-const pageSlug = (page: string) => isStaticPage(page) ? page.slice(1) : page;
+const isTerminalPage = (page: string) => page.startsWith("@");
+const pageSlug = (page: string) => isStaticPage(page) || isTerminalPage(page) ? page.slice(1) : page;
+
+const pageTitle = (page: string) => {
+  if (isStaticPage(page)) return `固定ページ ${page.slice(1)}`;
+  if (isTerminalPage(page)) return `ターミナル ${page.slice(1)}.md`;
+  return page;
+};
 
 const PortalPage : NextPage = () => {
   const ymd = new Date().toISOString().split('T')[0];
@@ -60,8 +68,11 @@ const PortalPage : NextPage = () => {
     if (page) setPage(page);
 
     if (action === "edit") {
-      const endpoint = isStaticPage(page) ? "get-static" : "get";
-      apiJson(`/v1/blog/${endpoint}?page=${encodeURIComponent(pageSlug(page))}`, {
+      const path = isTerminalPage(page)
+        ? `/v1/terminal/get?page=${encodeURIComponent(pageSlug(page))}`
+        : `/v1/blog/${isStaticPage(page) ? "get-static" : "get"}?page=${encodeURIComponent(pageSlug(page))}`;
+
+      apiJson(path, {
         method: "GET",
         auth: false
       }).then((data: any) => {
@@ -69,6 +80,9 @@ const PortalPage : NextPage = () => {
           setBlogData(data);
           setSource(data.content);
           setSavedSource(data.content);
+        } else if (isTerminalPage(page)) {
+          // ターミナルのファイルは既存のものを編集するだけで、新規作成はしない
+          setMsg("ファイルの取得に失敗しました。");
         } else {
           const defaultSource = `---
 title: "今日の活動報告"
@@ -220,7 +234,7 @@ layout: default
           </div>
         ) : (
           <div>
-          <h1>{page.startsWith("_") ? "固定ページ " + page.slice(1) : page} の編集</h1>
+          <h1>{pageTitle(page)} の編集</h1>
             <div className={portalStyles.inputGroup2}>
               <div className={portalStyles.mdeeditor}>
                 <ReactSimpleMdeEditor onChange={(str) => setSource(str)} value={source} className={portalStyles.portal} getMdeInstance={
@@ -238,18 +252,31 @@ layout: default
 
             <div className={portalStyles.inputGroup}>
             <button type="button" className={portalStyles.portal} onClick={() => {
-              const endpoint = isStaticPage(page) ? "update-static" : "update";
-              apiJson(`/v1/blog/${endpoint}`, {
+              const path = isTerminalPage(page)
+                ? "/v1/terminal/update"
+                : `/v1/blog/${isStaticPage(page) ? "update-static" : "update"}`;
+
+              apiJson(path, {
                 method: "POST",
                 headers: { "page": pageSlug(page) },
                 body: source,
               }).then((data: any) => {
-                if (data.success) {
-                  setMsg("保存しました。");
-                  setSavedSource(source);
-                } else {
+                if (!data.success) {
                   setMsg("保存に失敗しました。");
+                  return;
                 }
+
+                setSavedSource(source);
+
+                // ターミナルのファイルはサイトの再ビルドを経て公開されるので、すぐには反映されない
+                if (!isTerminalPage(page)) {
+                  setMsg("保存しました。");
+                  return;
+                }
+
+                setMsg(data.rebuildTriggered
+                  ? "保存しました。サイトへの反映まで数分かかります。"
+                  : "保存しましたが、サイトの再ビルドを起動できませんでした。");
               }).catch(e => {
                 console.error("Failed to save page:", e);
                 setMsg("保存に失敗しました。");
@@ -257,6 +284,7 @@ layout: default
             }}>
               保存
             </button>
+            {!isTerminalPage(page) &&
             <button type="button" className={portalStyles.portal} style={{ backgroundColor: "#a66666" }} onClick={() => {
               const confirmed = confirm("本当に削除しますか？");
               if (!confirmed) return;
@@ -279,6 +307,7 @@ layout: default
             }}>
               削除
             </button>
+            }
             <button type="button" className={portalStyles.portal} onClick={() => {
               if (isDirty && !confirm("変更が保存されていません。本当にページを離れますか？"))
                 return;
