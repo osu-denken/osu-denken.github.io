@@ -9,7 +9,7 @@ export const PageTab = () => (
   <div className={portalStyles.tabPane}>
     <h1>ページ</h1>
     <p className={styles.description}>
-      ブログ記事ではない、サイトの固定ページを編集します。
+      公式サイト(ブログを除く)のページを編集します。
     </p>
 
     <p className={styles.description}>
