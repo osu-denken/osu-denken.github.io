@@ -29,7 +29,7 @@ h3 {
   /* border-bottom: 2px solid #ffffff; */
 }
 
-input[type="text"], input[type="password"] {
+input[type="text"], input[type="password"], input[type="tel"], input[type="email"] {
   background-color: #222;
   font-size: 15px;
   color: #fff;

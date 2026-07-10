@@ -51,7 +51,7 @@ export function MultiSelect<T extends string | number>({
     return <p className={styles.empty}>{placeholder ?? "選択できる項目はありません。"}</p>;
 
   const isSelected = (value: T) => selected.includes(value);
-  const summary = options.filter(o => isSelected(o.value)).map(o => o.label).join("・");
+  const summary = options.filter(o => isSelected(o.value)).map(o => o.label).join("/");
 
   const toggleOption = (value: T) =>
     onChange(isSelected(value) ? selected.filter(v => v !== value) : [...selected, value]);

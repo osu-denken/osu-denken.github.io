@@ -52,13 +52,19 @@ select.portal {
   margin: 0;
   width: min(16rem, 100%);
   padding: 0.5rem;
-  background-color: #ffffff0f;
+  background-color: #222;
   color: #fff;
-  border: 1px solid #ffffff3f;
+  border: 1px solid #555;
   border-radius: 4px;
   font-size: 15px;
   font-family: inherit;
   color-scheme: dark;
+}
+
+/* 半透明だとネイティブのドロップダウンに引き継がれず、白背景に白文字になる */
+select.portal option {
+  background-color: #222;
+  color: #fff;
 }
 
 select.portal:focus {

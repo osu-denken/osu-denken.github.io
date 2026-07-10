@@ -11,9 +11,9 @@
   width: 100%;
   margin: 0;
   padding: 0.5rem;
-  background-color: #ffffff0f;
+  background-color: #222;
   color: #fff;
-  border: 1px solid #ffffff3f;
+  border: 1px solid #555;
   border-radius: 4px;
   font-size: 15px;
   font-family: inherit;
@@ -59,7 +59,7 @@
   padding: 0.25rem;
   list-style: none;
   background-color: #1c1c1c;
-  border: 1px solid #ffffff3f;
+  border: 1px solid #555;
   border-radius: 4px;
   box-shadow: 0 4px 12px #0000007f;
 }
