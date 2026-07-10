@@ -25,21 +25,27 @@ interface MemberEditorProps {
 interface Draft {
   name: string;
   furigana: string;
+  email: string;
   tel: string;
   roleBits: number;
   permBits: number;
   status: MemberDetail["status"];
+  joinDate: string;
   leaveDate: string;
 }
+
+const toDate = (value: string | null) => value?.slice(0, 10) ?? "";
 
 const toDraft = (m: MemberDetail): Draft => ({
   name: m.name,
   furigana: m.furigana ?? "",
+  email: m.email,
   tel: m.tel ?? "",
   roleBits: m.roleBits,
   permBits: m.permBits,
   status: m.status,
-  leaveDate: m.leaveDate?.slice(0, 10) ?? "",
+  joinDate: toDate(m.joinDate),
+  leaveDate: toDate(m.leaveDate),
 });
 
 export const MemberEditor = ({ detail, permissions, canEditTel, onSaved, onError }: MemberEditorProps) => {
@@ -58,6 +64,7 @@ export const MemberEditor = ({ detail, permissions, canEditTel, onSaved, onError
 
   const dirty = JSON.stringify(draft) !== JSON.stringify(toDraft(detail));
   const leaving = draft.status === "withdrawn" || draft.status === "graduated";
+  const isPreActive = detail.status === "pre-active";
 
   const save = () => {
     setSaving(true);
@@ -68,11 +75,12 @@ export const MemberEditor = ({ detail, permissions, canEditTel, onSaved, onError
         id: detail.id,
         name: draft.name,
         furigana: draft.furigana,
+        email: draft.email,
         ...(canEditTel ? { tel: draft.tel } : {}),
         roleBits: draft.roleBits,
         permBits: draft.permBits & ~granted,
-        status: draft.status,
-        leaveDate: leaving ? draft.leaveDate || null : null,
+        joinDate: draft.joinDate || null,
+        ...(isPreActive ? {} : { status: draft.status, leaveDate: leaving ? draft.leaveDate || null : null }),
       })
     })
       .then((data: any) => {
@@ -86,66 +94,68 @@ export const MemberEditor = ({ detail, permissions, canEditTel, onSaved, onError
       .finally(() => setSaving(false));
   };
 
+  const text = (key: keyof Draft, type = "text") => (
+    <input type={type} className={portalStyles.portal} value={draft[key] as string}
+      onChange={e => set(key, e.target.value as Draft[typeof key])} />
+  );
+
   return (
     <div className={portalStyles.memberEditor}>
-      <div className={portalStyles.field}>
-        <label>氏名</label>
-        <input type="text" className={portalStyles.portal} value={draft.name}
-          onChange={e => set("name", e.target.value)} />
-      </div>
-
-      <div className={portalStyles.field}>
-        <label>ふりがな</label>
-        <input type="text" className={portalStyles.portal} value={draft.furigana}
-          onChange={e => set("furigana", e.target.value)} />
-      </div>
-
-      <div className={portalStyles.field}>
-        <label>メールアドレス</label>
-        <p>{detail.email}</p>
-      </div>
-
-      {canEditTel && (
-        <div className={portalStyles.field}>
-          <label>電話番号</label>
-          <input type="tel" className={portalStyles.portal} value={draft.tel}
-            onChange={e => set("tel", e.target.value)} />
+      <section className={portalStyles.editorSection}>
+        <h4>基本情報</h4>
+        <div className={portalStyles.fieldGrid}>
+          <div className={portalStyles.field}><label>学籍番号</label><p>{detail.studentId}</p></div>
+          <div className={portalStyles.field}><label>氏名</label>{text("name")}</div>
+          <div className={portalStyles.field}><label>ふりがな</label>{text("furigana")}</div>
+          <div className={portalStyles.field}><label>メールアドレス</label>{text("email", "email")}</div>
+          {canEditTel && <div className={portalStyles.field}><label>電話番号</label>{text("tel", "tel")}</div>}
         </div>
-      )}
+      </section>
 
-      <div className={portalStyles.field}>
-        <label>役職</label>
-        <BitMultiSelect entries={ROLE_ENTRIES} value={draft.roleBits} disabled={!canEditRoles}
-          onChange={bits => set("roleBits", bits)} />
-      </div>
+      <section className={portalStyles.editorSection}>
+        <h4>在籍</h4>
+        <div className={portalStyles.fieldGrid}>
+          {/* 仮登録の在籍状態は承認・却下でしか変えられない */}
+          {!isPreActive && (
+            <div className={portalStyles.field}>
+              <label>状態</label>
+              <select className={portalStyles.portal} value={draft.status} disabled={!canEditStatus}
+                onChange={e => set("status", e.target.value as Draft["status"])}>
+                {EDITABLE_STATUSES.map(s => <option key={s} value={s}>{statusLabel(s)}</option>)}
+              </select>
+            </div>
+          )}
 
-      <div className={portalStyles.field}>
-        <label>権限</label>
-        <BitMultiSelect entries={grantablePermissions} value={draft.permBits & ~granted}
-          disabled={!canEditPerms} placeholder="役職の権限のみ"
-          onChange={bits => set("permBits", bits)} />
-      </div>
+          <div className={portalStyles.field}><label>入部日</label>{text("joinDate", "date")}</div>
 
-      {/* 仮登録の在籍状態は承認・却下でしか変えられない */}
-      {detail.status !== "pre-active" && (
-        <div className={portalStyles.field}>
-          <label>在籍</label>
-          <select className={portalStyles.portal} value={draft.status} disabled={!canEditStatus}
-            onChange={e => set("status", e.target.value as Draft["status"])}>
-            {EDITABLE_STATUSES.map(s => <option key={s} value={s}>{statusLabel(s)}</option>)}
-          </select>
+          {leaving && (
+            <div className={portalStyles.field}>
+              <label>{draft.status === "graduated" ? "卒業日" : "退部日"}</label>
+              <input type="date" className={portalStyles.portal} value={draft.leaveDate}
+                disabled={!canEditStatus} onChange={e => set("leaveDate", e.target.value)} />
+            </div>
+          )}
         </div>
-      )}
+      </section>
 
-      {leaving && (
-        <div className={portalStyles.field}>
-          <label>{draft.status === "graduated" ? "卒業日" : "退部日"}</label>
-          <input type="date" className={portalStyles.portal} value={draft.leaveDate}
-            disabled={!canEditStatus} onChange={e => set("leaveDate", e.target.value)} />
+      <section className={portalStyles.editorSection}>
+        <h4>役職と権限</h4>
+        <div className={portalStyles.fieldGrid}>
+          <div className={portalStyles.field}>
+            <label>役職</label>
+            <BitMultiSelect entries={ROLE_ENTRIES} value={draft.roleBits} disabled={!canEditRoles}
+              onChange={bits => set("roleBits", bits)} />
+          </div>
+          <div className={portalStyles.field}>
+            <label>権限</label>
+            <BitMultiSelect entries={grantablePermissions} value={draft.permBits & ~granted}
+              disabled={!canEditPerms} placeholder="役職の権限のみ"
+              onChange={bits => set("permBits", bits)} />
+          </div>
         </div>
-      )}
+      </section>
 
-      <div className={portalStyles.inputGroup}>
+      <div className={portalStyles.editorActions}>
         <button type="button" className={portalStyles.portal} disabled={!dirty || saving} onClick={save}>
           {saving ? "保存中…" : "保存"}
         </button>
@@ -153,6 +163,7 @@ export const MemberEditor = ({ detail, permissions, canEditTel, onSaved, onError
           onClick={() => setDraft(toDraft(detail))}>
           取り消し
         </button>
+        {dirty && <span className={portalStyles.hint}>未保存の変更があります</span>}
       </div>
     </div>
   );
