@@ -2,12 +2,15 @@ import Link from "next/link";
 import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
 import { apiJson } from "@lib/api";
+import { TotpSection } from "@components/portal/TotpSection";
 
 interface SettingsTabProps {
   userName: string;
   setUserName: (name: string) => void;
   setMsg: (msg: string) => void;
   hasGitHubToken: boolean;
+  hasTotp: boolean;
+  recoveryCodesLeft: number;
 }
 
 /**
@@ -37,7 +40,7 @@ const updateGitHubToken = (value: string) =>
 const deleteGitHubToken = () =>
   requestSucceeded("delete GitHub Token", "/github/token", { method: "DELETE" });
 
-export const SettingsTab = ({ userName, setUserName, setMsg, hasGitHubToken }: SettingsTabProps) => {
+export const SettingsTab = ({ userName, setUserName, setMsg, hasGitHubToken, hasTotp, recoveryCodesLeft }: SettingsTabProps) => {
   const onChangeUserName = (e: React.MouseEvent) => {
     e.preventDefault();
     const input = document.getElementById("usernameInput") as HTMLInputElement;
@@ -106,6 +109,8 @@ export const SettingsTab = ({ userName, setUserName, setMsg, hasGitHubToken }: S
       <p className={styles.description}>
         パスワードを再設定するには<Link href="/resetpass/">こちら</Link>からメールアドレスを入力してください。
       </p>
+
+      <TotpSection hasTotp={hasTotp} recoveryCodesLeft={recoveryCodesLeft} setMsg={setMsg} />
 
       <h2>GitHub PAT</h2>
       <p className={styles.description}>

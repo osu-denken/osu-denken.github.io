@@ -1,5 +1,6 @@
 import Modal from 'react-modal';
 import { useState } from 'react';
+import type { LoginResult } from '@hooks/useAuth';
 
 const modalStyle: Modal.Styles = {
   overlay: {
@@ -27,23 +28,55 @@ const modalStyle: Modal.Styles = {
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin: (email: string, password: string) => void;
+  /** 'mfa' が返ったら認証コードの入力へ進む */
+  onLogin: (email: string, password: string) => Promise<LoginResult>;
+  onSubmitTotp: (code: string) => Promise<LoginResult>;
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => {
+const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSubmitTotp }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [code, setCode] = useState('');
+  const [needsTotp, setNeedsTotp] = useState(false);
+  const [busy, setBusy] = useState(false);
 
-  const handleLoginClick = (e: React.MouseEvent<HTMLInputElement>) => {
+  const handleLoginClick = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
-    onLogin(email, password);
+    if (busy) return;
+
+    setBusy(true);
+    try {
+      if (await onLogin(email, password) === 'mfa') setNeedsTotp(true);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleTotpClick = async (e: React.MouseEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    if (busy) return;
+
+    setBusy(true);
+    try {
+      // セッション切れなど、やり直しが必要な場合はパスワード入力へ戻す
+      if (await onSubmitTotp(code) === 'error') setNeedsTotp(false);
+      setCode('');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleClose = () => {
+    setNeedsTotp(false);
+    setCode('');
+    onClose();
   };
 
   return (
     <Modal
       isOpen={isOpen}
       style={modalStyle}
-      onRequestClose={onClose}
+      onRequestClose={handleClose}
       className="modalContent"
       overlayClassName="modalOverlay"
       closeTimeoutMS={200}
@@ -62,32 +95,59 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin }) => 
           borderRadius: "0.5rem",
           cursor: "pointer"
         }}
-        onClick={onClose}
+        onClick={handleClose}
       >
         ×
       </button>
-      <h2>ログイン</h2>
-      <form method="POST">
-        <h3>学籍番号</h3>
-        <input
-          type="text"
-          name="username"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        /><br />
-        <h3>パスワード</h3>
-        <input
-          type="password"
-          name="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <br />
-        <input type="submit" value="ログイン" onClick={handleLoginClick} />
-      </form>
-      <p>
-        ログインは大産大の電研部員のみが可能となっております。
-      </p>
+
+      {needsTotp ? (
+        <>
+          <h2>2段階認証</h2>
+          <form method="POST">
+            <h3>認証コード</h3>
+            <input
+              type="text"
+              name="one-time-code"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              autoFocus
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+            />
+            <br />
+            <input type="submit" value="認証" disabled={busy} onClick={handleTotpClick} />
+          </form>
+          <p>
+            認証アプリに表示されている6桁のコードを入力してください。<br />
+            端末を紛失した場合はリカバリコードも使えます。
+          </p>
+        </>
+      ) : (
+        <>
+          <h2>ログイン</h2>
+          <form method="POST">
+            <h3>学籍番号</h3>
+            <input
+              type="text"
+              name="username"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            /><br />
+            <h3>パスワード</h3>
+            <input
+              type="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <br />
+            <input type="submit" value="ログイン" disabled={busy} onClick={handleLoginClick} />
+          </form>
+          <p>
+            ログインは大産大の電研部員のみが可能となっております。
+          </p>
+        </>
+      )}
     </Modal>
   );
 };

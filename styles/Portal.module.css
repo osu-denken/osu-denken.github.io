@@ -242,6 +242,17 @@ button.portal:disabled {
   color-scheme: dark;
 }
 
+.recoveryCodes {
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  background-color: #00000040;
+  border-radius: 6px;
+  font-family: monospace;
+  letter-spacing: 0.08em;
+  line-height: 1.7;
+  user-select: all;
+}
+
 .imageGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));

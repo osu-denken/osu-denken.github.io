@@ -8,7 +8,7 @@ import LoginModal from '@components/LoginModal';
 
 const Navbar: React.FC = () => {
   const [modalIsOpen, setIsOpen] = useState<boolean>(false);
-  const { isLoggedIn, userName, login, logout } = useAuth();
+  const { isLoggedIn, userName, login, submitTotp, logout } = useAuth();
 
   // URLの#loginハッシュに基づいてモーダルを開く
   useEffect(() => {
@@ -36,11 +36,9 @@ const Navbar: React.FC = () => {
     }
   }, []);
   
-  const handleLogin = async (email: string, password: string) => {
-    // ログイン成功時のリロードはuseAuth内で行われるため、ここではモーダルを閉じる処理は不要。
-    // 失敗時はuseAuth内でalertが表示され、モーダルは開いたままとなる。
-    await login(email, password);
-  };
+  // ログイン成功時のリロードはuseAuth内で行われるため、ここではモーダルを閉じる処理は不要。
+  // 失敗時はuseAuth内でalertが表示され、モーダルは開いたままとなる。
+  const handleLogin = (email: string, password: string) => login(email, password);
   
   const closeModal = () => {
     setIsOpen(false);
@@ -84,7 +82,7 @@ const Navbar: React.FC = () => {
         </li>
         {rightNavItem}
       </ul>
-      <LoginModal isOpen={modalIsOpen} onClose={closeModal} onLogin={handleLogin} />
+      <LoginModal isOpen={modalIsOpen} onClose={closeModal} onLogin={handleLogin} onSubmitTotp={submitTotp} />
     </nav>
   );
 };

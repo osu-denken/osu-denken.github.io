@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { API_BASE, clearTokens, readIdToken, refreshIdToken, storeTokens } from '@lib/api';
 
 // 認証APIからのレスポンスの型定義
@@ -7,7 +7,15 @@ interface AuthResponse {
   refreshToken?: string;
   displayName?: string;
   message?: string;
+  /** HttpError のエラー識別名 (例: MFA_INVALID_CODE) */
+  error?: string;
+  /** 2段階認証が有効な場合、トークンの代わりにこれが返る */
+  mfaRequired?: boolean;
+  mfaPendingToken?: string;
 }
+
+/** ログインの結果。'mfa' なら認証コードの入力へ進む */
+export type LoginResult = 'ok' | 'mfa' | 'error';
 
 // ログイン時の表示名。未設定ならメールアドレスのローカル部を使う
 const resolveDisplayName = (data: AuthResponse, email: string): string => {
@@ -62,43 +70,96 @@ export const useAuth = () => {
     }
   }, [isLoggedIn, refreshToken]);
 
-  // ログイン処理
-  const login = useCallback(async (email: string, password: string): Promise<void> => {
-    try {
-      const response = await fetch(`${API_BASE}/user/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      });
+  // 2段階認証の待機トークンとログインに使ったメールアドレス。コード入力の間だけ保持する
+  const mfaPendingToken = useRef<string | null>(null);
+  const mfaEmail = useRef<string>('');
 
+  const postJson = (path: string, body: unknown) =>
+    fetch(`${API_BASE}${path}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+
+  // ログイン成功時の共通処理
+  const completeLogin = (data: AuthResponse, email: string) => {
+    storeTokens(data.idToken!, data.refreshToken!);
+    localStorage.setItem('displayName', resolveDisplayName(data, email));
+
+    redirectAfterLogin();
+  };
+
+  // ログイン処理
+  const login = useCallback(async (email: string, password: string): Promise<LoginResult> => {
+    try {
+      const response = await postJson('/user/login', { email, password });
       const data: AuthResponse = await response.json();
+
+      // 2段階認証が有効な場合、トークンはコードを検証するまで発行されない
+      if (data.mfaRequired && data.mfaPendingToken) {
+        mfaPendingToken.current = data.mfaPendingToken;
+        mfaEmail.current = email;
+        return 'mfa';
+      }
 
       if (!data.idToken || !data.refreshToken) {
         console.log(data);
         if (data.message === 'INVALID_LOGIN_CREDENTIALS') {
           alert('学籍番号またはパスワードが間違っています。');
-          return;
+          return 'error';
         }
         alert('ログイン失敗: ' + (data.message || '不明なエラー'));
-        return;
+        return 'error';
       }
 
-      storeTokens(data.idToken, data.refreshToken);
-      localStorage.setItem('displayName', resolveDisplayName(data, email));
-
-      redirectAfterLogin();
+      completeLogin(data, email);
+      return 'ok';
     } catch (error) {
       console.error('Error:', error);
       alert('ログイン中にエラーが発生しました。');
+      return 'error';
+    }
+  }, []);
+
+  // 2段階認証のコード (またはリカバリコード) を検証する
+  const submitTotp = useCallback(async (code: string): Promise<LoginResult> => {
+    if (!mfaPendingToken.current) {
+      alert('認証セッションが切れました。もう一度ログインしてください。');
+      return 'error';
+    }
+
+    try {
+      const response = await postJson('/user/loginTotp', {
+        mfaPendingToken: mfaPendingToken.current,
+        code,
+      });
+
+      const data: AuthResponse = await response.json();
+
+      if (!data.idToken || !data.refreshToken) {
+        if (data.error === 'MFA_INVALID_CODE') {
+          alert('認証コードが正しくありません。');
+          return 'mfa';
+        }
+
+        // 期限切れと試行回数超過は、待機トークンを捨ててログインからやり直してもらう
+        mfaPendingToken.current = null;
+        alert(data.error === 'MFA_TOO_MANY_ATTEMPTS'
+          ? '試行回数が上限に達しました。もう一度ログインしてください。'
+          : '認証セッションが切れました。もう一度ログインしてください。');
+        return 'error';
+      }
+
+      completeLogin(data, mfaEmail.current);
+      return 'ok';
+    } catch (error) {
+      console.error('Error:', error);
+      alert('認証中にエラーが発生しました。');
+      return 'error';
     }
   }, []);
 
   const getIdToken = useCallback(() => readIdToken(), []);
 
-  return { isLoggedIn, userName, login, logout, refreshToken, getIdToken };
+  return { isLoggedIn, userName, login, submitTotp, logout, refreshToken, getIdToken };
 };

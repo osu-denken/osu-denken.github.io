@@ -114,7 +114,9 @@ const PortalPage : NextPage = () => {
               userName={userName}
               setUserName={setUserName}
               setMsg={setMsg}
-              hasGitHubToken={Boolean(portalData?.hasGitHubToken)} />
+              hasGitHubToken={Boolean(portalData?.hasGitHubToken)}
+              hasTotp={Boolean(portalData?.hasTotp)}
+              recoveryCodesLeft={portalData?.recoveryCodesLeft ?? 0} />
           )}
           {activeTab === "blog" && <BlogTab setMsg={setMsg} />}
           {activeTab === "image" && <ImageTab setMsg={setMsg} />}
