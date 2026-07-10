@@ -9,16 +9,24 @@ import { SettingsTab } from "@components/portal/SettingsTab";
 import { BlogTab } from "@components/portal/BlogTab";
 import { ImageTab } from "@components/portal/ImageTab";
 import { PrivatePostTab } from "@components/portal/PrivatePostTab";
+import { PageTab } from "@components/portal/PageTab";
 
-type TabName = "main" | "settings" | "blog" | "private" | "image";
+type TabName = "main" | "settings" | "blog" | "private" | "page" | "image";
 
 const TABS: { id: TabName; label: string }[] = [
   { id: "main", label: "ポータル" },
   { id: "settings", label: "設定" },
   { id: "blog", label: "ブログ" },
   { id: "private", label: "非公開記事" },
+  { id: "page", label: "ページ" },
   { id: "image", label: "画像" },
 ];
+
+/** タブを開くのに要る権限。ここに無いタブは誰でも開ける */
+const TAB_PERMISSIONS: Partial<Record<TabName, number>> = {
+  private: Permission.PrivatePostView,
+  page: Permission.PageEdit,
+};
 
 const PortalPage : NextPage = () => {
   const [activeTab, setActiveTab] = useState<TabName>("main");
@@ -33,9 +41,13 @@ const PortalPage : NextPage = () => {
 
   const permissions: number = portalData?.permissions ?? 0;
 
-  // 権限の解決前はタブを出さない。読めない記事のタブを一瞬見せないため
-  const visibleTabs = TABS.filter(tab =>
-    tab.id !== "private" || hasPermission(permissions, Permission.PrivatePostView));
+  // 権限の解決前はタブを出さない。開けないタブを一瞬見せないため
+  const canOpen = (tab: TabName) => {
+    const required = TAB_PERMISSIONS[tab];
+    return required === undefined || hasPermission(permissions, required);
+  };
+
+  const visibleTabs = TABS.filter(tab => canOpen(tab.id));
 
   useEffect(() => {
     if (!activeTabInitialized) return;
@@ -127,9 +139,10 @@ const PortalPage : NextPage = () => {
               recoveryCodesLeft={portalData?.recoveryCodesLeft ?? 0} />
           )}
           {activeTab === "blog" && <BlogTab setMsg={setMsg} />}
-          {activeTab === "private" && hasPermission(permissions, Permission.PrivatePostView) && (
+          {activeTab === "private" && canOpen("private") && (
             <PrivatePostTab permissions={permissions} setMsg={setMsg} />
           )}
+          {activeTab === "page" && canOpen("page") && <PageTab />}
           {activeTab === "image" && <ImageTab setMsg={setMsg} />}
         </div>
       </main>

@@ -33,11 +33,17 @@ export const BlogTab = ({ setMsg }: BlogTabProps) => {
 
     apiJson<BlogPage[]>("/v2/blog/list", { method: "GET", auth: false })
       .then(data => {
-        cachedBlogList = data ?? [];
+        // 失敗時はエラーを表すオブジェクトが返る。配列として扱うと描画で落ちる
+        if (!Array.isArray(data)) throw new Error("Blog list is not an array");
+
+        cachedBlogList = data;
         setBlogList(cachedBlogList);
       })
-      .catch(e => console.error("Failed to load blog list:", e));
-  }, []);
+      .catch(e => {
+        console.error("Failed to load blog list:", e);
+        setMsg("ブログ一覧の取得に失敗しました。");
+      });
+  }, [setMsg]);
 
   const onCreate = () => {
     const pageInput = document.querySelector('input[name="page"]') as HTMLInputElement;
@@ -64,10 +70,6 @@ export const BlogTab = ({ setMsg }: BlogTabProps) => {
           </button>
         </div>
       </form>
-
-      <p className={styles.description}>
-        <Link href={editorHref("@welcome")}>トップページのターミナルに表示される welcome.md を編集する</Link>
-      </p>
 
       <div className={portalStyles.grid}>
         {blogList.map((page) => (
