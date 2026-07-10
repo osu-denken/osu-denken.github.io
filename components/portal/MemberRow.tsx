@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import portalStyles from "@styles/Portal.module.css";
 import { apiJson } from "@lib/api";
 import {
@@ -16,6 +16,8 @@ interface MemberRowProps {
   member: AdminMember;
   /** 操作する側の実効権限 */
   permissions: number;
+  /** 名簿一覧の「編集」から来たときは最初から開く */
+  defaultExpanded?: boolean;
   onChanged: () => void;
   onError: (message: string) => void;
 }
@@ -41,19 +43,14 @@ const BitCheckboxes = ({ entries, value, onChange, disabled }: {
   </div>
 );
 
-export const MemberRow = ({ member, permissions, onChanged, onError }: MemberRowProps) => {
+export const MemberRow = ({ member, permissions, defaultExpanded, onChanged, onError }: MemberRowProps) => {
   const [expanded, setExpanded] = useState(false);
   const [detail, setDetail] = useState<MemberDetail | null>(null);
   const [roleBits, setRoleBits] = useState(member.roleBits);
   const [permBits, setPermBits] = useState(member.permBits);
 
   // 電話番号は一覧には載らない。開いたときだけ取りに行き、サーバ側で閲覧が記録される
-  const toggle = () => {
-    if (expanded) {
-      setExpanded(false);
-      return;
-    }
-
+  const open = useCallback(() => {
     setExpanded(true);
     if (detail) return;
 
@@ -66,7 +63,13 @@ export const MemberRow = ({ member, permissions, onChanged, onError }: MemberRow
         console.error("Failed to load member detail:", e);
         onError("部員情報の取得に失敗しました。");
       });
-  };
+  }, [detail, member.id, onError]);
+
+  useEffect(() => {
+    if (defaultExpanded) open();
+  }, [defaultExpanded, open]);
+
+  const toggle = () => expanded ? setExpanded(false) : open();
 
   const canApprove = hasPermission(permissions, Permission.MemberApprove);
   const canEditRoles = hasPermission(permissions, Permission.MemberRoleEdit);

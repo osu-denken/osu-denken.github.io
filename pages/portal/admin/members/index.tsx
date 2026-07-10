@@ -20,6 +20,9 @@ const AdminMembersPage: NextPage = () => {
   const [filter, setFilter] = useState<MemberStatus | "all">("pre-active");
   const [msg, setMsg] = useState("");
 
+  // 名簿一覧の「編集」から来たときは、その部員を含む「すべて」を開いて該当行を展開する
+  const [focusedStudentId, setFocusedStudentId] = useState<string | null>(null);
+
   const load = useCallback(async (status: MemberStatus | "all") => {
     const query = status === "all" ? "" : `?status=${status}`;
     const data: any = await apiJson(`/members/list${query}`, { method: "POST" });
@@ -31,6 +34,12 @@ const AdminMembersPage: NextPage = () => {
     if (!readIdToken()) {
       window.location.href = `/?i=${encodeURIComponent("portal/admin/members/")}#login`;
       return;
+    }
+
+    const student = new URLSearchParams(window.location.search).get("student");
+    if (student) {
+      setFocusedStudentId(student);
+      setFilter("all");
     }
 
     // 自分の実効権限は /portal が返す。403 ならこの画面を開く資格がない
@@ -106,6 +115,7 @@ const AdminMembersPage: NextPage = () => {
                 key={member.id}
                 member={member}
                 permissions={permissions}
+                defaultExpanded={member.studentId === focusedStudentId}
                 onChanged={reload}
                 onError={setMsg} />
             ))}
