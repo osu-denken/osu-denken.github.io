@@ -26,7 +26,7 @@ export const PageTab = () => (
     </div>
 
     <p className={styles.description}>
-      <Link href={terminalHref}>トップページのターミナルに表示される welcome.md を編集する</Link>
+      <Link href={terminalHref}>トップページのフェイクターミナルに表示される welcome.md を編集する</Link>
     </p>
   </div>
 );
