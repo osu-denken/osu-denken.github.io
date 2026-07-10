@@ -77,13 +77,18 @@ export interface PublicMember {
   leaveDate: string | null;
 }
 
-/** 部員管理画面が扱う名簿の全項目 */
+/** 部員管理画面の一覧が扱う項目。電話番号は含まない */
 export interface AdminMember extends PublicMember {
   id: number;
   email: string;
-  tel: string | null;
   permBits: number;
   approvedAt: string | null;
+}
+
+/** /members/detail が返す1名分。電話番号を含む */
+export interface MemberDetail extends AdminMember {
+  tel: string | null;
+  customData: Record<string, any>;
 }
 
 /**

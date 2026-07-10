@@ -4,6 +4,7 @@ import { apiJson } from "@lib/api";
 import {
   AdminMember,
   hasPermission,
+  MemberDetail,
   Permission,
   PERMISSION_ENTRIES,
   ROLE_ENTRIES,
@@ -42,8 +43,30 @@ const BitCheckboxes = ({ entries, value, onChange, disabled }: {
 
 export const MemberRow = ({ member, permissions, onChanged, onError }: MemberRowProps) => {
   const [expanded, setExpanded] = useState(false);
+  const [detail, setDetail] = useState<MemberDetail | null>(null);
   const [roleBits, setRoleBits] = useState(member.roleBits);
   const [permBits, setPermBits] = useState(member.permBits);
+
+  // 電話番号は一覧には載らない。開いたときだけ取りに行き、サーバ側で閲覧が記録される
+  const toggle = () => {
+    if (expanded) {
+      setExpanded(false);
+      return;
+    }
+
+    setExpanded(true);
+    if (detail) return;
+
+    apiJson<{ member: MemberDetail }>("/members/detail", {
+      method: "POST",
+      body: JSON.stringify({ id: member.id })
+    })
+      .then(data => setDetail(data.member))
+      .catch(e => {
+        console.error("Failed to load member detail:", e);
+        onError("部員情報の取得に失敗しました。");
+      });
+  };
 
   const canApprove = hasPermission(permissions, Permission.MemberApprove);
   const canEditRoles = hasPermission(permissions, Permission.MemberRoleEdit);
@@ -70,7 +93,7 @@ export const MemberRow = ({ member, permissions, onChanged, onError }: MemberRow
         <td>{statusLabel(member.status)}</td>
         <td>{member.joinDate?.slice(0, 10) ?? "-"}</td>
         <td>
-          <button type="button" className={portalStyles.portal} onClick={() => setExpanded(!expanded)}>
+          <button type="button" className={portalStyles.portal} onClick={toggle}>
             {expanded ? "閉じる" : "編集"}
           </button>
         </td>
@@ -79,7 +102,7 @@ export const MemberRow = ({ member, permissions, onChanged, onError }: MemberRow
       {expanded && (
         <tr>
           <td colSpan={6}>
-            <p>{member.email}{member.tel ? ` / ${member.tel}` : ""}</p>
+            <p>{member.email}{detail?.tel ? ` / ${detail.tel}` : ""}</p>
 
             {member.status === "pre-active" && canApprove && (
               <div className={portalStyles.inputGroup}>
