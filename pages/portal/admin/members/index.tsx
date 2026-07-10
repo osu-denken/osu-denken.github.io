@@ -107,15 +107,23 @@ const AdminMembersPage: NextPage = () => {
               <MemberRow
                 key={member.id}
                 member={member}
-                permissions={permissions}
-                onChanged={reload}
-                onError={setMsg} />
+                selected={member.id === selectedId}
+                onSelect={() => setSelectedId(member.id === selectedId ? null : member.id)} />
             ))}
           </tbody>
         </table>
         </div>
 
         {members.length === 0 && <p className={styles.description}>該当する部員はいません。</p>}
+
+        {selected && (
+          <MemberPanel
+            member={selected}
+            permissions={permissions}
+            onChanged={reload}
+            onClose={() => setSelectedId(null)}
+            onError={setMsg} />
+        )}
       </main>
     </div>
   );
