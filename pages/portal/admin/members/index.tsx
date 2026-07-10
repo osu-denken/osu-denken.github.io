@@ -94,6 +94,15 @@ const AdminMembersPage: NextPage = () => {
           ))}
         </div>
 
+        {selected && (
+          <MemberPanel
+            member={selected}
+            permissions={permissions}
+            onChanged={reload}
+            onClose={() => setSelectedId(null)}
+            onError={setMsg} />
+        )}
+
         <div className={portalStyles.tableScroll}>
         <table>
           <thead>
@@ -120,15 +129,6 @@ const AdminMembersPage: NextPage = () => {
         </div>
 
         {members.length === 0 && <p className={styles.description}>該当する部員はいません。</p>}
-
-        {selected && (
-          <MemberPanel
-            member={selected}
-            permissions={permissions}
-            onChanged={reload}
-            onClose={() => setSelectedId(null)}
-            onError={setMsg} />
-        )}
       </main>
     </div>
   );

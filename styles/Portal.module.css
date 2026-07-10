@@ -138,18 +138,6 @@ button.portal:disabled {
   background-color: #ffffff0f;
 }
 
-.memberPanel {
-  margin-top: 1.5rem;
-  padding: 1rem;
-  border: 1px solid #ffffff3f;
-  border-radius: 6px;
-  text-align: left;
-}
-
-.memberPanel > .pageHeader > h3 {
-  margin: 0;
-}
-
 .memberEditor {
   display: flex;
   flex-direction: column;
@@ -282,9 +270,6 @@ button.portal:disabled {
     max-width: none !important;
   }
 
-  .memberPanel {
-    padding: 0.75rem;
-  }
 
   .inputGroup2 {
     display: block;

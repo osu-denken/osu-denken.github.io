@@ -1,0 +1,69 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: #000000af;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  width: min(48rem, 100%);
+  max-height: min(90vh, 48rem);
+  background-color: #1c1c1c;
+  border: 1px solid #ffffff3f;
+  border-radius: 6px;
+  box-shadow: 0 8px 32px #000000af;
+  text-align: left;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #ffffff1f;
+}
+
+.header > h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.close {
+  background: none;
+  border: none;
+  color: #ffffff99;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0.25rem;
+}
+
+.close:hover {
+  color: #fff;
+}
+
+.body {
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+@media screen and (max-width: 640px) {
+  .backdrop {
+    padding: 0;
+  }
+
+  .modal {
+    width: 100%;
+    max-height: 100dvh;
+    height: 100dvh;
+    border: none;
+    border-radius: 0;
+  }
+}
