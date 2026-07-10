@@ -3,8 +3,10 @@ import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useAuth } from "@hooks/useAuth";
 
 const PortalPage : NextPage = () => {
+  const { refreshToken } = useAuth();
   const [activeTab, setActiveTab] = useState<"main" | "settings" | "blog">("main");
   const [msg, setMsg] = useState("");
   
@@ -31,81 +33,51 @@ const PortalPage : NextPage = () => {
   useEffect(() => {
     _setLocalStorage(localStorage);
 
-    fetch("https://api.osudenken4dev.workers.dev/portal", {
-      method: "POST",
-      headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${localStorage.getItem("idToken")}`
-      }
-    }).then(res => res.json()).then((data: any) => {
-      console.log(data)
-      if (data.user && data.user.error) {
-        if (data.user.error.message === "INVALID_ID_TOKEN") {
-          // トークンのリフレッシュを試してみる
-          const refreshToken = localStorage.getItem("refreshToken");
-          if (refreshToken) {
-            fetch("https://api.osudenken4dev.workers.dev/user/refresh", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                refreshToken: refreshToken
-              })
-            }).then(res => res.json()).then((refreshData: any) => {
-              if (refreshData.id_token) {
-                localStorage.setItem("idToken", refreshData.id_token);
-                localStorage.setItem("refreshToken", refreshData.refresh_token);
-                window.location.reload();
-              }
-            }).catch(e => {
-              console.error("Failed to refresh token:", e);
-            });
-          }
+    const fetchPortal = async (token: string | null) => {
+      const res = await fetch("https://api.osudenken4dev.workers.dev/portal", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      return await res.json();
+    };
 
-          // トークンの期限が切れている場合は再ログインを促す
+    // idToken の期限切れかどうかを判定する
+    const isUnauthorized = (data: any) =>
+      data?.user?.error?.message === "INVALID_ID_TOKEN" ||
+      (!data?.success && data?.status === 401);
+
+    const load = async () => {
+      let data = await fetchPortal(localStorage.getItem("idToken"));
+
+      if (isUnauthorized(data)) {
+        // idToken が切れているだけなら refreshToken で取り直して再試行する
+        const newIdToken = await refreshToken();
+        if (newIdToken) {
+          data = await fetchPortal(newIdToken);
+        }
+
+        if (!newIdToken || isUnauthorized(data)) {
+          // refreshToken も無効なので再ログインしてもらうしかない
           alert("セッションの有効期限が切れました。再度ログインしてください。");
           window.location.href = "/?i=portal/#login";
+          return;
         }
       }
 
-      if (!data.success) {
-        if (data.status === 401) {
-          // トークンのリフレッシュを試してみる
-          const refreshToken = localStorage.getItem("refreshToken");
-          if (refreshToken) {
-            fetch("https://api.osudenken4dev.workers.dev/user/refresh", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                refreshToken: refreshToken
-              })
-            }).then(res => res.json()).then((refreshData: any) => {
-              if (refreshData.id_token) {
-                localStorage.setItem("idToken", refreshData.id_token);
-                localStorage.setItem("refreshToken", refreshData.refresh_token);
-                window.location.reload();
-              }
-            }).catch(e => {
-              console.error("Failed to refresh token:", e);
-            });
-          }
-
-          alert("セッションの有効期限が切れました。再度ログインしてください。");
-          window.location.href = "/?i=portal/#login";
-        }
-      }
       setPortalData(data);
-      // setEmail(data.user.email || "");
 
       if (data.limits) {
         setDiscordInviteUrl(data.limits.discordInviteCode)
       }
+    };
 
+    load().catch(e => {
+      console.error("Failed to load portal:", e);
     });
-  }, []);
+  }, [refreshToken]);
 
   useEffect(() => {
     const token = localStorage.getItem("idToken");

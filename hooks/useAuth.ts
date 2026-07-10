@@ -5,11 +5,16 @@ interface AuthResponse {
   idToken?: string;
   refreshToken?: string;
   displayName?: string;
-  error?: {
-    message: string;
-  };
+  // Firebase 直叩き時は { message } のオブジェクト、web-api 経由では識別名の文字列が入る
+  error?: { message: string } | string;
   message?: string;
 }
+
+// AuthResponse.error の形が2種類あるので吸収する
+const errorMessageOf = (data: AuthResponse): string | undefined => {
+  if (typeof data.error === 'string') return data.message;
+  return data.error?.message ?? data.message;
+};
 
 export const useAuth = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
@@ -37,10 +42,7 @@ export const useAuth = () => {
   // トークンリフレッシュ処理
   const refreshToken = useCallback(async (): Promise<string | null> => {
     const currentRefreshToken = localStorage.getItem('refreshToken');
-    if (!currentRefreshToken) {
-      logout();
-      return null;
-    }
+    if (!currentRefreshToken) return null;
 
     try {
       const response = await fetch('https://api.osudenken4dev.workers.dev/user/refresh', {
@@ -59,19 +61,22 @@ export const useAuth = () => {
         localStorage.setItem('idToken', data.idToken);
         localStorage.setItem('refreshToken', data.refreshToken);
         return data.idToken;
-      } else {
-        console.error('Failed to refresh token:', data);
-        // トークンのリフレッシュに失敗した場合、refreshTokenが無効である可能性が高い
-        if (data.error?.message === 'INVALID_REFRESH_TOKEN' || data.error?.message === "TOKEN_EXPIRED") {
-          logout();
-        }
-        return null;
       }
+
+      console.error('Failed to refresh token:', data);
+      // refreshToken 自体が無効なら保持していても無意味なので捨てる
+      const message = errorMessageOf(data);
+      if (message === 'INVALID_REFRESH_TOKEN' || message === 'TOKEN_EXPIRED') {
+        localStorage.removeItem('idToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('displayName');
+      }
+      return null;
     } catch (error) {
       console.error('Error refreshing token:', error);
       return null;
     }
-  }, [logout]);
+  }, []);
   
   // 定期的なトークンリフレッシュ
   useEffect(() => {
@@ -125,14 +130,11 @@ export const useAuth = () => {
         }
       } else {
         console.log(data);
-        if (data.error) {
-          if (data.error.message === 'INVALID_LOGIN_CREDENTIALS') {
-            alert('学籍番号またはパスワードが間違っています。');
-          } else {
-            alert('ログイン失敗: ' + data.error.message);
-          }
+        const message = errorMessageOf(data);
+        if (message === 'INVALID_LOGIN_CREDENTIALS') {
+          alert('学籍番号またはパスワードが間違っています。');
         } else {
-          alert('ログイン失敗: ' + (data.message || '不明なエラー'));
+          alert('ログイン失敗: ' + (message || '不明なエラー'));
         }
       }
     } catch (error) {
