@@ -217,6 +217,14 @@ button.portal:disabled {
     max-width: 16rem !important;
   }
 
+  /* 編集フォームの入力は横のボタンと並ばないので、幅を削らない */
+  .memberEditor input[type="text"].portal,
+  .memberEditor input[type="tel"].portal,
+  .memberEditor input[type="date"].portal {
+    width: 100% !important;
+    max-width: 16rem !important;
+  }
+
   .inputGroup2 {
     display: block;
     height: auto;

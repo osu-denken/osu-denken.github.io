@@ -132,7 +132,7 @@ export const EDITABLE_STATUSES: MemberStatus[] = ["active", "withdrawn", "gradua
  * @param roleBits 役職ビット
  */
 export const roleLabel = (roleBits: number): string =>
-  ROLE_ENTRIES.filter(([bit]) => roleBits & bit).map(([, label]) => label).join("・") || "-";
+  ROLE_ENTRIES.filter(([bit]) => roleBits & bit).map(([, label]) => label).join("/") || "-";
 
 /**
  * 在籍状態を表示用の文字列にする
