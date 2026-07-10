@@ -3,6 +3,12 @@
   width: min(16rem, 100%);
 }
 
+@media screen and (max-width: 640px) {
+  .multiSelect {
+    width: 100%;
+  }
+}
+
 .control {
   display: flex;
   align-items: center;

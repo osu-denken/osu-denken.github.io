@@ -134,6 +134,22 @@ button.portal:disabled {
   min-width: 40rem;
 }
 
+.selectedRow > td {
+  background-color: #ffffff0f;
+}
+
+.memberPanel {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 1px solid #ffffff3f;
+  border-radius: 6px;
+  text-align: left;
+}
+
+.memberPanel > .pageHeader > h3 {
+  margin: 0;
+}
+
 .memberEditor {
   display: flex;
   flex-direction: column;
@@ -153,7 +169,7 @@ button.portal:disabled {
 
 .fieldGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr));
   gap: 0.75rem 1.5rem;
   align-items: start;
 }
@@ -260,9 +276,14 @@ button.portal:disabled {
   /* 編集フォームの入力は横のボタンと並ばないので、幅を削らない */
   .memberEditor input[type="text"].portal,
   .memberEditor input[type="tel"].portal,
-  .memberEditor input[type="date"].portal {
+  .memberEditor input[type="date"].portal,
+  .memberEditor select.portal {
     width: 100% !important;
-    max-width: 16rem !important;
+    max-width: none !important;
+  }
+
+  .memberPanel {
+    padding: 0.75rem;
   }
 
   .inputGroup2 {
