@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import portalStyles from "@styles/Portal.module.css";
 
 interface BitMultiSelectProps {
@@ -5,43 +6,79 @@ interface BitMultiSelectProps {
   entries: readonly [number, string][];
   value: number;
   disabled?: boolean;
+  /** 何も選ばれていないときの表示 */
+  placeholder?: string;
   onChange: (next: number) => void;
 }
 
 /**
- * ビットフラグを複数選択のドロップダウンで編集する。
- * select multiple は Ctrl 併用が要るため、選択済みは下にチップで示す。
+ * ビットフラグを複数選択する。
+ * 閉じているときは選択内容のサマリだけを見せ、縦のスペースを取らない。
  */
-export const BitMultiSelect = ({ entries, value, disabled, onChange }: BitMultiSelectProps) => {
+export const BitMultiSelect = ({ entries, value, disabled, placeholder, onChange }: BitMultiSelectProps) => {
+  const [open, setOpen] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+
+  // 外側のクリックと Esc で閉じる
+  useEffect(() => {
+    if (!open) return;
+
+    const onPointerDown = (e: MouseEvent) => {
+      if (!root.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
+  if (entries.length === 0)
+    return <p className={portalStyles.hint}>{placeholder ?? "選択できる項目はありません。"}</p>;
+
   const selected = entries.filter(([bit]) => value & bit);
-
-  const onSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const next = Array.from(e.target.selectedOptions)
-      .reduce((bits, option) => bits | Number(option.value), 0);
-
-    onChange(next);
-  };
-
-  if (entries.length === 0) return <p className={portalStyles.hint}>付与できる権限はありません。</p>;
+  const summary = selected.map(([, label]) => label).join("・");
 
   return (
-    <div>
-      <select
-        multiple
-        size={Math.min(entries.length, 6)}
+    <div className={portalStyles.multiSelect} ref={root}>
+      <button
+        type="button"
         disabled={disabled}
-        className={portalStyles.portal}
-        value={selected.map(([bit]) => String(bit))}
-        onChange={onSelectChange}>
-        {entries.map(([bit, label]) => (
-          <option key={bit} value={bit}>{label}</option>
-        ))}
-      </select>
+        aria-expanded={open}
+        className={`${portalStyles.multiSelectControl} ${open ? portalStyles.open : ""}`}
+        onClick={() => setOpen(!open)}>
+        <span className={selected.length ? "" : portalStyles.placeholder}>
+          {summary || placeholder || "なし"}
+        </span>
+        <span className={portalStyles.caret} aria-hidden>▾</span>
+      </button>
 
-      <p className={portalStyles.hint}>
-        {selected.length ? selected.map(([, label]) => label).join("・") : "なし"}
-        {!disabled && "（Ctrl / ⌘ + クリックで複数選択）"}
-      </p>
+      {open && (
+        <ul className={portalStyles.multiSelectMenu} role="listbox" aria-multiselectable>
+          {entries.map(([bit, label]) => {
+            const checked = Boolean(value & bit);
+
+            return (
+              <li key={bit}>
+                <button
+                  type="button"
+                  role="option"
+                  aria-selected={checked}
+                  className={`${portalStyles.multiSelectOption} ${checked ? portalStyles.selected : ""}`}
+                  onClick={() => onChange(checked ? value & ~bit : value | bit)}>
+                  <span className={portalStyles.check} aria-hidden>{checked ? "✓" : ""}</span>
+                  {label}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 };

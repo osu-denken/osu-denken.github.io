@@ -122,7 +122,8 @@ export const MemberEditor = ({ detail, permissions, canEditTel, onSaved, onError
       <div className={portalStyles.field}>
         <label>権限</label>
         <BitMultiSelect entries={grantablePermissions} value={draft.permBits & ~granted}
-          disabled={!canEditPerms} onChange={bits => set("permBits", bits)} />
+          disabled={!canEditPerms} placeholder="役職の権限のみ"
+          onChange={bits => set("permBits", bits)} />
       </div>
 
       {/* 仮登録の在籍状態は承認・却下でしか変えられない */}
