@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import portalStyles from "@styles/Portal.module.css";
 import { apiJson } from "@lib/api";
 import { AdminMember, hasPermission, MemberDetail, Permission } from "@lib/member";
@@ -24,12 +24,16 @@ interface DetailResponse {
  */
 export const MemberPanel = ({ member, permissions, onChanged, onClose, onError }: MemberPanelProps) => {
   const [detail, setDetail] = useState<DetailResponse | null>(null);
+  const root = useRef<HTMLElement>(null);
 
   const canApprove = hasPermission(permissions, Permission.MemberApprove);
 
   // 電話番号は一覧には載らない。開いたときだけ取りに行き、サーバ側で閲覧が記録される
   useEffect(() => {
     setDetail(null);
+
+    // 表の下に出るので、選んだ部員が画面外にならないよう送る
+    root.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
     apiJson<DetailResponse>("/members/detail", {
       method: "POST",
@@ -56,7 +60,7 @@ export const MemberPanel = ({ member, permissions, onChanged, onClose, onError }
   };
 
   return (
-    <section className={portalStyles.memberPanel}>
+    <section className={portalStyles.memberPanel} ref={root}>
       <div className={portalStyles.pageHeader}>
         <h3>{member.studentId} {member.name}</h3>
         <button type="button" className={portalStyles.portal} onClick={onClose}>閉じる</button>

@@ -34,7 +34,8 @@ interface Draft {
   leaveDate: string;
 }
 
-const toDate = (value: string | null) => value?.slice(0, 10) ?? "";
+// input[type=date] は YYYY-MM-DD しか受け付けない。移行前の "2022/05/26" を救う
+const toDate = (value: string | null) => value?.replace(/\//g, "-").slice(0, 10) ?? "";
 
 const toDraft = (m: MemberDetail): Draft => ({
   name: m.name,
