@@ -3,6 +3,11 @@
   gap: 0;
   margin: 2rem 0 1rem 0;
   border-bottom: 2px solid #ffffff1f;
+  overflow-x: auto;
+}
+
+.tabButton {
+  flex-shrink: 0;
 }
 
 .tabButton {
@@ -34,7 +39,7 @@ input[type="text"].portal,
 input[type="tel"].portal,
 input[type="date"].portal {
   margin: 0;
-  width: 16rem !important;
+  width: min(16rem, 100%) !important;
   padding: 0.5rem !important;
 }
 
@@ -45,7 +50,7 @@ input[type="date"].portal {
 
 select.portal {
   margin: 0;
-  width: 16rem;
+  width: min(16rem, 100%);
   padding: 0.5rem;
   background-color: #ffffff0f;
   color: #fff;
@@ -97,8 +102,19 @@ button.portal:disabled {
 
 .inputGroup {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 1rem;
+}
+
+/* 列数の多い表は、ページ全体ではなく表だけを横スクロールさせる */
+.tableScroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.tableScroll table {
+  min-width: 40rem;
 }
 
 .memberEditor {
@@ -106,6 +122,7 @@ button.portal:disabled {
   flex-direction: column;
   gap: 0.75rem;
   padding: 1rem 0;
+  max-width: 28rem;
   text-align: left;
 }
 

@@ -1,6 +1,6 @@
 .multiSelect {
   position: relative;
-  width: 16rem;
+  width: min(16rem, 100%);
 }
 
 .control {

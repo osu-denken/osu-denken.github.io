@@ -98,6 +98,7 @@ const AdminMembersPage: NextPage = () => {
           ))}
         </div>
 
+        <div className={portalStyles.tableScroll}>
         <table>
           <thead>
             <tr>
@@ -122,6 +123,7 @@ const AdminMembersPage: NextPage = () => {
             ))}
           </tbody>
         </table>
+        </div>
 
         {members.length === 0 && <p className={styles.description}>該当する部員はいません。</p>}
       </main>

@@ -38,6 +38,7 @@ const MembersPage : NextPage = () => {
         <p className={styles.description}>
           情報に誤りがある場合、ご連絡ください。<br />
         </p>
+        <div className={portalStyles.tableScroll}>
         <table>
           <thead>
             <tr>
@@ -66,6 +67,7 @@ const MembersPage : NextPage = () => {
             ))}
           </tbody>
         </table>
+        </div>
       </main>
     </div>
   );
