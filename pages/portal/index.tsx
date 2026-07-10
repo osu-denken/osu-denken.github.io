@@ -7,13 +7,15 @@ import { apiFetch, readIdToken, redirectToLogin } from "@lib/api";
 import { hasPermission, Permission } from "@lib/member";
 import { SettingsTab } from "@components/portal/SettingsTab";
 import { BlogTab } from "@components/portal/BlogTab";
+import { ImageTab } from "@components/portal/ImageTab";
 
-type TabName = "main" | "settings" | "blog";
+type TabName = "main" | "settings" | "blog" | "image";
 
 const TABS: { id: TabName; label: string }[] = [
   { id: "main", label: "ポータル" },
   { id: "settings", label: "設定" },
   { id: "blog", label: "ブログ" },
+  { id: "image", label: "画像" },
 ];
 
 const PortalPage : NextPage = () => {
@@ -115,6 +117,7 @@ const PortalPage : NextPage = () => {
               hasGitHubToken={Boolean(portalData?.hasGitHubToken)} />
           )}
           {activeTab === "blog" && <BlogTab setMsg={setMsg} />}
+          {activeTab === "image" && <ImageTab setMsg={setMsg} />}
         </div>
       </main>
     </div>
