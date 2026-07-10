@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
 import { API_BASE, apiJson, readIdToken, storeTokens } from "@lib/api";
+import { Turnstile } from "@components/Turnstile";
 
 /**
  * 仮登録の進み具合。
@@ -55,13 +56,13 @@ const JoinPage: NextPage = () => {
   }, []);
 
   // アカウントを作成し、確認メールを送ってもらう
-  const onCreateAccount = async (accountEmail: string, password: string) => {
+  const onCreateAccount = async (accountEmail: string, password: string, turnstileToken: string) => {
     setMsg("");
 
     const res = await fetch(`${API_BASE}/user/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: accountEmail, password }),
+      body: JSON.stringify({ email: accountEmail, password, turnstileToken }),
     });
     const data: any = await res.json();
 
@@ -195,12 +196,13 @@ const JoinPage: NextPage = () => {
 interface AccountStepProps {
   email: string;
   onEmailChange: (email: string) => void;
-  onSubmit: (email: string, password: string) => void;
+  onSubmit: (email: string, password: string, turnstileToken: string) => void;
 }
 
 // 大学メールでアカウントを作る。メールアドレスは一次フォームから引き継ぐことがある
 const AccountStep = ({ email, onEmailChange, onSubmit }: AccountStepProps) => {
   const [password, setPassword] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   return (
     <div>
@@ -224,8 +226,10 @@ const AccountStep = ({ email, onEmailChange, onSubmit }: AccountStepProps) => {
             value={password} onChange={e => setPassword(e.target.value)} />
         </div>
 
+        <Turnstile onToken={setTurnstileToken} />
+
         <div className={portalStyles.editorActions}>
-          <button type="button" className={portalStyles.portal} onClick={() => onSubmit(email, password)}>
+          <button type="button" className={portalStyles.portal} onClick={() => onSubmit(email, password, turnstileToken)}>
             アカウントを作成
           </button>
         </div>
