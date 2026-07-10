@@ -15,6 +15,12 @@ const ReactSimpleMdeEditor = dynamic(() => import("react-simplemde-editor"), { s
 import "easymde/dist/easymde.min.css";
 import "github-markdown-css/github-markdown.css";
 
+/** 成功時は success、失敗時は web-api の HttpError が message を返す */
+interface ApiResult {
+  success?: boolean;
+  message?: string;
+}
+
 const PrivatePostPage: NextPage = () => {
   const [permissions, setPermissions] = useState(0);
   const [msg, setMsg] = useState("");
@@ -67,11 +73,17 @@ const PrivatePostPage: NextPage = () => {
   }, []);
 
   const onSave = () => {
-    apiJson<{ success: boolean }>("/private-posts/update", {
+    apiJson<ApiResult>("/private-posts/update", {
       method: "POST",
       body: JSON.stringify({ slug, title, content: source }),
     })
-      .then(() => {
+      .then(data => {
+        // apiJson は HTTP のステータスを見ないので、成否は本文で判断する
+        if (!data.success) {
+          setMsg(`保存に失敗しました。${data.message ?? ""}`);
+          return;
+        }
+
         setExists(true);
         setSavedSource(source);
         setMsg("保存しました。");
@@ -85,11 +97,16 @@ const PrivatePostPage: NextPage = () => {
   const onDelete = () => {
     if (!confirm("本当に削除しますか？")) return;
 
-    apiJson<{ success: boolean }>("/private-posts/delete", {
+    apiJson<ApiResult>("/private-posts/delete", {
       method: "POST",
       body: JSON.stringify({ slug }),
     })
-      .then(() => {
+      .then(data => {
+        if (!data.success) {
+          setMsg(`削除に失敗しました。${data.message ?? ""}`);
+          return;
+        }
+
         window.location.href = "/portal/?tab=private";
       })
       .catch(e => {
