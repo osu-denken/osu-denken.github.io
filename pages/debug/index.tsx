@@ -3,6 +3,7 @@ import styles from "@styles/Page.module.css";
 import { useState } from "react";
 import { Prism as Pre } from 'react-syntax-highlighter';
 import { okaidia } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { apiJson } from "@lib/api";
 
 const DebugPage: NextPage = () => {
     const [info, setInfo] = useState<any>(null);
@@ -17,46 +18,28 @@ const DebugPage: NextPage = () => {
     const [userData, setUserData] = useState<any>(null);
     const [_localStorage, _setLocalStorage] = useState<any>(null);
 
-    const fetchWithAuth = (url: string) => {
-        return fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${localStorage.getItem("idToken")}`
-            }
-        }).then(res => res.json());
-    };
+    const post = (path: string) => apiJson(path, { method: "POST" });
+    const postAnon = (path: string) => apiJson(path, { method: "POST", auth: false });
 
-    const fetchInfo = () => fetchWithAuth("https://api.osudenken4dev.workers.dev/user/info").then(setInfo);
-    const fetchPortal = () => fetchWithAuth("https://api.osudenken4dev.workers.dev/portal").then(setPortalData);
-    const fetchMembers = () => fetchWithAuth("https://api.osudenken4dev.workers.dev/portal/members").then(setMembersData);
-    const fetchMemberMe = () => fetchWithAuth("https://api.osudenken4dev.workers.dev/portal/member/me").then(setMemberMe);
-    const fetchMemberCount = () => fetch("https://api.osudenken4dev.workers.dev/portal/memberCount", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" }
-    }).then(res => res.json()).then(setMemberCount);
+    const fetchInfo = () => post("/user/info").then(setInfo);
+    const fetchPortal = () => post("/portal").then(setPortalData);
+    const fetchMembers = () => post("/portal/members").then(setMembersData);
+    const fetchMemberMe = () => post("/portal/member/me").then(setMemberMe);
+    const fetchMemberCount = () => postAnon("/portal/memberCount").then(setMemberCount);
 
-    const fetchBlogList = () => fetchWithAuth("https://api.osudenken4dev.workers.dev/v1/blog/list").then(setBlogList);
-    const fetchBlogList2 = () => fetchWithAuth("https://api.osudenken4dev.workers.dev/v2/blog/list").then(setBlogList2);
+    const fetchBlogList = () => post("/v1/blog/list").then(setBlogList);
+    const fetchBlogList2 = () => post("/v2/blog/list").then(setBlogList2);
 
-    const fetchBlogData = (page: string) => {
-        fetch("https://api.osudenken4dev.workers.dev/v1/blog/get?page=" + encodeURIComponent(page), {
-            method: "POST",
-            headers: { "Content-Type": "application/json" }
-        }).then(res => res.json()).then(setBlogData);
-    };
+    const fetchBlogData = (page: string) =>
+        postAnon("/v1/blog/get?page=" + encodeURIComponent(page)).then(setBlogData);
 
-    const fetchBlogData2 = (page: string) => {
-        fetch("https://api.osudenken4dev.workers.dev/v2/blog/get?page=" + encodeURIComponent(page), {
-            method: "POST",
-            headers: { "Content-Type": "application/json" }
-        }).then(res => res.json()).then(setBlogData2);
-    };
+    const fetchBlogData2 = (page: string) =>
+        postAnon("/v2/blog/get?page=" + encodeURIComponent(page)).then(setBlogData2);
 
-    const fetchSwitchBotList = () => fetchWithAuth("https://api.osudenken4dev.workers.dev/switchbot/list").then(setSwitchBotList);
+    const fetchSwitchBotList = () => post("/switchbot/list").then(setSwitchBotList);
     const [switchBotList, setSwitchBotList] = useState<any>(null);
 
-    const fetchSwitchBotValidate = () => fetchWithAuth("https://api.osudenken4dev.workers.dev/switchbot/validate").then(setSwitchBotValidate);
+    const fetchSwitchBotValidate = () => post("/switchbot/validate").then(setSwitchBotValidate);
     const [switchBotValidate, setSwitchBotValidate] = useState<any>(null);
 
     const initLocalStorage = () => _setLocalStorage(localStorage);
@@ -132,14 +115,11 @@ const DebugPage: NextPage = () => {
                     const email = formData.get("username");
                     const password = formData.get("password");
   
-                    fetch("https://api.osudenken4dev.workers.dev/user/login", {
+                    apiJson("/user/login", {
                         method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            email: email,
-                            password: password
-                        })
-                    }).then(res => res.json()).then(setUserData);
+                        auth: false,
+                        body: JSON.stringify({ email, password })
+                    }).then(setUserData);
                 }}>
                     <input type="text" name="username" />
                     <input type="password" name="password" />

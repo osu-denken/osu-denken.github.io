@@ -1,17 +1,13 @@
 import type { NextPage } from "next";
 import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import QRCode from "qrcode";
+import { apiJson, readIdToken } from "@lib/api";
 
 const InvitePage : NextPage = () => {
-
-
-
   useEffect(() => {
-    const token = localStorage.getItem("idToken");
-
-    if (!token) {
+    if (!readIdToken()) {
       const encoded = encodeURIComponent("portal/invite/");
       window.location.href = "/?i=" + encoded + "#login";
     }
@@ -42,14 +38,7 @@ const InvitePage : NextPage = () => {
 
         <button onClick={(e) => {
           e.preventDefault();
-          fetch("https://api.osudenken4dev.workers.dev/invite/create", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${localStorage.getItem("idToken")}`
-            }
-          })
-            .then(res => res.json())
+          apiJson("/invite/create", { method: "POST" })
             .then((data: any) => {
               if (data.success) {
                 const inviteLink = "https://osu-denken.github.io/_register/?code=" + data.code;

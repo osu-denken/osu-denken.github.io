@@ -8,12 +8,17 @@ import ReactMarkdown from "react-markdown";
 import breaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
+import { apiFetch, apiJson, readIdToken } from "@lib/api";
 
 const ReactSimpleMdeEditor = dynamic(() => import("react-simplemde-editor"), {
   ssr: false,
 });
 import "easymde/dist/easymde.min.css";
 import 'github-markdown-css/github-markdown.css';
+
+// 先頭が _ のページ名は固定ページを指し、API のエンドポイントとスラッグが変わる
+const isStaticPage = (page: string) => page.startsWith("_");
+const pageSlug = (page: string) => isStaticPage(page) ? page.slice(1) : page;
 
 const PortalPage : NextPage = () => {
   const ymd = new Date().toISOString().split('T')[0];
@@ -36,10 +41,8 @@ const PortalPage : NextPage = () => {
      src.replace(/^---[\s\S]*?---\n?/, '');
 
   // 初期処理
-  useEffect(() => {    
-    const token = localStorage.getItem("idToken");
-
-    if (!token) {
+  useEffect(() => {
+    if (!readIdToken()) {
       const encoded = encodeURIComponent("portal/blog/" + window.location.search);
       window.location.href = "/?i=" + encoded + "#login";
       return;
@@ -57,12 +60,11 @@ const PortalPage : NextPage = () => {
     if (page) setPage(page);
 
     if (action === "edit") {
-      fetch("https://api.osudenken4dev.workers.dev/v1/blog/" + (page.startsWith("_") ? "get-static" + "?page=" + page.slice(1) : "get" + "?page=" + page), {
+      const endpoint = isStaticPage(page) ? "get-static" : "get";
+      apiJson(`/v1/blog/${endpoint}?page=${encodeURIComponent(pageSlug(page))}`, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        }
-      }).then(res => res.json()).then((data: any) => {
+        auth: false
+      }).then((data: any) => {
         if (data && data.content) {
           setBlogData(data);
           setSource(data.content);
@@ -82,7 +84,7 @@ layout: default
           setSource(defaultSource);
           setSavedSource(defaultSource);
         }
-      });
+      }).catch(e => console.error("Failed to load page:", e));
     }
   }, []);
 
@@ -131,9 +133,8 @@ layout: default
       try {
         const formData = new FormData();
         formData.append("file", file);
-        const res = await fetch("https://api.osudenken4dev.workers.dev/v1/image/upload", {
+        const res = await apiFetch("/v1/image/upload", {
           method: "POST",
-          headers: { Authorization: "Bearer " + localStorage.getItem("idToken") },
           body: formData,
         });
         const data: any = await res.json();
@@ -237,21 +238,21 @@ layout: default
 
             <div className={portalStyles.inputGroup}>
             <button type="button" className={portalStyles.portal} onClick={() => {
-              fetch("https://api.osudenken4dev.workers.dev/v1/blog/" + (page.startsWith("_") ? "update-static" : "update"), {
+              const endpoint = isStaticPage(page) ? "update-static" : "update";
+              apiJson(`/v1/blog/${endpoint}`, {
                 method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  "Authorization": "Bearer " + localStorage.getItem("idToken"),
-                  "page": page.startsWith("_") ? page.slice(1) : page
-                },
+                headers: { "page": pageSlug(page) },
                 body: source,
-              }).then(res => res.json()).then((data: any) => {
+              }).then((data: any) => {
                 if (data.success) {
                   setMsg("保存しました。");
                   setSavedSource(source);
                 } else {
                   setMsg("保存に失敗しました。");
                 }
+              }).catch(e => {
+                console.error("Failed to save page:", e);
+                setMsg("保存に失敗しました。");
               });
             }}>
               保存
@@ -260,20 +261,20 @@ layout: default
               const confirmed = confirm("本当に削除しますか？");
               if (!confirmed) return;
 
-              fetch("https://api.osudenken4dev.workers.dev/blog/delete", {
+              const endpoint = isStaticPage(page) ? "delete-static" : "delete";
+              apiJson(`/v2/blog/${endpoint}`, {
                 method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  "Authorization": "Bearer " + localStorage.getItem("idToken"),
-                  "page": page
-                },
-              }).then(res => res.json()).then((data: any) => {
+                headers: { "page": pageSlug(page) },
+              }).then((data: any) => {
                 if (data.success) {
                   const encoded = encodeURIComponent("portal/blog/");
                   window.location.href = "/?msg=" + encodeURIComponent("削除しました。") + "&i=" + encoded + "#portal/blog";
                 } else {
                   setMsg("削除に失敗しました。");
                 }
+              }).catch(e => {
+                console.error("Failed to delete page:", e);
+                setMsg("削除に失敗しました。");
               });
             }}>
               削除

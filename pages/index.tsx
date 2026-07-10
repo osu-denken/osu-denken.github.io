@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import styles from "@styles/Top.module.css";
 import { Icon } from "@iconify/react";
 import ParticleSpaceAnimationBackground from "@components/ParticleSpaceAnimationBackground";
+import { apiJson } from "@lib/api";
 
 const DEFAULT_SOCIAL_LINKS = [
   {
@@ -60,15 +61,8 @@ const TopPage: NextPage = () => {
   const [socialLinks, setSocialLinks] = useState(DEFAULT_SOCIAL_LINKS);
 
   useEffect(() => {
-    fetch("https://api.osudenken4dev.workers.dev/discord/invite", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("idToken")}`
-      },
-    })
-      .then(res => res.json())
-      .then(data => {
+    apiJson("/discord/invite", { method: "POST" })
+      .then((data: any) => {
         if (data.success) {
           setSocialLinks(prev => 
             prev.map(link => {

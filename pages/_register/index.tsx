@@ -1,10 +1,9 @@
 import type { NextPage } from "next";
 import styles from "@styles/Page.module.css";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { apiJson, readIdToken } from "@lib/api";
 
 const DebugPage : NextPage = () => {
-    const [_localStorage, _setLocalStorage] = useState<any>(null);
-
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         const form = new FormData(event.currentTarget);
@@ -12,17 +11,11 @@ const DebugPage : NextPage = () => {
         const password = form.get("password") as string;
         const passphrase = form.get("passphrase") as string;
 
-        fetch("https://api.osudenken4dev.workers.dev/user/register", {
+        apiJson("/user/register", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email,
-                password,
-                passphrase
-            })
-        }).then(res => res.json()).then((data: any) => {
+            auth: false,
+            body: JSON.stringify({ email, password, passphrase })
+        }).then((data: any) => {
             if (data.error) {
                 if (data.error.message === "EMAIL_EXISTS") {
                     alert("そのメールアドレスは既に使われています。");
@@ -54,8 +47,7 @@ const DebugPage : NextPage = () => {
     }
 
     useEffect(() => {
-        _setLocalStorage(localStorage);
-        if (localStorage.getItem("idToken")) {
+        if (readIdToken()) {
             alert("すでにログインしているため、ポータルページに移動します。");
             window.location.href = "/portal";
         }
@@ -64,18 +56,16 @@ const DebugPage : NextPage = () => {
         const params = new URLSearchParams(window.location.search);
         const code = params.get("code");
         if (code) {
-            fetch("https://api.osudenken4dev.workers.dev/invite/validate", {
+            apiJson("/invite/validate", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                auth: false,
                 body: JSON.stringify({ code })
-            }).then(res => res.json()).then((data: any) => {
+            }).then((data: any) => {
                 if (!data.valid) {
                     alert("この招待コードは無効か期限切れです。");
                     window.location.href = "/_register/";
                 }
-            });
+            }).catch(e => console.error("Failed to validate invite code:", e));
 
             const passphraseInput = document.querySelector('input[name="passphrase"]') as HTMLInputElement;
             if (passphraseInput) {

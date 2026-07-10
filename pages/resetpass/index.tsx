@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
+import { apiJson } from "@lib/api";
 
 const ResetpassPage : NextPage = () => {
   return (
@@ -19,19 +20,13 @@ const ResetpassPage : NextPage = () => {
               const input = document.getElementById("email") as HTMLInputElement;
               const email = input.value.trim() as string;
               if (email) {
-                fetch("https://api.osudenken4dev.workers.dev/user/resetPassword", {
+                apiJson("/user/resetPassword", {
                   method: "POST",
-                  headers: {
-                    "Content-Type": "application/json"
-                  },
-                  body: JSON.stringify({
-                    email: email
-                  })
+                  auth: false,
+                  body: JSON.stringify({ email })
                 })
-                  .then(res => res.json())
-                  .then(data => {
+                  .then(() => {
                     alert("パスワード再設定メールを送信しました。")
-                    return true;
                   })
                   .catch(error => {
                     console.error("Error:", error);

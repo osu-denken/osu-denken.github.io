@@ -2,27 +2,20 @@ import type { NextPage } from "next";
 import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
 import { useEffect, useState } from "react";
+import { apiJson, readIdToken } from "@lib/api";
 
 const MembersPage : NextPage = () => {
   const [members, setMembers] = useState<any>(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("idToken");
-
-    if (!token) {
+    if (!readIdToken()) {
       const encoded = encodeURIComponent("portal/members/");
       window.location.href = "/?i=" + encoded + "#login";
     }
 
-    fetch("https://api.osudenken4dev.workers.dev/portal/members", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${localStorage.getItem("idToken")}`
-      }
-    }).then(res => res.json()).then(data => {
-      setMembers(data);
-    });
+    apiJson("/portal/members", { method: "GET" })
+      .then(data => setMembers(data))
+      .catch(e => console.error("Failed to load members:", e));
   }, []);
 
   return (
