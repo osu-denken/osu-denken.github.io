@@ -4,6 +4,7 @@ import portalStyles from "@styles/Portal.module.css";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { apiFetch, readIdToken, redirectToLogin } from "@lib/api";
+import { hasPermission, Permission } from "@lib/member";
 import { SettingsTab } from "@components/portal/SettingsTab";
 import { BlogTab } from "@components/portal/BlogTab";
 
@@ -96,6 +97,13 @@ const PortalPage : NextPage = () => {
                 <br />
 
                 <Link href="/portal/members/">構成員名簿</Link>
+
+                {hasPermission(portalData?.permissions ?? 0, Permission.MemberManage) && (
+                  <>
+                    <br />
+                    <Link href="/portal/admin/members/">部員管理</Link>
+                  </>
+                )}
               </p>
             </div>
           )}
