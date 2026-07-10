@@ -178,7 +178,7 @@ export const TotpSection = ({ hasTotp, recoveryCodesLeft, setMsg }: TotpSectionP
       ) : (
         <>
           <p className={styles.description}>
-            パスワードに加えて認証アプリのワンタイムパスワードを求めるようにします。パスワードが漏れてもログインされにくくなります。
+            ログイン時、パスワードに加えてワンタイムパスワードを求めるようにします。
           </p>
           <button type="button" className={portalStyles.portal} disabled={busy} onClick={onSetup}>
             2段階認証を設定する

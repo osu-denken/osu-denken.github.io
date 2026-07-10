@@ -8,13 +8,15 @@ import { hasPermission, Permission } from "@lib/member";
 import { SettingsTab } from "@components/portal/SettingsTab";
 import { BlogTab } from "@components/portal/BlogTab";
 import { ImageTab } from "@components/portal/ImageTab";
+import { PrivatePostTab } from "@components/portal/PrivatePostTab";
 
-type TabName = "main" | "settings" | "blog" | "image";
+type TabName = "main" | "settings" | "blog" | "private" | "image";
 
 const TABS: { id: TabName; label: string }[] = [
   { id: "main", label: "ポータル" },
   { id: "settings", label: "設定" },
   { id: "blog", label: "ブログ" },
+  { id: "private", label: "非公開記事" },
   { id: "image", label: "画像" },
 ];
 
@@ -28,6 +30,12 @@ const PortalPage : NextPage = () => {
   const [discordInviteUrl, setDiscordInviteUrl] = useState("");
 
   const [activeTabInitialized, setActiveTabInitialized] = useState(false);
+
+  const permissions: number = portalData?.permissions ?? 0;
+
+  // 権限の解決前はタブを出さない。読めない記事のタブを一瞬見せないため
+  const visibleTabs = TABS.filter(tab =>
+    tab.id !== "private" || hasPermission(permissions, Permission.PrivatePostView));
 
   useEffect(() => {
     if (!activeTabInitialized) return;
@@ -77,7 +85,7 @@ const PortalPage : NextPage = () => {
         {msg ? <div className={portalStyles.notice}>{msg}</div> : ``}
 
         <div className={portalStyles.tabContainer}>
-          {TABS.map(tab => (
+          {visibleTabs.map(tab => (
             <button
               key={tab.id}
               className={`${portalStyles.tabButton} ${activeTab === tab.id ? portalStyles.active : ""}`}
@@ -100,7 +108,7 @@ const PortalPage : NextPage = () => {
 
                 <Link href="/portal/members/">構成員名簿</Link>
 
-                {hasPermission(portalData?.permissions ?? 0, Permission.MemberManage) && (
+                {hasPermission(permissions, Permission.MemberManage) && (
                   <>
                     <br />
                     <Link href="/portal/admin/members/">部員管理</Link>
@@ -119,6 +127,9 @@ const PortalPage : NextPage = () => {
               recoveryCodesLeft={portalData?.recoveryCodesLeft ?? 0} />
           )}
           {activeTab === "blog" && <BlogTab setMsg={setMsg} />}
+          {activeTab === "private" && hasPermission(permissions, Permission.PrivatePostView) && (
+            <PrivatePostTab permissions={permissions} setMsg={setMsg} />
+          )}
           {activeTab === "image" && <ImageTab setMsg={setMsg} />}
         </div>
       </main>
