@@ -139,3 +139,11 @@ export const roleLabel = (roleBits: number): string =>
  * @param status 在籍状態
  */
 export const statusLabel = (status: MemberStatus): string => STATUS_LABELS[status] ?? status;
+
+/**
+ * 日付を表示用の文字列にする
+ * @param date YYYY-MM-DD
+ * @return YYYY/MM/DD
+ */
+export const dateLabel = (date: string | null): string =>
+  date ? date.slice(0, 10).replace(/-/g, "/") : "-";

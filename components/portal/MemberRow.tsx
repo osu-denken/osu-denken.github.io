@@ -1,5 +1,5 @@
 import portalStyles from "@styles/Portal.module.css";
-import { AdminMember, roleLabel, statusLabel } from "@lib/member";
+import { AdminMember, dateLabel, roleLabel, statusLabel } from "@lib/member";
 
 interface MemberRowProps {
   member: AdminMember;
@@ -14,7 +14,7 @@ export const MemberRow = ({ member, selected, onSelect }: MemberRowProps) => (
     <td>{roleLabel(member.roleBits)}</td>
     <td>{statusLabel(member.status)}</td>
     <td>{member.hasAccount ? "あり" : "なし"}</td>
-    <td>{member.joinDate?.slice(0, 10) ?? "-"}</td>
+    <td>{dateLabel(member.joinDate)}</td>
     <td>
       <button type="button" className={portalStyles.portal} onClick={onSelect}>
         {selected ? "閉じる" : "編集"}

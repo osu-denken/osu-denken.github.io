@@ -4,7 +4,7 @@ import portalStyles from "@styles/Portal.module.css";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { apiJson, readIdToken } from "@lib/api";
-import { hasPermission, Permission, PublicMember, roleLabel, statusLabel } from "@lib/member";
+import { dateLabel, hasPermission, Permission, PublicMember, roleLabel, statusLabel } from "@lib/member";
 
 const MembersPage : NextPage = () => {
   const [members, setMembers] = useState<PublicMember[]>([]);
@@ -58,7 +58,7 @@ const MembersPage : NextPage = () => {
                 <td><ruby>{member.name}<rp>（</rp><rt>{member.furigana}</rt><rp>）</rp></ruby></td>
                 <td>{roleLabel(member.roleBits)}</td>
                 <td>{statusLabel(member.status)}</td>
-                <td>{member.joinDate?.slice(0, 10)}</td>
+                <td>{dateLabel(member.joinDate)}</td>
               </tr>
             ))}
           </tbody>
