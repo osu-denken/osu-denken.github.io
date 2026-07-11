@@ -13,6 +13,8 @@ interface BlogImage {
   size: number;
   /** ブログリポジトリ内のパス (例: /images/foo.png) */
   url: string;
+  /** アップロード日時 (ISO8601)。取得できない場合は null */
+  uploadedAt: string | null;
 }
 
 // ブログは同一オリジンの /blog 配下に配信されるので、記事から参照するパスもここが基準になる
@@ -27,19 +29,27 @@ const formatSize = (size: number) => {
   return `${(size / 1024 / 1024).toFixed(1)} MB`;
 };
 
-type SortKey = "name" | "size";
+type SortKey = "date" | "name" | "size";
 
 const SORT_LABELS: Record<SortKey, string> = {
+  date: "アップロード日時",
   name: "ファイル名",
   size: "ファイルサイズ"
+};
+
+const formatDate = (iso: string | null) => {
+  if (!iso) return "日時不明";
+  return new Date(iso).toLocaleString("ja-JP", {
+    year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit"
+  });
 };
 
 export const ImageTab = ({ setMsg }: ImageTabProps) => {
   const [images, setImages] = useState<BlogImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
-  const [sortKey, setSortKey] = useState<SortKey>("name");
-  const [sortAsc, setSortAsc] = useState(true);
+  const [sortKey, setSortKey] = useState<SortKey>("date");
+  const [sortAsc, setSortAsc] = useState(false);
 
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -59,9 +69,20 @@ export const ImageTab = ({ setMsg }: ImageTabProps) => {
   const sortedImages = useMemo(() => {
     const dir = sortAsc ? 1 : -1;
     return [...images].sort((a, b) => {
-      const cmp = sortKey === "size"
-        ? a.size - b.size
-        : a.name.localeCompare(b.name, "ja");
+      let cmp: number;
+      if (sortKey === "size") {
+        cmp = a.size - b.size;
+      } else if (sortKey === "date") {
+        // 日時不明 (null) は常に末尾へ寄せる
+        const ta = a.uploadedAt ? Date.parse(a.uploadedAt) : null;
+        const tb = b.uploadedAt ? Date.parse(b.uploadedAt) : null;
+        if (ta === null && tb === null) cmp = 0;
+        else if (ta === null) return 1;
+        else if (tb === null) return -1;
+        else cmp = ta - tb;
+      } else {
+        cmp = a.name.localeCompare(b.name, "ja");
+      }
       return cmp * dir;
     });
   }, [images, sortKey, sortAsc]);
@@ -181,6 +202,7 @@ export const ImageTab = ({ setMsg }: ImageTabProps) => {
               <div className={portalStyles.imageMeta}>
                 <span title={image.name}>{image.name}</span>
                 <span className={portalStyles.hint}>{formatSize(image.size)}</span>
+                <span className={portalStyles.hint}>{formatDate(image.uploadedAt)}</span>
               </div>
               <div className={portalStyles.inputGroup}>
                 <button type="button" className={portalStyles.portal} onClick={() => onCopy(image)}>
