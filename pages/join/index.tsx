@@ -3,13 +3,15 @@ import { useEffect, useState } from "react";
 import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
 import { API_BASE, apiJson, readIdToken, storeTokens } from "@lib/api";
+import { MemberStatus } from "@lib/member";
 import { Turnstile } from "@components/Turnstile";
 
 /**
  * 仮登録の進み具合。
- * account: 未ログイン / verify: 要メール確認 / form: 入部情報の入力 / done: 申請済み
+ * account: 未ログイン / verify: 要メール確認 / form: 入部情報の入力 /
+ * done: 申請済み / member: 既に名簿に載っている
  */
-type Step = "loading" | "account" | "verify" | "form" | "done";
+type Step = "loading" | "account" | "verify" | "form" | "done" | "member";
 
 interface UserInfo {
   email?: string;
@@ -51,8 +53,17 @@ const JoinPage: NextPage = () => {
     }
 
     apiJson<UserInfo>("/user/info", { method: "POST" })
-      .then(info => {
+      .then(async info => {
         if (info.email) setEmail(info.email);
+
+        // 既に名簿に載っている人は入部申請そのものが不要。
+        // メール未認証でも verify に流さず案内する (既存部員は招待経由で未認証のことがある)
+        const me = await apiJson<{ id?: number; status?: MemberStatus }>("/portal/member/me", { method: "POST" }).catch(() => null);
+        if (me?.id) {
+          setStep(me.status === "pre-active" ? "done" : "member");
+          return;
+        }
+
         setStep(info.emailVerified ? "form" : "verify");
       })
       .catch(() => setStep("account"));
@@ -202,6 +213,18 @@ const JoinPage: NextPage = () => {
             仮登録を申請しました。部員の承認をお待ちください。<br />
             承認されると、ポータルの各機能が使えるようになります。
           </p>
+        )}
+
+        {step === "member" && (
+          <div>
+            <p className={styles.description}>
+              あなたは既に部員として登録されています。入部申請は必要ありません。
+            </p>
+            <div className={portalStyles.inputGroup}>
+              {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+              <a className={portalStyles.portal} href="/portal/">ポータルへ</a>
+            </div>
+          </div>
         )}
       </main>
     </div>
