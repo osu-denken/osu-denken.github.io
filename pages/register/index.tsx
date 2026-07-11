@@ -278,7 +278,7 @@ const AccountStep = ({ onGoogleCredential }: AccountStepProps) => (
   <div>
     <p className={styles.description}>
       入部申請には、大学から配布された Googleアカウントでのログインが必要です。<br />
-      ボタンからログインしてください（初めての方はそのままアカウントが作成されます）。
+      ボタンからGoogleアカウントでのログインをしてください。
     </p>
 
     <div className={portalStyles.memberEditor}>
