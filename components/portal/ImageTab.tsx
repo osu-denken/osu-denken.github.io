@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
 import { apiFetch, apiJson } from "@lib/api";
@@ -27,10 +27,19 @@ const formatSize = (size: number) => {
   return `${(size / 1024 / 1024).toFixed(1)} MB`;
 };
 
+type SortKey = "name" | "size";
+
+const SORT_LABELS: Record<SortKey, string> = {
+  name: "ファイル名",
+  size: "ファイルサイズ"
+};
+
 export const ImageTab = ({ setMsg }: ImageTabProps) => {
   const [images, setImages] = useState<BlogImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [sortKey, setSortKey] = useState<SortKey>("name");
+  const [sortAsc, setSortAsc] = useState(true);
 
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -46,6 +55,16 @@ export const ImageTab = ({ setMsg }: ImageTabProps) => {
   };
 
   useEffect(load, []);
+
+  const sortedImages = useMemo(() => {
+    const dir = sortAsc ? 1 : -1;
+    return [...images].sort((a, b) => {
+      const cmp = sortKey === "size"
+        ? a.size - b.size
+        : a.name.localeCompare(b.name, "ja");
+      return cmp * dir;
+    });
+  }, [images, sortKey, sortAsc]);
 
   const onUpload = async (files: FileList | null) => {
     if (!files || files.length === 0 || uploading) return;
@@ -130,13 +149,33 @@ export const ImageTab = ({ setMsg }: ImageTabProps) => {
 
       {uploading && <p>アップロード中...</p>}
 
+      {!loading && images.length > 0 && (
+        <div className={portalStyles.inputGroup}>
+          <select
+            className={portalStyles.portal}
+            value={sortKey}
+            onChange={e => setSortKey(e.target.value as SortKey)}>
+            {(Object.keys(SORT_LABELS) as SortKey[]).map(key => (
+              <option key={key} value={key}>{SORT_LABELS[key]}</option>
+            ))}
+          </select>
+          <button
+            type="button"
+            className={portalStyles.portal}
+            onClick={() => setSortAsc(prev => !prev)}
+            title={sortAsc ? "昇順" : "降順"}>
+            {sortAsc ? "昇順 ↑" : "降順 ↓"}
+          </button>
+        </div>
+      )}
+
       {loading ? (
         <p>読み込み中...</p>
       ) : images.length === 0 ? (
         <p>画像がまだありません。</p>
       ) : (
         <div className={portalStyles.imageGrid}>
-          {images.map(image => (
+          {sortedImages.map(image => (
             <div key={image.sha} className={portalStyles.imageCard}>
               <img src={imageSrc(image)} alt={image.name} className={portalStyles.imageThumb} />
               <div className={portalStyles.imageMeta}>
