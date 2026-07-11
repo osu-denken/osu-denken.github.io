@@ -290,9 +290,14 @@ const AccountStep = ({ onGoogleCredential }: AccountStepProps) => (
     </p>
 
     <p className={styles.description}>
-      大学のGoogleアカウントがまだ使えない方は、幹部から受け取った{" "}
-      <Link href="/register-by-code/">招待コードで登録</Link> することもできます。<br />
+      大学のGoogleアカウントがまだ使えない方は、部活動から招待コードを受け取り、
+      <Link href="/register-by-code/">招待コードで登録</Link>することもできます。<br />
       登録後、あらためてこのページから入部申請を行ってください。
+    </p>
+
+    <p>
+      また、このシステムが正常に動作しない場合は、<Link href="/blog/join/">入部の手続き</Link>をご覧ください。<br />
+      従来のGoogleフォームからの申請も引き続き利用できます。
     </p>
   </div>
 );
