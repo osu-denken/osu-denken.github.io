@@ -1,4 +1,5 @@
 import Modal from 'react-modal';
+import Link from 'next/link';
 import { useState } from 'react';
 import type { LoginResult } from '@hooks/useAuth';
 import GoogleLoginButton from '@components/GoogleLoginButton';
@@ -163,7 +164,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onLog
 
           <p>
             ログインは大産大の電研部員のみが可能となっております。<br />
-            入部希望の方は<a href="/join/">入部申請</a>からお願いします。
+            入部希望の方は<Link href="/join/">入部申請</Link>からお願いします。
           </p>
         </>
       )}
