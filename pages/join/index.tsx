@@ -20,6 +20,9 @@ const JoinPage: NextPage = () => {
   const [step, setStep] = useState<Step>("loading");
   const [msg, setMsg] = useState("");
   const [email, setEmail] = useState("");
+  // 確認メールを実際に送ったか。着地しただけでは送っていないので、
+  // 「送りました」と偽らないためにフラグで管理する
+  const [mailSent, setMailSent] = useState(false);
 
   // 入部情報
   const [name, setName] = useState("");
@@ -73,15 +76,18 @@ const JoinPage: NextPage = () => {
       return;
     }
 
+    // 自己登録では register が確認メールを送っている
     storeTokens(data.idToken, data.refreshToken);
     setEmail(accountEmail);
+    setMailSent(true);
     setStep("verify");
   };
 
-  const onResendVerify = async () => {
+  const onSendVerify = async () => {
     setMsg("");
     await apiJson("/user/verifyEmail", { method: "POST" }).catch(() => {});
-    setMsg("確認メールを再送しました。");
+    setMailSent(true);
+    setMsg("確認メールを送信しました。");
   };
 
   // メールのリンクを開いたあと、確認済みか調べて先へ進む
@@ -132,15 +138,24 @@ const JoinPage: NextPage = () => {
         {step === "verify" && (
           <div>
             <p className={styles.description}>
-              {email} に確認メールを送りました。<br />
-              メール内のリンクを開いてから、下のボタンを押してください。
+              {mailSent ? (
+                <>
+                  {email} に確認メールを送りました。<br />
+                  メール内のリンクを開いてから、下のボタンを押してください。
+                </>
+              ) : (
+                <>
+                  {email} のメールアドレスはまだ確認できていません。<br />
+                  「確認メールを送る」を押し、メール内のリンクを開いてから「確認できたので次へ」を押してください。
+                </>
+              )}
             </p>
             <div className={portalStyles.inputGroup}>
               <button type="button" className={portalStyles.portal} onClick={onCheckVerified}>
                 確認できたので次へ
               </button>
-              <button type="button" className={portalStyles.portal} onClick={onResendVerify}>
-                確認メールを再送
+              <button type="button" className={portalStyles.portal} onClick={onSendVerify}>
+                {mailSent ? "確認メールを再送" : "確認メールを送る"}
               </button>
             </div>
           </div>

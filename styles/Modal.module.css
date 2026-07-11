@@ -1,7 +1,9 @@
 .backdrop {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  /* 固定ナビバー (z-index: 1001) より前面に出す。
+     スマホの全画面モーダルではヘッダーの × がナビバーと重なるため */
+  z-index: 1100;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -33,6 +35,12 @@
 .header > h3 {
   margin: 0;
   font-size: 1.05rem;
+  /* 長い学籍番号 (仮登録はメールアドレス) でも × を押し出さないよう、
+     h3 側を縮めて省略する */
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .close {
@@ -43,6 +51,8 @@
   line-height: 1;
   cursor: pointer;
   padding: 0 0.25rem;
+  /* タイトルが長くても × は縮めない・消さない */
+  flex-shrink: 0;
 }
 
 .close:hover {
