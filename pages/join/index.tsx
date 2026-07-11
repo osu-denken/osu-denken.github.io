@@ -31,6 +31,9 @@ const JoinPage: NextPage = () => {
   const [furigana, setFurigana] = useState("");
   const [birthday, setBirthday] = useState("");
   const [phone, setPhone] = useState("");
+  const [hobby, setHobby] = useState("");
+  const [wish, setWish] = useState("");
+  const [note, setNote] = useState("");
 
   // 一次フォーム (大学アカウント限定) が渡すクエリで初期値を埋める。
   // ただしパラメータは改ざんできるので、本人性は後段のメール確認で担保する
@@ -124,7 +127,7 @@ const JoinPage: NextPage = () => {
 
     const data = await apiJson<{ success?: boolean; message?: string }>("/members/register", {
       method: "POST",
-      body: JSON.stringify({ name, furigana, birthday, tel: phone }),
+      body: JSON.stringify({ name, furigana, birthday, tel: phone, hobby, wish, note }),
     }).catch(() => null);
 
     if (!data?.success) {
@@ -183,6 +186,16 @@ const JoinPage: NextPage = () => {
 
             <div className={portalStyles.memberEditor}>
               <div className={portalStyles.field}>
+                <label>メールアドレス</label>
+                {/* Google アカウントから取得。変更は「アカウントを切り替える」で */}
+                <input type="email" className={portalStyles.portal} value={email} readOnly disabled />
+              </div>
+              <div className={portalStyles.field}>
+                <label>学籍番号</label>
+                {/* メールアドレスから自動で決まる。本人の申告には頼らない */}
+                <input type="text" className={portalStyles.portal} value={email.split("@")[0]} readOnly disabled />
+              </div>
+              <div className={portalStyles.field}>
                 <label>氏名</label>
                 <input type="text" className={portalStyles.portal} placeholder="電研 太郎"
                   value={name} onChange={e => setName(e.target.value)} />
@@ -198,9 +211,24 @@ const JoinPage: NextPage = () => {
                   value={birthday} onChange={e => setBirthday(e.target.value)} />
               </div>
               <div className={portalStyles.field}>
+                <label>趣味・特技（任意）</label>
+                <textarea className={portalStyles.portal} rows={2} placeholder="あれば入力してください"
+                  value={hobby} onChange={e => setHobby(e.target.value)} />
+              </div>
+              <div className={portalStyles.field}>
+                <label>やってみたいこと（任意）</label>
+                <textarea className={portalStyles.portal} rows={2} placeholder="あれば入力してください"
+                  value={wish} onChange={e => setWish(e.target.value)} />
+              </div>
+              <div className={portalStyles.field}>
                 <label>連絡先（携帯・任意）</label>
                 <input type="tel" className={portalStyles.portal} placeholder="090-1234-5678"
                   value={phone} onChange={e => setPhone(e.target.value)} />
+              </div>
+              <div className={portalStyles.field}>
+                <label>連絡事項（任意）</label>
+                <textarea className={portalStyles.portal} rows={2} placeholder="何かあれば必要に応じてご記入ください"
+                  value={note} onChange={e => setNote(e.target.value)} />
               </div>
 
               <div className={portalStyles.editorActions}>
@@ -212,8 +240,14 @@ const JoinPage: NextPage = () => {
 
         {step === "done" && (
           <p className={styles.description}>
-            仮登録を申請しました。部員の承認をお待ちください。<br />
-            承認されると、ポータルの各機能が使えるようになります。
+            入部申請ありがとうございます！！<br />
+            申請内容を確認後、部室に来ていただく時間帯の調整を行うため、「入部案内メール」をお送りします。<br />
+            <br />
+            確認まで数日お時間をいただく場合がありますので、ご案内までしばらくお待ちください。<br />
+            <br />
+            当日は入部届をお渡ししますので、その場でご記入いただくか、後日、部室へ提出していただいても構いません。<br />
+            <br />
+            （仮登録が完了しました。承認されると、ポータルの各機能が使えるようになります。）
           </p>
         )}
 
@@ -242,7 +276,7 @@ interface AccountStepProps {
 const AccountStep = ({ onGoogleCredential }: AccountStepProps) => (
   <div>
     <p className={styles.description}>
-      入部申請には、大学から配布された Google アカウントでのログインが必要です。<br />
+      入部申請には、大学から配布された Googleアカウントでのログインが必要です。<br />
       ボタンからログインしてください（初めての方はそのままアカウントが作成されます）。
     </p>
 
