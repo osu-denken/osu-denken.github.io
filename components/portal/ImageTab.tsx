@@ -185,7 +185,7 @@ export const ImageTab = ({ setMsg }: ImageTabProps) => {
             className={portalStyles.portal}
             onClick={() => setSortAsc(prev => !prev)}
             title={sortAsc ? "昇順" : "降順"}>
-            {sortAsc ? "昇順 ↑" : "降順 ↓"}
+            {sortAsc ? "昇順" : "降順"}
           </button>
         </div>
       )}
