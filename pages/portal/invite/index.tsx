@@ -41,7 +41,7 @@ const InvitePage : NextPage = () => {
           apiJson("/invite/create", { method: "POST" })
             .then((data: any) => {
               if (data.success) {
-                const inviteLink = "https://osu-denken.github.io/_register/?code=" + data.code;
+                const inviteLink = "https://osu-denken.github.io/register-by-code/?code=" + data.code;
                 const inviteUrlElement = document.getElementById("invite-url") as HTMLInputElement;
                 const inviteQrCodeElement = document.getElementById("invite-qrcode") as HTMLCanvasElement;
 

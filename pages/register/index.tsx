@@ -1,4 +1,5 @@
 import type { NextPage } from "next";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
@@ -286,10 +287,12 @@ const AccountStep = ({ onGoogleCredential }: AccountStepProps) => (
 
     <p className={styles.description}>
       パスワードでログインしたい場合は、ログイン後にポータルの設定で追加できます。<br />
-      すでにパスワードを設定済みの方は{" "}
-      {/* トップの #login を開くためのリンク。ページ内アンカーなので Link ではなく a を使う */}
-      {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-      <a href="/?i=join/#login">こちらからログイン</a> してください。
+    </p>
+
+    <p className={styles.description}>
+      大学のGoogleアカウントがまだ使えない方は、幹部から受け取った{" "}
+      <Link href="/register-by-code/">招待コードで登録</Link> することもできます。<br />
+      登録後、あらためてこのページから入部申請を行ってください。
     </p>
   </div>
 );

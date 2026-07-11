@@ -63,7 +63,7 @@ const DebugPage : NextPage = () => {
             }).then((data: any) => {
                 if (!data.valid) {
                     alert("この招待コードは無効か期限切れです。");
-                    window.location.href = "/_register/";
+                    window.location.href = "/register-by-code/";
                 }
             }).catch(e => console.error("Failed to validate invite code:", e));
 

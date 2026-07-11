@@ -164,7 +164,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onLog
 
           <p>
             ログインは大産大の電研部員のみが可能となっております。<br />
-            入部希望の方は<Link href="/join/">入部申請</Link>からお願いします。
+            入部希望の方は<Link href="/register/">入部申請</Link>からお願いします。
           </p>
         </>
       )}
