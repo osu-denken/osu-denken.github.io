@@ -24,6 +24,8 @@ export const Permission = {
   SwitchBotControl: 1 << 9,
   PrivatePostView: 1 << 10,
   PrivatePostEdit: 1 << 11,
+  ImageUpload: 1 << 12,
+  ImageDelete: 1 << 13,
 } as const;
 
 export const PERMISSION_ENTRIES: readonly [number, string][] = [
@@ -39,6 +41,8 @@ export const PERMISSION_ENTRIES: readonly [number, string][] = [
   [Permission.SwitchBotControl, "SwitchBot操作"],
   [Permission.PrivatePostView, "非公開記事閲覧"],
   [Permission.PrivatePostEdit, "非公開記事編集"],
+  [Permission.ImageUpload, "画像追加"],
+  [Permission.ImageDelete, "画像削除"],
 ];
 
 // 表示は上位の役職から並べる
@@ -56,7 +60,8 @@ export const ROLE_ENTRIES: readonly [number, string][] = [
 // web-api の util/permission.ts と一致させること
 const MEMBER_DEFAULT_PERMISSIONS =
   Permission.DiscordInviteView | Permission.MemberView | Permission.BlogEdit |
-  Permission.PrivatePostView | Permission.PrivatePostEdit;
+  Permission.PrivatePostView | Permission.PrivatePostEdit |
+  Permission.ImageUpload | Permission.ImageDelete;
 
 const EXECUTIVE_DEFAULT_PERMISSIONS =
   MEMBER_DEFAULT_PERMISSIONS |

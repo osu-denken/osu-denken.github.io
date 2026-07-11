@@ -144,7 +144,7 @@ const PortalPage : NextPage = () => {
           {activeTab === "blog" && canOpen("blog") && <BlogTab setMsg={setMsg} />}
           {activeTab === "private" && canOpen("private") && <PrivatePostTab permissions={permissions} setMsg={setMsg} />}
           {activeTab === "page" && canOpen("page") && <PageTab />}
-          {activeTab === "image" && <ImageTab setMsg={setMsg} />}
+          {activeTab === "image" && <ImageTab permissions={permissions} setMsg={setMsg} />}
         </div>
       </main>
     </div>

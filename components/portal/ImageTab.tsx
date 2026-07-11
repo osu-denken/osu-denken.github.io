@@ -2,8 +2,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
 import { apiFetch, apiJson } from "@lib/api";
+import { hasPermission, Permission } from "@lib/member";
 
 interface ImageTabProps {
+  /** 操作する側の実効権限 */
+  permissions: number;
   setMsg: (msg: string) => void;
 }
 
@@ -44,10 +47,13 @@ const formatDate = (iso: string | null) => {
   });
 };
 
-export const ImageTab = ({ setMsg }: ImageTabProps) => {
+export const ImageTab = ({ permissions, setMsg }: ImageTabProps) => {
   const [images, setImages] = useState<BlogImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+
+  const canUpload = hasPermission(permissions, Permission.ImageUpload);
+  const canDelete = hasPermission(permissions, Permission.ImageDelete);
   const [sortKey, setSortKey] = useState<SortKey>("date");
   const [sortAsc, setSortAsc] = useState(false);
 
@@ -157,16 +163,18 @@ export const ImageTab = ({ setMsg }: ImageTabProps) => {
         ブログ記事で使う画像を管理します。リポジトリにコミットとして残るため、公開して問題のない画像だけをアップロードしてください。
       </p>
 
-      <div className={portalStyles.inputGroup}>
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/png,image/jpeg,image/webp,image/gif"
-          multiple
-          className={portalStyles.portal}
-          disabled={uploading}
-          onChange={e => onUpload(e.target.files)} />
-      </div>
+      {canUpload && (
+        <div className={portalStyles.inputGroup}>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp,image/gif"
+            multiple
+            className={portalStyles.portal}
+            disabled={uploading}
+            onChange={e => onUpload(e.target.files)} />
+        </div>
+      )}
 
       {uploading && <p>アップロード中...</p>}
 
@@ -208,13 +216,15 @@ export const ImageTab = ({ setMsg }: ImageTabProps) => {
                 <button type="button" className={portalStyles.portal} onClick={() => onCopy(image)}>
                   コピー
                 </button>
-                <button
-                  type="button"
-                  className={portalStyles.portal}
-                  style={{ backgroundColor: "#a66666" }}
-                  onClick={() => onDelete(image)}>
-                  削除
-                </button>
+                {canDelete && (
+                  <button
+                    type="button"
+                    className={portalStyles.portal}
+                    style={{ backgroundColor: "#a66666" }}
+                    onClick={() => onDelete(image)}>
+                    削除
+                  </button>
+                )}
               </div>
             </div>
           ))}
