@@ -8,7 +8,7 @@ import LoginModal from '@components/LoginModal';
 
 const Navbar: React.FC = () => {
   const [modalIsOpen, setIsOpen] = useState<boolean>(false);
-  const { isLoggedIn, userName, login, submitTotp, logout } = useAuth();
+  const { isLoggedIn, userName, login, loginWithGoogle, submitTotp, logout } = useAuth();
 
   // URLの#loginハッシュに基づいてモーダルを開く
   useEffect(() => {
@@ -85,7 +85,7 @@ const Navbar: React.FC = () => {
         </li>
         {rightNavItem}
       </ul>
-      <LoginModal isOpen={modalIsOpen} onClose={closeModal} onLogin={handleLogin} onSubmitTotp={submitTotp} />
+      <LoginModal isOpen={modalIsOpen} onClose={closeModal} onLogin={handleLogin} onLoginWithGoogle={loginWithGoogle} onSubmitTotp={submitTotp} />
     </nav>
   );
 };

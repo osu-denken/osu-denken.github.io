@@ -4,7 +4,7 @@ import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
 import { API_BASE, apiJson, readIdToken, storeTokens } from "@lib/api";
 import { MemberStatus } from "@lib/member";
-import { Turnstile } from "@components/Turnstile";
+import GoogleLoginButton from "@components/GoogleLoginButton";
 
 /**
  * 仮登録の進み具合。
@@ -45,53 +45,55 @@ const JoinPage: NextPage = () => {
     setPhone(params.get("phone") || "");
   }, []);
 
-  // ログイン済みなら確認状態を見て次のステップを決める
+  // ログイン済みなら確認状態を見て次のステップを決める。ログイン直後にも呼ぶ
+  const advanceAfterLogin = async () => {
+    const info = await apiJson<UserInfo>("/user/info", { method: "POST" }).catch(() => null);
+    if (!info) {
+      setStep("account");
+      return;
+    }
+
+    if (info.email) setEmail(info.email);
+
+    // 既に名簿に載っている人は入部申請そのものが不要。
+    // メール未認証でも verify に流さず案内する (既存部員は招待経由で未認証のことがある)
+    const me = await apiJson<{ id?: number; status?: MemberStatus }>("/portal/member/me", { method: "POST" }).catch(() => null);
+    if (me?.id) {
+      setStep(me.status === "pre-active" ? "done" : "member");
+      return;
+    }
+
+    setStep(info.emailVerified ? "form" : "verify");
+  };
+
   useEffect(() => {
     if (!readIdToken()) {
       setStep("account");
       return;
     }
-
-    apiJson<UserInfo>("/user/info", { method: "POST" })
-      .then(async info => {
-        if (info.email) setEmail(info.email);
-
-        // 既に名簿に載っている人は入部申請そのものが不要。
-        // メール未認証でも verify に流さず案内する (既存部員は招待経由で未認証のことがある)
-        const me = await apiJson<{ id?: number; status?: MemberStatus }>("/portal/member/me", { method: "POST" }).catch(() => null);
-        if (me?.id) {
-          setStep(me.status === "pre-active" ? "done" : "member");
-          return;
-        }
-
-        setStep(info.emailVerified ? "form" : "verify");
-      })
-      .catch(() => setStep("account"));
+    advanceAfterLogin();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // アカウントを作成し、確認メールを送ってもらう
-  const onCreateAccount = async (accountEmail: string, password: string, turnstileToken: string) => {
+  // 大学 Google アカウントでログイン/新規登録する。Google は確認済みメールで来る
+  const onGoogleCredential = async (credential: string) => {
     setMsg("");
 
-    const res = await fetch(`${API_BASE}/user/register`, {
+    const res = await fetch(`${API_BASE}/user/google`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: accountEmail, password, turnstileToken }),
+      body: JSON.stringify({ credential }),
     });
     const data: any = await res.json();
 
-    if (!data.idToken) {
-      setMsg(data.message === "EMAIL_EXISTS"
-        ? "このメールアドレスは登録済みです。ログインしてから続けてください。"
-        : `登録に失敗しました。${data.message ?? ""}`);
+    if (!data.idToken || !data.refreshToken) {
+      setMsg(`ログインに失敗しました。${data.message ?? data.error ?? ""}`);
       return;
     }
 
-    // 自己登録では register が確認メールを送っている
     storeTokens(data.idToken, data.refreshToken);
-    setEmail(accountEmail);
-    setMailSent(true);
-    setStep("verify");
+    setStep("loading");
+    await advanceAfterLogin();
   };
 
   const onSendVerify = async () => {
@@ -143,7 +145,7 @@ const JoinPage: NextPage = () => {
         {step === "loading" && <p className={styles.description}>読み込み中...</p>}
 
         {step === "account" && (
-          <AccountStep email={email} onEmailChange={setEmail} onSubmit={onCreateAccount} />
+          <AccountStep onGoogleCredential={onGoogleCredential} />
         )}
 
         {step === "verify" && (
@@ -232,48 +234,30 @@ const JoinPage: NextPage = () => {
 };
 
 interface AccountStepProps {
-  email: string;
-  onEmailChange: (email: string) => void;
-  onSubmit: (email: string, password: string, turnstileToken: string) => void;
+  onGoogleCredential: (credential: string) => void;
 }
 
-// 大学メールでアカウントを作る。メールアドレスは一次フォームから引き継ぐことがある
-const AccountStep = ({ email, onEmailChange, onSubmit }: AccountStepProps) => {
-  const [password, setPassword] = useState("");
-  const [turnstileToken, setTurnstileToken] = useState("");
+// 大学 Google アカウントでログイン/新規登録する。
+// パスワードは後からポータルの設定で任意に追加できる
+const AccountStep = ({ onGoogleCredential }: AccountStepProps) => (
+  <div>
+    <p className={styles.description}>
+      入部申請には、大学から配布された Google アカウントでのログインが必要です。<br />
+      ボタンからログインしてください（初めての方はそのままアカウントが作成されます）。
+    </p>
 
-  return (
-    <div>
-      <p className={styles.description}>
-        まず、大学から配布されたメールアドレスでアカウントを作成します。<br />
-        すでにアカウントをお持ちの方は{" "}
-        {/* トップの #login を開くためのリンク。ページ内アンカーなので Link ではなく a を使う */}
-        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-        <a href="/?i=join/#login">ログイン</a> してください。
-      </p>
-
-      <div className={portalStyles.memberEditor}>
-        <div className={portalStyles.field}>
-          <label>メールアドレス（学籍番号）</label>
-          <input type="text" className={portalStyles.portal} placeholder="s20a000@ge.osaka-sandai.ac.jp"
-            value={email} onChange={e => onEmailChange(e.target.value)} />
-        </div>
-        <div className={portalStyles.field}>
-          <label>パスワード</label>
-          <input type="password" className={portalStyles.portal}
-            value={password} onChange={e => setPassword(e.target.value)} />
-        </div>
-
-        <Turnstile onToken={setTurnstileToken} />
-
-        <div className={portalStyles.editorActions}>
-          <button type="button" className={portalStyles.portal} onClick={() => onSubmit(email, password, turnstileToken)}>
-            アカウントを作成
-          </button>
-        </div>
-      </div>
+    <div className={portalStyles.memberEditor}>
+      <GoogleLoginButton onCredential={onGoogleCredential} />
     </div>
-  );
-};
+
+    <p className={styles.description}>
+      パスワードでログインしたい場合は、ログイン後にポータルの設定で追加できます。<br />
+      すでにパスワードを設定済みの方は{" "}
+      {/* トップの #login を開くためのリンク。ページ内アンカーなので Link ではなく a を使う */}
+      {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+      <a href="/?i=join/#login">こちらからログイン</a> してください。
+    </p>
+  </div>
+);
 
 export default JoinPage;

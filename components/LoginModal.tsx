@@ -1,6 +1,7 @@
 import Modal from 'react-modal';
 import { useState } from 'react';
 import type { LoginResult } from '@hooks/useAuth';
+import GoogleLoginButton from '@components/GoogleLoginButton';
 
 const modalStyle: Modal.Styles = {
   overlay: {
@@ -30,15 +31,26 @@ interface LoginModalProps {
   onClose: () => void;
   /** 'mfa' が返ったら認証コードの入力へ進む */
   onLogin: (email: string, password: string) => Promise<LoginResult>;
+  onLoginWithGoogle: (credential: string) => Promise<LoginResult>;
   onSubmitTotp: (code: string) => Promise<LoginResult>;
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSubmitTotp }) => {
+const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onLoginWithGoogle, onSubmitTotp }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [code, setCode] = useState('');
   const [needsTotp, setNeedsTotp] = useState(false);
   const [busy, setBusy] = useState(false);
+
+  const handleGoogleCredential = async (credential: string) => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      if (await onLoginWithGoogle(credential) === 'mfa') setNeedsTotp(true);
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const handleLoginClick = async (e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -143,8 +155,15 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onSub
             <br />
             <input type="submit" value="ログイン" disabled={busy} onClick={handleLoginClick} />
           </form>
+
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', margin: '1rem 0' }}>
+            <span style={{ color: '#aaa', fontSize: '0.85rem' }}>または</span>
+            <GoogleLoginButton onCredential={handleGoogleCredential} />
+          </div>
+
           <p>
-            ログインは大産大の電研部員のみが可能となっております。
+            ログインは大産大の電研部員のみが可能となっております。<br />
+            はじめての方は大学 Google アカウントでログインしてください。
           </p>
         </>
       )}

@@ -105,9 +105,10 @@ export const SettingsTab = ({ userName, setUserName, setMsg, hasGitHubToken, has
 
       <br />
 
-      <h2>パスワードの再設定</h2>
+      <h2>パスワード</h2>
       <p className={styles.description}>
-        パスワードを再設定するには<Link href="/resetpass/">こちら</Link>からメールアドレスを入力してください。
+        パスワードの設定、再設定は<Link href="/resetpass/">こちら</Link>からメールアドレス宛の確認メールで行います。<br />
+        Googleアカウントでアカウント作成した方も、パスワードを設定することで学籍番号とパスワードでログインできます。
       </p>
 
       <TotpSection hasTotp={hasTotp} recoveryCodesLeft={recoveryCodesLeft} setMsg={setMsg} />

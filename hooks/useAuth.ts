@@ -121,6 +121,32 @@ export const useAuth = () => {
     }
   }, []);
 
+  // 大学 Google アカウントでのログイン。GIS の ID トークンをサーバでトークンに交換する
+  const loginWithGoogle = useCallback(async (credential: string): Promise<LoginResult> => {
+    try {
+      const response = await postJson('/user/google', { credential });
+      const data: AuthResponse & { email?: string } = await response.json();
+
+      if (data.mfaRequired && data.mfaPendingToken) {
+        mfaPendingToken.current = data.mfaPendingToken;
+        mfaEmail.current = data.email ?? '';
+        return 'mfa';
+      }
+
+      if (!data.idToken || !data.refreshToken) {
+        alert('Google ログインに失敗しました: ' + (data.message || data.error || '不明なエラー'));
+        return 'error';
+      }
+
+      completeLogin(data, data.email ?? '');
+      return 'ok';
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Google ログイン中にエラーが発生しました。');
+      return 'error';
+    }
+  }, []);
+
   // 2段階認証のコード (またはリカバリコード) を検証する
   const submitTotp = useCallback(async (code: string): Promise<LoginResult> => {
     if (!mfaPendingToken.current) {
@@ -161,5 +187,5 @@ export const useAuth = () => {
 
   const getIdToken = useCallback(() => readIdToken(), []);
 
-  return { isLoggedIn, userName, login, submitTotp, logout, refreshToken, getIdToken };
+  return { isLoggedIn, userName, login, loginWithGoogle, submitTotp, logout, refreshToken, getIdToken };
 };
