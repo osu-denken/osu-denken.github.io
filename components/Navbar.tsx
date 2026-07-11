@@ -66,7 +66,7 @@ const Navbar: React.FC = () => {
   ) : (
     <>
       <li className={styles.right}>
-        <a href="https://osu-denken.github.io/blog/join">入部</a>
+        <Link href="/register/">入部</Link>
       </li>
       <li>
         <a href="#login">ログイン</a>

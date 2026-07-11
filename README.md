@@ -27,7 +27,7 @@
 
 ## 入部の流れ
 
-1. **入部申請ページ** https://osu-denken.github.io/join/ を開きます
+1. **入部申請ページ** https://osu-denken.github.io/register/ を開きます
 2. **大学のGoogleアカウントでログイン**します（初めての方はそのままアカウントが作成されます）
    - 大阪産業大学のGoogleアカウント（`@ge.osaka-sandai.ac.jp`）のみ登録できます
    - メールアドレスと学籍番号は Google アカウントから自動で取得されるため、入力は不要です
