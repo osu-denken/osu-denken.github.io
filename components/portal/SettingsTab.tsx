@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
 import { apiJson, storeTokens } from "@lib/api";
@@ -79,20 +80,57 @@ export const SettingsTab = ({ userName, setUserName, setMsg, hasGitHubToken, has
     });
   };
 
+  // 連携状態。ボタンの出し分けと、解除時の締め出し防止に使う
+  const [providers, setProviders] = useState<{ hasPassword: boolean; hasGoogle: boolean } | null>(null);
+
+  const loadProviders = () => {
+    apiJson<{ hasPassword?: boolean; hasGoogle?: boolean }>("/user/providers", { method: "POST" })
+      .then(d => setProviders({ hasPassword: Boolean(d.hasPassword), hasGoogle: Boolean(d.hasGoogle) }))
+      .catch(e => console.error("Failed to load providers.", e));
+  };
+
+  useEffect(loadProviders, []);
+
   const onLinkGoogle = async (credential: string) => {
     try {
       const data: any = await apiJson("/user/linkGoogle", { method: "POST", body: JSON.stringify({ credential }) });
       if (!data.success) {
-        alert("Google 連携に失敗しました。" + (data.message ?? ""));
+        alert("Google連携に失敗しました。" + (data.message ?? ""));
         return;
       }
 
       // 連携でトークンが再発行されるので、現在のセッションを更新しておく
       if (data.idToken && data.refreshToken) storeTokens(data.idToken, data.refreshToken);
-      setMsg("Google アカウントを連携しました。次回からソーシャルログインも使えます。");
+      setMsg("Googleアカウントを連携しました。次回からソーシャルログインも使えます。");
+      loadProviders();
     } catch (e) {
       console.error("Failed to link Google.", e);
       alert("Google 連携に失敗しました。");
+    }
+  };
+
+  const onUnlinkGoogle = async () => {
+    // パスワード未設定で外すとログイン手段が無くなる。サーバも弾くが、UI でも先に止める
+    if (providers && !providers.hasPassword) {
+      alert("パスワードが未設定のため解除できません。解除するとログインできなくなります。先にパスワードを設定してください。");
+      return;
+    }
+    if (!confirm("Google連携を解除しますか？")) return;
+
+    try {
+      const data: any = await apiJson("/user/unlinkGoogle", { method: "POST" });
+      if (!data.success) {
+        alert(data.message === "NO_OTHER_METHOD"
+          ? "パスワードが未設定のため解除できません。先にパスワードを設定してください。"
+          : "Google 連携の解除に失敗しました。");
+        return;
+      }
+
+      setMsg("Google 連携を解除しました。");
+      loadProviders();
+    } catch (e) {
+      console.error("Failed to unlink Google.", e);
+      alert("Google 連携の解除に失敗しました。");
     }
   };
 
@@ -129,13 +167,34 @@ export const SettingsTab = ({ userName, setUserName, setMsg, hasGitHubToken, has
         Googleアカウントでアカウント作成した方も、パスワードを設定することで学籍番号とパスワードでログインできます。
       </p>
 
-      <h2>Google 連携</h2>
-      <p className={styles.description}>
-        大学 Google アカウントを連携すると、次回から学籍番号＋パスワードに加えてソーシャルログインも使えるようになります。
-      </p>
-      <div className={portalStyles.inputGroup}>
-        <GoogleLoginButton onCredential={onLinkGoogle} />
-      </div>
+      <h2>Google連携</h2>
+      {providers?.hasGoogle ? (
+        <>
+          <p className={styles.description}>
+            Googleアカウントと連携済みです。
+          </p>
+          <div className={portalStyles.inputGroup}>
+            <button onClick={onUnlinkGoogle} className={portalStyles.portal}
+              disabled={!providers.hasPassword} style={{ backgroundColor: "#a66666" }}>
+              連携を解除
+            </button>
+          </div>
+          {!providers.hasPassword && (
+            <p className={styles.description}>
+              解除するとログイン手段が無くなるため、先にパスワードを設定してください。
+            </p>
+          )}
+        </>
+      ) : (
+        <>
+          <p className={styles.description}>
+            大学のGoogleアカウントを連携すると、次回からソーシャルログインも利用できます。
+          </p>
+          <div className={portalStyles.inputGroup}>
+            <GoogleLoginButton onCredential={onLinkGoogle} />
+          </div>
+        </>
+      )}
 
       <TotpSection hasTotp={hasTotp} recoveryCodesLeft={recoveryCodesLeft} setMsg={setMsg} />
 
