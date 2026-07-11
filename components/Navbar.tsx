@@ -55,7 +55,10 @@ const Navbar: React.FC = () => {
         <Link href="/portal/">{userName}</Link>
       </li>
       <li>
-        <a href="#logout" onClick={(e) => { e.preventDefault(); logout(); }}>
+        <a href="#logout" onClick={(e) => { 
+          e.preventDefault();
+          logout();
+        }}>
           ログアウト
         </a>
       </li>

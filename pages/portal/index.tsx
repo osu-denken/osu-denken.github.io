@@ -24,6 +24,7 @@ const TABS: { id: TabName; label: string }[] = [
 
 /** タブを開くのに要る権限。ここに無いタブは誰でも開ける */
 const TAB_PERMISSIONS: Partial<Record<TabName, number>> = {
+  blog: Permission.BlogEdit,
   private: Permission.PrivatePostView,
   page: Permission.PageEdit,
 };
@@ -112,13 +113,19 @@ const PortalPage : NextPage = () => {
             <div className={portalStyles.tabPane}>
               <h1 id="title">ようこそ、{userName} さん</h1>
               <p className={styles.description}>
-                <Link href={discordInviteUrl}>Discordへ参加する</Link>
-                <br />
+                {hasPermission(permissions, Permission.DiscordInviteView) && (
+                  <Link href={discordInviteUrl}>Discordへ参加する</Link>
+                )}
 
+                <br />
                 <Link href="/portal/invite/">招待コードの作成</Link>
-                <br />
 
-                <Link href="/portal/members/">構成員名簿</Link>
+                {hasPermission(permissions, Permission.MemberManage) && (
+                  <>
+                    <br />
+                    <Link href="/portal/members/">構成員名簿</Link>
+                  </>
+                )}
 
                 {hasPermission(permissions, Permission.MemberManage) && (
                   <>
@@ -130,18 +137,12 @@ const PortalPage : NextPage = () => {
             </div>
           )}
           {activeTab === "settings" && (
-            <SettingsTab
-              userName={userName}
-              setUserName={setUserName}
-              setMsg={setMsg}
-              hasGitHubToken={Boolean(portalData?.hasGitHubToken)}
-              hasTotp={Boolean(portalData?.hasTotp)}
+            <SettingsTab userName={userName} setUserName={setUserName} setMsg={setMsg}
+              hasGitHubToken={Boolean(portalData?.hasGitHubToken)} hasTotp={Boolean(portalData?.hasTotp)}
               recoveryCodesLeft={portalData?.recoveryCodesLeft ?? 0} />
           )}
-          {activeTab === "blog" && <BlogTab setMsg={setMsg} />}
-          {activeTab === "private" && canOpen("private") && (
-            <PrivatePostTab permissions={permissions} setMsg={setMsg} />
-          )}
+          {activeTab === "blog" && canOpen("blog") && <BlogTab setMsg={setMsg} />}
+          {activeTab === "private" && canOpen("private") && <PrivatePostTab permissions={permissions} setMsg={setMsg} />}
           {activeTab === "page" && canOpen("page") && <PageTab />}
           {activeTab === "image" && <ImageTab setMsg={setMsg} />}
         </div>
