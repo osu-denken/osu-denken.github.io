@@ -24,7 +24,7 @@ const DebugPage : NextPage = () => {
 
             
                 if (data.message === "Invalid passphrase or invite code") {
-                    alert("合言葉が間違っています。");
+                    alert("招待コードが間違っています。");
                     return;
                 }
 
@@ -100,7 +100,7 @@ const DebugPage : NextPage = () => {
                         <input type="password" name="password" />
                     </label>
                     <label id="passphrase-label">
-                        合言葉
+                        招待コード{/* 合言葉 */}
                         <input type="text" name="passphrase" />
                     </label>
                     <br />
