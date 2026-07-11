@@ -1,8 +1,9 @@
 import Link from "next/link";
 import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
-import { apiJson } from "@lib/api";
+import { apiJson, storeTokens } from "@lib/api";
 import { TotpSection } from "@components/portal/TotpSection";
+import GoogleLoginButton from "@components/GoogleLoginButton";
 
 interface SettingsTabProps {
   userName: string;
@@ -78,6 +79,23 @@ export const SettingsTab = ({ userName, setUserName, setMsg, hasGitHubToken, has
     });
   };
 
+  const onLinkGoogle = async (credential: string) => {
+    try {
+      const data: any = await apiJson("/user/linkGoogle", { method: "POST", body: JSON.stringify({ credential }) });
+      if (!data.success) {
+        alert("Google 連携に失敗しました。" + (data.message ?? ""));
+        return;
+      }
+
+      // 連携でトークンが再発行されるので、現在のセッションを更新しておく
+      if (data.idToken && data.refreshToken) storeTokens(data.idToken, data.refreshToken);
+      setMsg("Google アカウントを連携しました。次回からソーシャルログインも使えます。");
+    } catch (e) {
+      console.error("Failed to link Google.", e);
+      alert("Google 連携に失敗しました。");
+    }
+  };
+
   const onDeleteGitHubToken = (e: React.MouseEvent) => {
     e.preventDefault();
     deleteGitHubToken().then(ok => {
@@ -110,6 +128,14 @@ export const SettingsTab = ({ userName, setUserName, setMsg, hasGitHubToken, has
         パスワードの設定、再設定は<Link href="/resetpass/">こちら</Link>からメールアドレス宛の確認メールで行います。<br />
         Googleアカウントでアカウント作成した方も、パスワードを設定することで学籍番号とパスワードでログインできます。
       </p>
+
+      <h2>Google 連携</h2>
+      <p className={styles.description}>
+        大学 Google アカウントを連携すると、次回から学籍番号＋パスワードに加えてソーシャルログインも使えるようになります。
+      </p>
+      <div className={portalStyles.inputGroup}>
+        <GoogleLoginButton onCredential={onLinkGoogle} />
+      </div>
 
       <TotpSection hasTotp={hasTotp} recoveryCodesLeft={recoveryCodesLeft} setMsg={setMsg} />
 
