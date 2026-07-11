@@ -117,8 +117,12 @@ const PortalPage : NextPage = () => {
                   <Link href={discordInviteUrl}>Discordへ参加する</Link>
                 )}
 
-                <br />
-                <Link href="/portal/invite/">招待コードの作成</Link>
+                {hasPermission(permissions, Permission.InviteCodeCreate) && (
+                  <>
+                    <br />
+                    <Link href="/portal/invite/">招待コードの作成</Link>
+                  </>
+                )}
 
                 {hasPermission(permissions, Permission.MemberManage) && (
                   <>
