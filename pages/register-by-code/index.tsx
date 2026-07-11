@@ -3,7 +3,7 @@ import styles from "@styles/Page.module.css";
 import { useEffect } from "react";
 import { apiJson, readIdToken } from "@lib/api";
 
-const DebugPage : NextPage = () => {
+const RegisterByCodePage : NextPage = () => {
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         const form = new FormData(event.currentTarget);
@@ -112,4 +112,4 @@ const DebugPage : NextPage = () => {
     );
 };
 
-export default DebugPage;
+export default RegisterByCodePage;
