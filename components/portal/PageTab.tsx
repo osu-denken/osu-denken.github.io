@@ -10,8 +10,7 @@ export const PageTab = () => (
   <div className={portalStyles.tabPane}>
     <h1>ページ</h1>
     <p className={styles.description}>
-      公式サイト(ブログを除く)のページを編集します。<br />
-      保存するとサイトが再ビルドされ、反映まで数分かかります。
+      公式サイト(ブログを除く)のページを編集します。
     </p>
 
     <div className={portalStyles.grid}>
@@ -23,10 +22,16 @@ export const PageTab = () => (
           </div>
         </Link>
       ))}
+      <Link href={terminalHref}>
+        <div className={portalStyles.card}>
+          <h3>フェイクターミナルのwelcome.md</h3>
+          <p>terminal/welcome.md</p>
+        </div>
+      </Link>
     </div>
 
-    <p className={styles.description}>
+    {/* <p className={styles.description}>
       <Link href={terminalHref}>トップページのフェイクターミナルに表示される welcome.md を編集する</Link>
-    </p>
+    </p> */}
   </div>
 );
