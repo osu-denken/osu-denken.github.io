@@ -56,16 +56,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # export は distDir=docs でビルドするので、増分キャッシュは docs/cache に出る。
+      # docs/cache は .gitignore で commit 対象から除外している (肥大化防止)
       - name: Cache Next.js build
         uses: actions/cache@v3
         with:
-          path: .next/cache
+          path: docs/cache
           key: next-cache-${{ hashFiles('package-lock.json') }}
           restore-keys: next-cache-
 
-      - name: Build Next.js app
-        run: npm run build
-
+      # export (IS_EXPORT=1 next build) が本番用の docs/ を生成する。
+      # 以前は npm run build も実行していたが、その .next は deploy に使われず二重ビルドだった
       - name: Export static site
         run: npm run export
 
