@@ -131,7 +131,7 @@ export const MainTab = ({ userName, permissions, discordInviteUrl }: MainTabProp
     <div className={portalStyles.tabPane}>
       <div className={portalStyles.welcome}>
         <h1 className={portalStyles.welcomeTitle}>ようこそ、{userName} さん</h1>
-        <p className={portalStyles.welcomeSub}>電研ポータルへようこそ。上のタブから各機能を利用できます。</p>
+        <p className={portalStyles.welcomeSub}>電研ポータルへようこそ！</p>
       </div>
 
       {memberVisible.length > 0 && (
