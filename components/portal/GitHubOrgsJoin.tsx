@@ -8,7 +8,7 @@ import { apiFetch, apiJson } from "@lib/api";
  * GitHub連携済みならトークンからアカウント名を自動取得してワンクリック参加、
  * 未連携なら従来どおりアカウント名を手入力する。
  */
-export const GitHubJoin = () => {
+export const GitHubOrgsJoin = () => {
   const [username, setUsername] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -63,9 +63,7 @@ export const GitHubJoin = () => {
   const useConnected = connected && !manual;
 
   return (
-    <div className={portalStyles.editorSection}>
-      <h2>GitHub Organizationに参加する</h2>
-
+    <div className={portalStyles.section}>
       {useConnected ? (
         <>
           <p className={styles.description}>

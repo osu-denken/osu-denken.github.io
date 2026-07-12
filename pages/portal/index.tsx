@@ -2,27 +2,27 @@ import type { NextPage } from "next";
 import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { Icon } from "@iconify/react";
 import { apiFetch, readIdToken, redirectToLogin } from "@lib/api";
 import { hasPermission, Permission } from "@lib/member";
+import { MainTab } from "@components/portal/MainTab";
 import { SettingsTab } from "@components/portal/SettingsTab";
 import { BlogTab } from "@components/portal/BlogTab";
 import { ImageTab } from "@components/portal/ImageTab";
 import { PrivatePostTab } from "@components/portal/PrivatePostTab";
 import { PageTab } from "@components/portal/PageTab";
 import { LogTab } from "@components/portal/LogTab";
-import { GitHubJoin } from "@components/portal/GitHubJoin";
 
 type TabName = "main" | "settings" | "blog" | "private" | "page" | "image" | "logs";
 
-const TABS: { id: TabName; label: string }[] = [
-  { id: "main", label: "ポータル" },
-  { id: "settings", label: "設定" },
-  { id: "blog", label: "ブログ" },
-  { id: "private", label: "非公開記事" },
-  { id: "page", label: "ページ" },
-  { id: "image", label: "画像" },
-  { id: "logs", label: "ログ" },
+const TABS: { id: TabName; label: string; icon: string }[] = [
+  { id: "main", label: "ポータル", icon: "fa6-solid:house" },
+  { id: "settings", label: "設定", icon: "fa6-solid:gear" },
+  { id: "blog", label: "ブログ", icon: "fa6-solid:pen-nib" },
+  { id: "private", label: "非公開記事", icon: "fa6-solid:lock" },
+  { id: "page", label: "ページ", icon: "fa6-solid:file-lines" },
+  { id: "image", label: "画像", icon: "fa6-solid:image" },
+  { id: "logs", label: "ログ", icon: "fa6-solid:clock-rotate-left" },
 ];
 
 /** タブを開くのに要る権限。ここに無いタブは誰でも開ける */
@@ -107,6 +107,7 @@ const PortalPage : NextPage = () => {
               key={tab.id}
               className={`${portalStyles.tabButton} ${activeTab === tab.id ? portalStyles.active : ""}`}
               onClick={() => setActiveTab(tab.id)} >
+              <Icon icon={tab.icon} className={portalStyles.tabIcon} />
               {tab.label}
             </button>
           ))}
@@ -114,46 +115,7 @@ const PortalPage : NextPage = () => {
 
         <div className={portalStyles.tabContent}>
           {activeTab === "main" && (
-            <div className={portalStyles.tabPane}>
-              <h1 id="title">ようこそ、{userName} さん</h1>
-              <p className={styles.description}>
-                {hasPermission(permissions, Permission.DiscordInviteView) && (
-                  <Link href={discordInviteUrl}>Discordへ参加する</Link>
-                )}
-
-                {hasPermission(permissions, Permission.InviteCodeCreate) && (
-                  <>
-                    <br />
-                    <Link href="/portal/invite/">招待コードの作成</Link>
-                  </>
-                )}
-
-                {hasPermission(permissions, Permission.MemberManage) && (
-                  <>
-                    <br />
-                    <Link href="/portal/members/">構成員名簿</Link>
-                  </>
-                )}
-
-                {hasPermission(permissions, Permission.MemberManage) && (
-                  <>
-                    <br />
-                    <Link href="/portal/admin/members/">部員管理</Link>
-                  </>
-                )}
-
-                {hasPermission(permissions, Permission.MemberManage) && (
-                  <>
-                    <br />
-                    <Link href="https://totp.kmmz.jp/?email=osudenken4dev@gmail.com" target="_blank" rel="noopener noreferrer">
-                      ワンタイムパスワード管理
-                    </Link>
-                  </>
-                )}
-              </p>
-
-              <GitHubJoin />
-            </div>
+            <MainTab userName={userName} permissions={permissions} discordInviteUrl={discordInviteUrl} />
           )}
           {activeTab === "settings" && (
             <SettingsTab userName={userName} setUserName={setUserName} setMsg={setMsg}
