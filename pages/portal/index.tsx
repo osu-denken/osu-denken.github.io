@@ -11,6 +11,7 @@ import { ImageTab } from "@components/portal/ImageTab";
 import { PrivatePostTab } from "@components/portal/PrivatePostTab";
 import { PageTab } from "@components/portal/PageTab";
 import { LogTab } from "@components/portal/LogTab";
+import { GitHubJoin } from "@components/portal/GitHubJoin";
 
 type TabName = "main" | "settings" | "blog" | "private" | "page" | "image" | "logs";
 
@@ -141,6 +142,8 @@ const PortalPage : NextPage = () => {
                   </>
                 )}
               </p>
+
+              <GitHubJoin />
             </div>
           )}
           {activeTab === "settings" && (
