@@ -57,7 +57,10 @@
   {
     "id": 6,
     "title": "ECRD fash",
-    "images": [],
+    "images": [
+      "https://osu-denken.github.io/blog/images/8319fddb-ac37-40c6-87ba-4422ca6bbae7.png",
+      "https://osu-denken.github.io/blog/images/1d2fd38b-4e0e-4c9e-9d50-7fa4f2e3ffc0.png"
+    ],
     "link": "https://github.com/osu-denken/ecrd-fake-terminal",
     "overview": "トップページに埋め込まれているターミナルもどき",
     "description": "実際にコマンドを入力できます！頑張って「sudo rm -rf /」してみてください！<br />使えるコマンドはhelpで確認してみてください！ちょくちょくコマンド追加していきます！<br /><br />使用技術: HTML/CSS/JS<br />制作日時: 2025/12/22"
