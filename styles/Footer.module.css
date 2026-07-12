@@ -50,6 +50,16 @@
   padding: 0;
 }
 
+.footerIcons {
+  gap: 0.75rem;
+}
+
+.footerIcons a {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.25rem;
+}
+
 .contactList {
   list-style: none;
   padding: 0;

@@ -1,5 +1,6 @@
 import styles from '@styles/Footer.module.css';
 import Link from 'next/link';
+import { Icon } from '@iconify/react';
 
 const Footer = () => {
   return (
@@ -20,18 +21,13 @@ const Footer = () => {
             </p>
           </div>
 
-          <div className={`${styles.footerCol} ${styles.footerCol2}`}>
-            <p>
-              <a href="/denken-pub.asc">
-                PGP公開鍵
-              </a>
-            </p>
-          </div>
-
-          <div className={`${styles.footerCol} ${styles.footerCol2}`}>
-            <p>
-              <a href="/feed.xml" type="application/rss+xml">RSS</a>
-            </p>
+          <div className={`${styles.footerCol} ${styles.footerCol2} ${styles.footerIcons}`}>
+            <a href="/denken-pub.asc" title="PGP公開鍵" aria-label="PGP公開鍵">
+              <Icon icon="fa6-solid:key" />
+            </a>
+            <a href="/feed.xml" type="application/rss+xml" title="RSS" aria-label="RSS">
+              <Icon icon="fa6-solid:rss" />
+            </a>
           </div>
         </div>
         <div className={styles.copyright}>
