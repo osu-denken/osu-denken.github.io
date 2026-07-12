@@ -57,7 +57,7 @@ export const GitHubJoin = () => {
         <input
           type="text"
           className={portalStyles.portal}
-          placeholder="GitHubアカウント名 (例: octocat)"
+          placeholder="GitHubアカウント名"
           value={username}
           onChange={e => setUsername(e.target.value)}
           onKeyDown={e => { if (e.key === "Enter") onInvite(); }}
