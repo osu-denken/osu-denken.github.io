@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+# ポータルはログインが必要な部内向け領域のためクロール不要
+Disallow: /portal/
+Disallow: /_register/
+Disallow: /register/
+Disallow: /register-by-code/
+Disallow: /resetpass/
+Disallow: /debug/
