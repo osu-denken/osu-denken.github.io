@@ -36,6 +36,10 @@ jobs:
       - name: Init terminal submodule
         run: git submodule update --init --remote public/terminal
 
+      # フロントは web-api/src/util/permission.ts を @shared として import している。
+      - name: Init web-api submodule
+        run: git submodule update --init web-api
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
