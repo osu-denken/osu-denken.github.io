@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
 import { apiJson, storeTokens } from "@lib/api";
+import { Icon } from "@iconify/react";
 import { TotpSection } from "@components/portal/TotpSection";
 import GoogleLoginButton from "@components/GoogleLoginButton";
 
@@ -134,6 +135,24 @@ export const SettingsTab = ({ userName, setUserName, setMsg, hasGitHubToken, has
     }
   };
 
+  const onConnectGitHub = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      const data: any = await apiJson("/github/oauth/start", { method: "POST" });
+      if (!data.success || !data.url) {
+        alert(data.message === "NOT_CONFIGURED"
+          ? "GitHub連携は現在利用できません（未設定）。"
+          : "GitHub連携の開始に失敗しました。");
+        return;
+      }
+      // GitHub の認可画面へ遷移。完了後はコールバックが設定タブへ戻す
+      window.location.href = data.url;
+    } catch (err) {
+      console.error("Failed to start GitHub OAuth.", err);
+      alert("GitHub連携の開始に失敗しました。");
+    }
+  };
+
   const onDeleteGitHubToken = (e: React.MouseEvent) => {
     e.preventDefault();
     deleteGitHubToken().then(ok => {
@@ -198,20 +217,42 @@ export const SettingsTab = ({ userName, setUserName, setMsg, hasGitHubToken, has
 
       <TotpSection hasTotp={hasTotp} recoveryCodesLeft={recoveryCodesLeft} setMsg={setMsg} />
 
-      <h2>GitHub PAT</h2>
+      <h2>GitHub連携</h2>
       <p className={styles.description}>
-        デフォルトではosu-denken-adminのトークンを利用しますが、こちらを設定することで自身のGitHubアカウントとしてOSU-Denken-Web API経由でコミットすることが可能です。
+        {hasGitHubToken
+          ? "GitHubと連携済みです。自身のGitHubアカウントとしてOSU-Denken-Web API経由でコミットできます。"
+          : "「GitHubで接続」を押して認可すると、自身のGitHubアカウントとしてOSU-Denken-Web API経由でコミットできます。"}
       </p>
-      <form>
-        <div className={portalStyles.inputGroup}>
-          <input type="text" id="ghtokenInput" placeholder="GitHub PAT" className={portalStyles.portal} />
-          <button onClick={onChangeGitHubToken} className={portalStyles.portal}>変更</button>
+      <div className={portalStyles.inputGroup}>
+        <button onClick={onConnectGitHub} className={portalStyles.portal}
+          style={{ display: "inline-flex", alignItems: "center", gap: "0.4em" }}>
+          <Icon icon="fa6-brands:github" />
+          {hasGitHubToken ? "GitHubで再接続" : "GitHubで接続"}
+        </button>
 
-          {hasGitHubToken &&
-            <button onClick={onDeleteGitHubToken} className={portalStyles.portal}>削除</button>
-          }
-        </div>
-      </form>
+        {hasGitHubToken &&
+          <button onClick={onDeleteGitHubToken} className={portalStyles.portal}>連携を解除</button>
+        }
+      </div>
+
+      <details style={{ marginTop: "0.8em" }}>
+        <summary className={styles.description} style={{ cursor: "pointer" }}>
+          PAT（個人アクセストークン）を手動で設定する
+        </summary>
+        <p className={styles.description}>
+          デフォルトではosu-denken-adminのトークンを利用します。接続の代わりにPATを直接貼り付けることもできます。
+        </p>
+        <form>
+          <div className={portalStyles.inputGroup}>
+            <input type="text" id="ghtokenInput" placeholder="GitHub PAT" className={portalStyles.portal} />
+            <button onClick={onChangeGitHubToken} className={portalStyles.portal}>変更</button>
+
+            {hasGitHubToken &&
+              <button onClick={onDeleteGitHubToken} className={portalStyles.portal}>削除</button>
+            }
+          </div>
+        </form>
+      </details>
 
     </div>
   );
