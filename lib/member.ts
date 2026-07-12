@@ -1,34 +1,13 @@
-// web-api の util/permission.ts の Role と一致させること
-export const Role = {
-  Member: 1 << 1,
-  Other: 1 << 2,
-  Executive: 1 << 3,
-  Manager: 1 << 4,
-  Accountant: 1 << 5,
-  ChiefClerk: 1 << 6,
-  ViceLeader: 1 << 7,
-  Leader: 1 << 8,
-} as const;
+// 権限まわりの定義は web-api/src/util/permission.ts から
+import { Permission, Role, hasPermission, resolvePermissions } from "@shared/permission";
 
-// web-api の util/permission.ts の Permission と一致させること
-export const Permission = {
-  DiscordInviteView: 1 << 0,
-  MemberView: 1 << 1,
-  BlogEdit: 1 << 2,
-  MemberManage: 1 << 3,
-  MemberApprove: 1 << 4,
-  MemberPermissionEdit: 1 << 5,
-  MemberRoleEdit: 1 << 6,
-  MemberDelete: 1 << 7,
-  PageEdit: 1 << 8,
-  SwitchBotControl: 1 << 9,
-  PrivatePostView: 1 << 10,
-  PrivatePostEdit: 1 << 11,
-  ImageUpload: 1 << 12,
-  ImageDelete: 1 << 13,
-  InviteCodeCreate: 1 << 14,
-  LogView: 1 << 15,
-} as const;
+export { Permission, Role, hasPermission };
+
+/**
+ * 役職だけで既に与えられる権限。個人単位で足す意味がないものを隠すのに使う
+ * @param roleBits 役職ビット
+ */
+export const rolePermissions = (roleBits: number): number => resolvePermissions(roleBits);
 
 export const PERMISSION_ENTRIES: readonly [number, string][] = [
   [Permission.DiscordInviteView, "Discord招待コード閲覧"],
@@ -60,50 +39,6 @@ export const ROLE_ENTRIES: readonly [number, string][] = [
   [Role.Member, "部員"],
   [Role.Other, "その他"],
 ];
-
-// web-api の util/permission.ts と一致させること
-const MEMBER_DEFAULT_PERMISSIONS =
-  Permission.DiscordInviteView | Permission.MemberView | Permission.BlogEdit |
-  Permission.PrivatePostView | Permission.PrivatePostEdit |
-  Permission.ImageUpload | Permission.ImageDelete;
-
-const EXECUTIVE_DEFAULT_PERMISSIONS =
-  MEMBER_DEFAULT_PERMISSIONS |
-  Permission.MemberManage |
-  Permission.MemberApprove |
-  Permission.MemberPermissionEdit |
-  Permission.MemberRoleEdit |
-  Permission.MemberDelete |
-  Permission.PageEdit |
-  Permission.SwitchBotControl |
-  Permission.InviteCodeCreate |
-  Permission.LogView;
-
-const EXECUTIVE_ROLES =
-  Role.Manager | Role.Accountant | Role.ChiefClerk | Role.ViceLeader | Role.Leader;
-
-/**
- * 役職だけで既に与えられる権限。個人単位で足す意味がないものを隠すのに使う
- * @param roleBits 役職ビット
- */
-export function rolePermissions(roleBits: number): number {
-  const roles = roleBits & EXECUTIVE_ROLES ? roleBits | Role.Executive : roleBits;
-
-  let permissions = 0;
-  if (roles & Role.Member) permissions |= MEMBER_DEFAULT_PERMISSIONS;
-  if (roles & Role.Other) permissions |= MEMBER_DEFAULT_PERMISSIONS;
-  if (roles & Role.Executive) permissions |= EXECUTIVE_DEFAULT_PERMISSIONS;
-
-  return permissions;
-}
-
-/**
- * 必要な権限をすべて持っているか
- * @param permissions 実効権限ビット
- * @param required 必要な権限ビット
- */
-export const hasPermission = (permissions: number, required: number): boolean =>
-  (permissions & required) === required;
 
 export type MemberStatus = "pre-active" | "active" | "withdrawn" | "graduated" | "rejected";
 

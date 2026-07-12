@@ -151,8 +151,8 @@ export const IntegrationsTab = ({ setMsg, hasGitHubToken }: IntegrationsTabProps
       <h2 style={{ marginTop: "2rem" }}>GitHub</h2>
       <p className={styles.description}>
         {hasGitHubToken
-          ? "GitHubと連携済みです。自身のGitHubアカウントとしてOSU-Denken-Web API経由でコミットできます。"
-          : "「GitHubで接続」を押して認可すると、自身のGitHubアカウントとしてOSU-Denken-Web API経由でコミットできます。"}
+          ? "GitHubと連携済みです。自身のGitHubアカウントとしてコンテンツをコミットできます。"
+          : "「GitHubで接続」を押して認可すると、自身のGitHubアカウントとしてコンテンツをコミットできます。"}
       </p>
       <div className={portalStyles.inputGroup}>
         <button onClick={onConnectGitHub} className={portalStyles.portal}

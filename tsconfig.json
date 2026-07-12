@@ -22,7 +22,8 @@
       "@styles/*": ["./styles/*"],
       "@api/*": ["./pages/api/*"],
       "@hooks/*": ["./hooks/*"],
-      "@lib/*": ["./lib/*"]
+      "@lib/*": ["./lib/*"],
+      "@shared/*": ["./web-api/src/util/*"]
     }
   },
   "include": [
