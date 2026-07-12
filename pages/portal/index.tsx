@@ -141,6 +141,15 @@ const PortalPage : NextPage = () => {
                     <Link href="/portal/admin/members/">部員管理</Link>
                   </>
                 )}
+
+                {hasPermission(permissions, Permission.MemberManage) && (
+                  <>
+                    <br />
+                    <Link href="https://totp.kmmz.jp/?email=osudenken4dev@gmail.com" target="_blank" rel="noopener noreferrer">
+                      ワンタイムパスワード管理
+                    </Link>
+                  </>
+                )}
               </p>
 
               <GitHubJoin />
