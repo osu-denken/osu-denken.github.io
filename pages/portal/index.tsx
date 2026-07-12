@@ -10,8 +10,9 @@ import { BlogTab } from "@components/portal/BlogTab";
 import { ImageTab } from "@components/portal/ImageTab";
 import { PrivatePostTab } from "@components/portal/PrivatePostTab";
 import { PageTab } from "@components/portal/PageTab";
+import { LogTab } from "@components/portal/LogTab";
 
-type TabName = "main" | "settings" | "blog" | "private" | "page" | "image";
+type TabName = "main" | "settings" | "blog" | "private" | "page" | "image" | "logs";
 
 const TABS: { id: TabName; label: string }[] = [
   { id: "main", label: "ポータル" },
@@ -20,6 +21,7 @@ const TABS: { id: TabName; label: string }[] = [
   { id: "private", label: "非公開記事" },
   { id: "page", label: "ページ" },
   { id: "image", label: "画像" },
+  { id: "logs", label: "ログ" },
 ];
 
 /** タブを開くのに要る権限。ここに無いタブは誰でも開ける */
@@ -27,6 +29,7 @@ const TAB_PERMISSIONS: Partial<Record<TabName, number>> = {
   blog: Permission.BlogEdit,
   private: Permission.PrivatePostView,
   page: Permission.PageEdit,
+  logs: Permission.LogView,
 };
 
 const PortalPage : NextPage = () => {
@@ -149,6 +152,7 @@ const PortalPage : NextPage = () => {
           {activeTab === "private" && canOpen("private") && <PrivatePostTab permissions={permissions} setMsg={setMsg} />}
           {activeTab === "page" && canOpen("page") && <PageTab />}
           {activeTab === "image" && <ImageTab permissions={permissions} setMsg={setMsg} />}
+          {activeTab === "logs" && canOpen("logs") && <LogTab setMsg={setMsg} />}
         </div>
       </main>
     </div>

@@ -27,6 +27,7 @@ export const Permission = {
   ImageUpload: 1 << 12,
   ImageDelete: 1 << 13,
   InviteCodeCreate: 1 << 14,
+  LogView: 1 << 15,
 } as const;
 
 export const PERMISSION_ENTRIES: readonly [number, string][] = [
@@ -45,6 +46,7 @@ export const PERMISSION_ENTRIES: readonly [number, string][] = [
   [Permission.ImageUpload, "画像追加"],
   [Permission.ImageDelete, "画像削除"],
   [Permission.InviteCodeCreate, "招待コード作成"],
+  [Permission.LogView, "ログ閲覧"],
 ];
 
 // 表示は上位の役職から並べる
@@ -74,7 +76,8 @@ const EXECUTIVE_DEFAULT_PERMISSIONS =
   Permission.MemberDelete |
   Permission.PageEdit |
   Permission.SwitchBotControl |
-  Permission.InviteCodeCreate;
+  Permission.InviteCodeCreate |
+  Permission.LogView;
 
 const EXECUTIVE_ROLES =
   Role.Manager | Role.Accountant | Role.ChiefClerk | Role.ViceLeader | Role.Leader;
