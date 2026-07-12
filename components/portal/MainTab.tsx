@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Icon } from "@iconify/react";
 import portalStyles from "@styles/Portal.module.css";
 import { hasPermission, Permission } from "@lib/member";
-import { GitHubOrgsJoin } from "@components/portal/GitHubOrgsJoin";
 import { Skeleton } from "@components/portal/Skeleton";
 
 interface MainTabProps {
@@ -107,14 +106,14 @@ export const MainTab = ({ userName, permissions, discordInviteUrl }: MainTabProp
     },
     {
       label: "部員管理",
-      description: "承認・役職・権限などを管理します。",
+      description: "承認、役職、権限などを管理します。",
       icon: "fa6-solid:users-gear",
       href: "/portal/admin/members/",
       permission: Permission.MemberManage,
     },
     {
       label: "ワンタイムパスワード管理",
-      description: "部の共有アカウントのOTPを管理します。",
+      description: "部活動の共有アカウントのOTPを管理します。",
       icon: "fa6-solid:shield-halved",
       href: "https://totp.kmmz.jp/?email=osudenken4dev@gmail.com",
       external: true,
@@ -152,9 +151,6 @@ export const MainTab = ({ userName, permissions, discordInviteUrl }: MainTabProp
           </nav>
         </>
       )}
-
-      <h2 className={portalStyles.sectionTitle}>GitHub Organization</h2>
-      <GitHubOrgsJoin />
     </div>
   );
 };

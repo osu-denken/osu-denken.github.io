@@ -66,7 +66,7 @@ export const LogTab = ({ setMsg }: LogTabProps) => {
     <div className={portalStyles.tabPane}>
       <h1>操作ログ</h1>
       <p className={styles.description}>
-        入部申請・承認・ログインなどの操作記録です。種別で絞り込めます。
+        入部申請、承認、ログインなどの操作記録です。種別で絞り込めます。
       </p>
 
       <div className={portalStyles.inputGroup}>

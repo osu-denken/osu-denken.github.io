@@ -2,34 +2,26 @@ import type { NextPage } from "next";
 import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
 import { useEffect, useState } from "react";
-import { Icon } from "@iconify/react";
 import { apiFetch, readIdToken, redirectToLogin } from "@lib/api";
 import { hasPermission, Permission } from "@lib/member";
 import { MainTab, MainTabSkeleton } from "@components/portal/MainTab";
-import { SettingsTab } from "@components/portal/SettingsTab";
-import { BlogTab } from "@components/portal/BlogTab";
-import { ImageTab } from "@components/portal/ImageTab";
-import { PrivatePostTab } from "@components/portal/PrivatePostTab";
-import { PageTab } from "@components/portal/PageTab";
+import { AccountTab } from "@components/portal/AccountTab";
+import { IntegrationsTab } from "@components/portal/IntegrationsTab";
+import { ContentTab } from "@components/portal/ContentTab";
 import { LogTab } from "@components/portal/LogTab";
 
-type TabName = "main" | "settings" | "blog" | "private" | "page" | "image" | "logs";
+type TabName = "main" | "account" | "integrations" | "content" | "logs";
 
-const TABS: { id: TabName; label: string; icon: string }[] = [
-  { id: "main", label: "ポータル", icon: "fa6-solid:house" },
-  { id: "settings", label: "設定", icon: "fa6-solid:gear" },
-  { id: "blog", label: "ブログ", icon: "fa6-solid:pen-nib" },
-  { id: "private", label: "非公開記事", icon: "fa6-solid:lock" },
-  { id: "page", label: "ページ", icon: "fa6-solid:file-lines" },
-  { id: "image", label: "画像", icon: "fa6-solid:image" },
-  { id: "logs", label: "ログ", icon: "fa6-solid:clock-rotate-left" },
+const TABS: { id: TabName; label: string }[] = [
+  { id: "main", label: "ポータル" },
+  { id: "account", label: "アカウント" },
+  { id: "integrations", label: "連携" },
+  { id: "content", label: "コンテンツ" },
+  { id: "logs", label: "ログ" },
 ];
 
 /** タブを開くのに要る権限。ここに無いタブは誰でも開ける */
 const TAB_PERMISSIONS: Partial<Record<TabName, number>> = {
-  blog: Permission.BlogEdit,
-  private: Permission.PrivatePostView,
-  page: Permission.PageEdit,
   logs: Permission.LogView,
 };
 
@@ -107,7 +99,6 @@ const PortalPage : NextPage = () => {
               key={tab.id}
               className={`${portalStyles.tabButton} ${activeTab === tab.id ? portalStyles.active : ""}`}
               onClick={() => setActiveTab(tab.id)} >
-              <Icon icon={tab.icon} className={portalStyles.tabIcon} />
               {tab.label}
             </button>
           ))}
@@ -119,15 +110,15 @@ const PortalPage : NextPage = () => {
               ? <MainTab userName={userName} permissions={permissions} discordInviteUrl={discordInviteUrl} />
               : <MainTabSkeleton />
           )}
-          {activeTab === "settings" && (
-            <SettingsTab userName={userName} setUserName={setUserName} setMsg={setMsg}
-              hasGitHubToken={Boolean(portalData?.hasGitHubToken)} hasTotp={Boolean(portalData?.hasTotp)}
+          {activeTab === "account" && (
+            <AccountTab userName={userName} setUserName={setUserName} setMsg={setMsg}
+              hasTotp={Boolean(portalData?.hasTotp)}
               recoveryCodesLeft={portalData?.recoveryCodesLeft ?? 0} />
           )}
-          {activeTab === "blog" && canOpen("blog") && <BlogTab setMsg={setMsg} />}
-          {activeTab === "private" && canOpen("private") && <PrivatePostTab permissions={permissions} setMsg={setMsg} />}
-          {activeTab === "page" && canOpen("page") && <PageTab />}
-          {activeTab === "image" && <ImageTab permissions={permissions} setMsg={setMsg} />}
+          {activeTab === "integrations" && (
+            <IntegrationsTab setMsg={setMsg} hasGitHubToken={Boolean(portalData?.hasGitHubToken)} />
+          )}
+          {activeTab === "content" && <ContentTab permissions={permissions} setMsg={setMsg} />}
           {activeTab === "logs" && canOpen("logs") && <LogTab setMsg={setMsg} />}
         </div>
       </main>
