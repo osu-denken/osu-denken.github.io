@@ -4,6 +4,7 @@ import { apiJson } from "@lib/api";
 import { AdminMember, hasPermission, MemberDetail, Permission } from "@lib/member";
 import { Modal } from "@components/Modal";
 import { MemberEditor } from "./MemberEditor";
+import { Skeleton } from "@components/portal/Skeleton";
 
 interface MemberPanelProps {
   member: AdminMember;
@@ -57,7 +58,14 @@ export const MemberPanel = ({ member, permissions, onChanged, onClose, onError }
 
   return (
     <Modal title={`${member.studentId} ${member.name}`} onClose={onClose}>
-      {!detail && <p>読み込み中…</p>}
+      {!detail && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", padding: "0.5rem 0" }}>
+          <Skeleton width="60%" height="1rem" />
+          <Skeleton width="90%" height="1rem" />
+          <Skeleton width="75%" height="1rem" />
+          <Skeleton width="85%" height="1rem" />
+        </div>
+      )}
 
       {detail && member.status === "pre-active" && canApprove && (
         <div className={portalStyles.inputGroup}>

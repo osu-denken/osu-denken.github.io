@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
 import { apiJson } from "@lib/api";
+import { Skeleton } from "@components/portal/Skeleton";
 
 /** /logs/list が返す1件 */
 interface LogEntry {
@@ -98,6 +99,14 @@ export const LogTab = ({ setMsg }: LogTabProps) => {
                 <td>{log.type}</td>
                 <td>{log.message}</td>
                 <td style={{ whiteSpace: "nowrap" }}>{log.ip}</td>
+              </tr>
+            ))}
+            {loading && logs.length === 0 && Array.from({ length: 8 }).map((_, i) => (
+              <tr key={`skeleton-${i}`}>
+                <td><Skeleton width="9rem" height="0.9rem" /></td>
+                <td><Skeleton width="6rem" height="0.9rem" /></td>
+                <td><Skeleton width="80%" height="0.9rem" /></td>
+                <td><Skeleton width="5rem" height="0.9rem" /></td>
               </tr>
             ))}
           </tbody>

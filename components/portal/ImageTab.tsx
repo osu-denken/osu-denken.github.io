@@ -3,6 +3,7 @@ import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
 import { apiFetch, apiJson } from "@lib/api";
 import { hasPermission, Permission } from "@lib/member";
+import { Skeleton } from "@components/portal/Skeleton";
 
 interface ImageTabProps {
   /** 操作する側の実効権限 */
@@ -199,7 +200,17 @@ export const ImageTab = ({ permissions, setMsg }: ImageTabProps) => {
       )}
 
       {loading ? (
-        <p>読み込み中...</p>
+        <div className={portalStyles.imageGrid}>
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className={portalStyles.imageCard}>
+              <Skeleton height="140px" radius="6px" />
+              <div className={portalStyles.imageMeta}>
+                <Skeleton width="80%" height="0.85rem" />
+                <Skeleton width="40%" height="0.75rem" />
+              </div>
+            </div>
+          ))}
+        </div>
       ) : images.length === 0 ? (
         <p>画像がまだありません。</p>
       ) : (

@@ -3,6 +3,7 @@ import { Icon } from "@iconify/react";
 import portalStyles from "@styles/Portal.module.css";
 import { hasPermission, Permission } from "@lib/member";
 import { GitHubOrgsJoin } from "@components/portal/GitHubOrgsJoin";
+import { Skeleton } from "@components/portal/Skeleton";
 
 interface MainTabProps {
   userName: string;
@@ -49,6 +50,31 @@ const ActionItem = ({ action }: { action: Action }) => {
     </Link>
   );
 };
+
+/**
+ * ポータル情報の取得中に出すスケルトン。実レイアウトと余白をそろえる。
+ */
+export const MainTabSkeleton = () => (
+  <div className={portalStyles.tabPane}>
+    <div className={portalStyles.welcome}>
+      <Skeleton width="15rem" height="1.75rem" style={{ marginBottom: "0.5rem", maxWidth: "80%" }} />
+      <Skeleton width="24rem" height="0.9rem" style={{ maxWidth: "100%" }} />
+    </div>
+
+    <Skeleton width="6rem" height="0.78rem" style={{ margin: "2rem 0 0.9rem" }} />
+    <div>
+      {Array.from({ length: 4 }).map((_, i) => (
+        <div key={i} className={portalStyles.menuSkeletonItem}>
+          <Skeleton width="1.4rem" height="1.4rem" radius="50%" />
+          <span style={{ display: "flex", flexDirection: "column", gap: "0.35rem", flex: 1 }}>
+            <Skeleton width="8rem" height="0.95rem" />
+            <Skeleton width="14rem" height="0.75rem" style={{ maxWidth: "70%" }} />
+          </span>
+        </div>
+      ))}
+    </div>
+  </div>
+);
 
 export const MainTab = ({ userName, permissions, discordInviteUrl }: MainTabProps) => {
   // メンバー全般向け

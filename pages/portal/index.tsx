@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Icon } from "@iconify/react";
 import { apiFetch, readIdToken, redirectToLogin } from "@lib/api";
 import { hasPermission, Permission } from "@lib/member";
-import { MainTab } from "@components/portal/MainTab";
+import { MainTab, MainTabSkeleton } from "@components/portal/MainTab";
 import { SettingsTab } from "@components/portal/SettingsTab";
 import { BlogTab } from "@components/portal/BlogTab";
 import { ImageTab } from "@components/portal/ImageTab";
@@ -115,7 +115,9 @@ const PortalPage : NextPage = () => {
 
         <div className={portalStyles.tabContent}>
           {activeTab === "main" && (
-            <MainTab userName={userName} permissions={permissions} discordInviteUrl={discordInviteUrl} />
+            portalData
+              ? <MainTab userName={userName} permissions={permissions} discordInviteUrl={discordInviteUrl} />
+              : <MainTabSkeleton />
           )}
           {activeTab === "settings" && (
             <SettingsTab userName={userName} setUserName={setUserName} setMsg={setMsg}
