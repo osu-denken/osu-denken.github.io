@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>大阪産業大学 電子計算研究部 - 作品一覧</title>
+    <link>https://osu-denken.github.io/works/</link>
+    <description>大阪産業大学 文化会 電子計算研究部の公式サイト。部員が制作した作品を紹介しています。</description>
+    <language>ja</language>
+    <atom:link href="https://osu-denken.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <lastBuildDate>Sun, 12 Jul 2026 01:22:59 GMT</lastBuildDate>
+    <item>
+      <title>「カメラでドライブ！」</title>
+      <link>https://osu-denken.github.io/blog/2026/06/03/61.html</link>
+      <guid isPermaLink="false">osu-denken-work-1</guid>
+      <description><![CDATA[カメラから手で車を操作して障害物をよけるゲームです！]]></description>
+    </item>
+    <item>
+      <title>「Motion Canvas Effects」</title>
+      <link>https://osu-denken.github.io/blog/2026/06/03/61.html</link>
+      <guid isPermaLink="false">osu-denken-work-2</guid>
+      <description><![CDATA[カメラから手の動きを読み取ってエネルギーのオーブを出して爆発させることができます！]]></description>
+    </item>
+    <item>
+      <title>「phone ∧ shoot」</title>
+      <link>https://osu-denken.github.io/blog/2026/06/03/61.html</link>
+      <guid isPermaLink="false">osu-denken-work-3</guid>
+      <description><![CDATA[スマホを傾けて遊ぶシューティングゲームです！]]></description>
+    </item>
+    <item>
+      <title>タイピングゲーム</title>
+      <link>https://osu-denken.github.io/blog/2026/06/03/61.html</link>
+      <guid isPermaLink="false">osu-denken-work-4</guid>
+      <description><![CDATA[画面上の文字をタイプしていくゲームです！]]></description>
+    </item>
+    <item>
+      <title>デジタル七夕</title>
+      <link>https://osu-denken.github.io/blog/2026/07/07/119.html</link>
+      <guid isPermaLink="false">osu-denken-work-5</guid>
+      <description><![CDATA[七夕に作成した願い事を吊るすウェブアプリです！]]></description>
+    </item>
+  </channel>
+</rss>
