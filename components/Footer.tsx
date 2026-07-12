@@ -27,6 +27,12 @@ const Footer = () => {
               </a>
             </p>
           </div>
+
+          <div className={`${styles.footerCol} ${styles.footerCol2}`}>
+            <p>
+              <a href="/feed.xml" type="application/rss+xml">RSS</a>
+            </p>
+          </div>
         </div>
         <div className={styles.copyright}>
           © 2025-2026 Processing of Information Club at Osaka Sangyo University, Code: MIT License / Image: CC BY 4.0

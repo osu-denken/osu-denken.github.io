@@ -17,6 +17,18 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         <title>大阪産業大学 電子計算研究部</title>
         <meta name="description" content="" />
         <link rel="icon" href="/favicon.ico" />
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="大阪産業大学 電子計算研究部 - 作品一覧"
+          href="/feed.xml"
+        />
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="電研ブログ"
+          href="/blog/feed.xml"
+        />
       </Head>
 
       <Navbar />
