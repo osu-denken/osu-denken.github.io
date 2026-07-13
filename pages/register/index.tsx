@@ -30,7 +30,7 @@ const JoinPage: NextPage = () => {
   // 入部情報
   const [name, setName] = useState("");
   const [furigana, setFurigana] = useState("");
-  const [birthday, setBirthday] = useState("");
+  // const [birthday, setBirthday] = useState("");
   const [phone, setPhone] = useState("");
   const [hobby, setHobby] = useState("");
   const [wish, setWish] = useState("");
@@ -45,7 +45,7 @@ const JoinPage: NextPage = () => {
     setEmail(params.get("email") || params.get("number") || "");
     setName(params.get("name") || "");
     setFurigana(params.get("furigana") || "");
-    setBirthday(params.get("birthday") || "");
+    // setBirthday(params.get("birthday") || "");
     setPhone(params.get("phone") || "");
   }, []);
 
@@ -128,7 +128,7 @@ const JoinPage: NextPage = () => {
 
     const data = await apiJson<{ success?: boolean; message?: string }>("/members/register", {
       method: "POST",
-      body: JSON.stringify({ name, furigana, birthday, tel: phone, hobby, wish, note }),
+      body: JSON.stringify({ name, furigana, tel: phone, hobby, wish, note }),
     }).catch(() => null);
 
     if (!data?.success) {
@@ -198,21 +198,21 @@ const JoinPage: NextPage = () => {
               </div>
               <div className={portalStyles.field}>
                 <label>氏名</label>
-                <input type="text" className={portalStyles.portal} placeholder="電研 太郎"
+                <input type="text" className={portalStyles.portal} placeholder="電研 技郎"
                   value={name} onChange={e => setName(e.target.value)} />
               </div>
               <div className={portalStyles.field}>
                 <label>フリガナ</label>
-                <input type="text" className={portalStyles.portal} placeholder="でんけん たろう"
+                <input type="text" className={portalStyles.portal} placeholder="デンケン ギロウ"
                   value={furigana} onChange={e => setFurigana(e.target.value)} />
               </div>
-              <div className={portalStyles.field}>
+              {/* <div className={portalStyles.field}>
                 <label>生年月日</label>
                 <input type="date" className={portalStyles.portal}
                   value={birthday} onChange={e => setBirthday(e.target.value)} />
-              </div>
+              </div> */}
               <div className={portalStyles.field}>
-                <label>趣味・特技（任意）</label>
+                <label>趣味/特技（任意）</label>
                 <textarea className={portalStyles.portal} rows={2} placeholder="あれば入力してください"
                   value={hobby} onChange={e => setHobby(e.target.value)} />
               </div>
@@ -222,7 +222,7 @@ const JoinPage: NextPage = () => {
                   value={wish} onChange={e => setWish(e.target.value)} />
               </div>
               <div className={portalStyles.field}>
-                <label>連絡先（携帯・任意）</label>
+                <label>連絡先（携帯/任意）</label>
                 <input type="tel" className={portalStyles.portal} placeholder="090-1234-5678"
                   value={phone} onChange={e => setPhone(e.target.value)} />
               </div>
