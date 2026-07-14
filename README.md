@@ -3,9 +3,18 @@
 大阪産業大学 電子計算研究部（電研）の公式サイトと部員ポータルです。<br>
 公開ページ（部の紹介・ブログ・実績など）と、部員がログインして使う各種機能をまとめて提供しています。
 
-- サイト: https://osu-denken.github.io
-- ブログ: https://osu-denken.github.io/blog/
-- 部員ポータル: https://osu-denken.github.io/portal/
+- サイト: https://osu-denken.net or https://osu-denken.github.io
+- ブログ: https://osu-denken.net/blog/ or https://osu-denken.github.io/blog/
+- 部員ポータル: https://osu-denken.net/portal/ or https://osu-denken.github.io/portal/
+
+## ローカルでの開発
+```bash
+# クローン
+git clone https://github.com/osu-denken/osu-denken.github.io --recursive
+
+# --recursiveを忘れた場合（サブモジュールの更新）
+git submodule update --init --recursive
+```
 
 ## サイトでできること
 
