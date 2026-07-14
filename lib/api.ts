@@ -1,7 +1,10 @@
 // export const API_BASE = "https://api.osudenken4dev.workers.dev";
 // export const API_BASE = "https://api.osu-denken.net";
 // もし今のドメインがosu-denken.netならそちらを使う。そうでなければosu-denken.github.ioを使う
-export const API_BASE = window.location.hostname === "osu-denken.net" ? "https://api.osu-denken.net" : "https://api.osudenken4dev.workers.dev";
+// そもそも windowは使えない、ここでは
+// export const API_BASE = window.location.hostname === "osu-denken.net" ? "https://api.osu-denken.net" : "https://api.osudenken4dev.workers.dev";
+
+export const API_BASE = process.env.NEXT_PUBLIC_API_BASE!;
 
 export const readIdToken = (): string | null => localStorage.getItem("idToken");
 export const readRefreshToken = (): string | null => localStorage.getItem("refreshToken");
