@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { API_BASE, clearTokens, readIdToken, refreshIdToken, storeTokens } from '@lib/api';
+import { getApiBase, clearTokens, readIdToken, refreshIdToken, storeTokens } from '@lib/api';
 
 // 認証APIからのレスポンスの型定義
 interface AuthResponse {
@@ -75,7 +75,7 @@ export const useAuth = () => {
   const mfaEmail = useRef<string>('');
 
   const postJson = (path: string, body: unknown) =>
-    fetch(`${API_BASE}${path}`, {
+    fetch(`${getApiBase()}${path}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),

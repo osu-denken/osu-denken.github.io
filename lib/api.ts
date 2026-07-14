@@ -4,7 +4,22 @@
 // そもそも windowは使えない、ここでは
 // export const API_BASE = window.location.hostname === "osu-denken.net" ? "https://api.osu-denken.net" : "https://api.osudenken4dev.workers.dev";
 
-export const API_BASE = process.env.NEXT_PUBLIC_API_BASE!;
+const PROD_HOSTS = [
+  "osu-denken.net",
+  "osu-denken.github.io",
+];
+
+export function getApiBase() {
+  if (typeof window === "undefined") {
+    // next export のビルド中
+    return "https://api.osu-denken.net";
+  }
+
+  return PROD_HOSTS.includes(window.location.hostname)
+    ? "https://api.osu-denken.net"
+    : "https://api.osudenken4dev.workers.dev";
+}
+
 
 export const readIdToken = (): string | null => localStorage.getItem("idToken");
 export const readRefreshToken = (): string | null => localStorage.getItem("refreshToken");
@@ -35,7 +50,7 @@ export async function refreshIdToken(): Promise<string | null> {
   if (!currentRefreshToken) return null;
 
   try {
-    const res = await fetch(`${API_BASE}/user/refresh`, {
+    const res = await fetch(`${getApiBase()}/user/refresh`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refreshToken: currentRefreshToken })
@@ -80,13 +95,13 @@ function buildInit(init: ApiInit, idToken: string | null): RequestInit {
  * @param init fetch のオプション
  */
 export async function apiFetch(path: string, init: ApiInit = {}): Promise<Response> {
-  const res = await fetch(`${API_BASE}${path}`, buildInit(init, readIdToken()));
+  const res = await fetch(`${getApiBase()}${path}`, buildInit(init, readIdToken()));
   if (res.status !== 401 || init.auth === false) return res;
 
   const newIdToken = await refreshIdToken();
   if (!newIdToken) return res;
 
-  return await fetch(`${API_BASE}${path}`, buildInit(init, newIdToken));
+  return await fetch(`${getApiBase()}${path}`, buildInit(init, newIdToken));
 }
 
 /**
