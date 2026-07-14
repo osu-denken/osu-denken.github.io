@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
-import { API_BASE, apiJson, readIdToken, storeTokens } from "@lib/api";
+import { getApiBase, apiJson, readIdToken, storeTokens } from "@lib/api";
 import { MemberStatus } from "@lib/member";
 import GoogleLoginButton from "@components/GoogleLoginButton";
 
@@ -83,7 +83,7 @@ const JoinPage: NextPage = () => {
   const onGoogleCredential = async (credential: string) => {
     setMsg("");
 
-    const res = await fetch(`${API_BASE}/user/google`, {
+    const res = await fetch(`${getApiBase()}/user/google`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ credential }),
