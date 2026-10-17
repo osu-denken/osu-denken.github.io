@@ -6,7 +6,7 @@
     <description>大阪産業大学 文化会 電子計算研究部の公式サイト。部員が制作した作品を紹介しています。</description>
     <language>ja</language>
     <atom:link href="https://osu-denken.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Fri, 24 Jul 2026 13:43:16 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 17 Oct 2026 07:57:34 GMT</lastBuildDate>
     <item>
       <title>「カメラでドライブ！」</title>
       <link>https://osu-denken.github.io/blog/2026/06/03/61.html</link>
@@ -42,6 +42,12 @@
       <link>https://github.com/osu-denken/ecrd-fake-terminal</link>
       <guid isPermaLink="false">osu-denken-work-6</guid>
       <description><![CDATA[トップページに埋め込まれているターミナルもどき]]></description>
+    </item>
+    <item>
+      <title>アリーナ・シューター</title>
+      <link>https://osu-denken.net/arena-shooter/</link>
+      <guid isPermaLink="false">osu-denken-work-7</guid>
+      <description><![CDATA[銃と剣で敵を倒していく、ブラウザですぐ遊べるアクションゲームです！]]></description>
     </item>
   </channel>
 </rss>
