@@ -69,7 +69,7 @@
     "id": 7,
     "title": "アリーナ・シューター",
     "overview": "銃と剣で敵を倒していく、ブラウザですぐ遊べるアクションゲームです！",
-    "description": "ブラウザ上ですぐに遊べます(パソコン推奨・スマホ非対応)。<br /><br />操作: WASD 移動 / Shift ダッシュ / E ジェットパック / V 一人称・三人称の切り替え / 1 銃・2 剣 / 左クリック 攻撃 / 右クリック ズーム(スナイパー) / R リロード<br /><br />開発元: jtoxyz (1人)<br />使用技術: Unity (C#, WebGL), Claude Code<br />制作期間: 2026/05/17〜2026/10/17<br /><br /><span><button type=\"button\" style=\"padding:10px 18px;font-size:16px;cursor:pointer\" onclick=\"this.parentNode.innerHTML='<iframe src=&quot;https://osu-denken.net/arena-shooter/?embed&quot; style=&quot;width:100%;aspect-ratio:16/9;border:0;border-radius:6px;background:#000&quot; allow=&quot;fullscreen&quot; allowfullscreen></iframe>'\">▶ ここで遊ぶ</button></span>",
+    "description": "ブラウザ上ですぐに遊べます(パソコン推奨・スマホ非対応)。<br />全5ステージ + ラスボス。高低差のあるマップで、飛行ドローンなどの敵と戦います。<br /><br />操作: WASD 移動 / Shift ダッシュ / E ジェットパック / V 一人称・三人称の切り替え / 1 銃・2 剣 / 左クリック 攻撃 / 右クリック ズーム(スナイパー) / R リロード / M ミュート / Esc メニュー(一時停止・音量)<br /><br />開発元: jtoxyz (1人)<br />使用技術: Unity (C#, WebGL), Claude Code<br />音楽: 魔王魂<br />制作期間: 2026/05/17〜2026/10/18<br /><br /><span><button type=\"button\" style=\"padding:10px 18px;font-size:16px;cursor:pointer\" onclick=\"this.parentNode.innerHTML='<iframe src=&quot;https://osu-denken.net/arena-shooter/?embed&quot; style=&quot;width:100%;aspect-ratio:16/9;border:0;border-radius:6px;background:#000&quot; allow=&quot;fullscreen&quot; allowfullscreen></iframe>'\">▶ ここで遊ぶ</button></span>",
     "link": "https://osu-denken.net/arena-shooter/",
     "images": [
       "https://osu-denken.net/arena-shooter/shots/arena-shooter_1.jpg",
