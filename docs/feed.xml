@@ -6,7 +6,7 @@
     <description>大阪産業大学 文化会 電子計算研究部の公式サイト。部員が制作した作品を紹介しています。</description>
     <language>ja</language>
     <atom:link href="https://osu-denken.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Sun, 18 Oct 2026 09:33:29 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 05 Nov 2026 14:12:44 GMT</lastBuildDate>
     <item>
       <title>「カメラでドライブ！」</title>
       <link>https://osu-denken.github.io/blog/2026/06/03/61.html</link>
@@ -48,6 +48,18 @@
       <link>https://osu-denken.net/arena-shooter/</link>
       <guid isPermaLink="false">osu-denken-work-7</guid>
       <description><![CDATA[銃と剣で敵を倒していく、ブラウザですぐ遊べるアクションゲームです！]]></description>
+    </item>
+    <item>
+      <title>SQLダンジョン</title>
+      <link>https://kmmz.jp/sql-dungeons/</link>
+      <guid isPermaLink="false">osu-denken-work-8</guid>
+      <description><![CDATA[SQLを学習するためのRPG風ゲームです。 ]]></description>
+    </item>
+    <item>
+      <title>わたしのネットワーク屋</title>
+      <link>https://kmmz.jp/my-network-guy/</link>
+      <guid isPermaLink="false">osu-denken-work-9</guid>
+      <description><![CDATA[ネットワーク構築を学習する、体験できる経営シミュレーションゲームです。]]></description>
     </item>
   </channel>
 </rss>
