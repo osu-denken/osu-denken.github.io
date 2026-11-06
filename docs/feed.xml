@@ -6,7 +6,7 @@
     <description>大阪産業大学 文化会 電子計算研究部の公式サイト。部員が制作した作品を紹介しています。</description>
     <language>ja</language>
     <atom:link href="https://osu-denken.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Thu, 05 Nov 2026 14:17:40 GMT</lastBuildDate>
+    <lastBuildDate>Fri, 06 Nov 2026 08:10:55 GMT</lastBuildDate>
     <item>
       <title>「カメラでドライブ！」</title>
       <link>https://osu-denken.github.io/blog/2026/06/03/61.html</link>
@@ -60,6 +60,12 @@
       <link>https://kmmz.jp/my-network-guy/</link>
       <guid isPermaLink="false">osu-denken-work-9</guid>
       <description><![CDATA[ネットワーク構築を学習する、体験できる経営シミュレーションゲームです。]]></description>
+    </item>
+    <item>
+      <title>マネジメントゲーム</title>
+      <link>https://osu-denken.net/mg-game/</link>
+      <guid isPermaLink="false">osu-denken-work-10</guid>
+      <description><![CDATA[製造業の会社を経営して、決算で純資産を競う経営ボードゲームのブラウザ版です！]]></description>
     </item>
   </channel>
 </rss>
