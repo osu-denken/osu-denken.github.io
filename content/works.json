@@ -116,7 +116,7 @@
     "title": "PORT_HACKER",
     "overview": "プロトコル名とポート番号を当てる、シンプルでサクッと遊べるブラウザゲーム",
     "description": "ネットワークのプロトコル名と対応する標準ポート番号を、ハッキングゲーム感覚で楽しく、スピーディに学べるブラウザ向けのクイズゲームです。サイバーパンク風のレトロターミナルUI、手触り感のあるアニメーション、制限時間による緊張感、そして詳細な学習解説機能を備えており、インフラエンジニアやプログラマーの基礎知識の確認・定着に最適です。<br /><br />使用技術: HTML/CSS/JS, Gemini<br />制作日時: 2026/10/03",
-    "link": "https://osu-denken.net/mg-game/",
+    "link": "http://osu-denken.net/port-hacker/",
     "images": [
       "https://github.com/osu-denken/port-hacker/raw/main/docs/698506474-c9bbfc63-2f70-4222-981b-3fdd692ca2d8.png",
       "https://github.com/osu-denken/port-hacker/raw/main/docs/698510124-a27eba7d-1749-45dc-b075-d43cefb1d479.png"
