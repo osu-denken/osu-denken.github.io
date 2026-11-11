@@ -57,3 +57,21 @@
     line-height: 24px;
   }
 }
+.navAction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  height: 100%;
+  padding: 0 0.75rem;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.navAction:hover {
+  color: #fff;
+  background-color: #3a3a3a;
+}
