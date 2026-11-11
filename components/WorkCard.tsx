@@ -1,62 +1,91 @@
 import useEmblaCarousel from "embla-carousel-react";
-import styles from "./workcard.module.css"
 import Autoplay from "embla-carousel-autoplay";
+import { useMemo } from "react";
+import Link from "next/link";
+import { Icon } from "@iconify/react";
+import styles from "./workcard.module.css";
+import { fontAwesomeIconName, Work } from "@lib/works";
 
 type Props = {
-  work: {
-    id: number;
-    title: string;
-    overview?: string;
-    description?: string;
-    images: string[];
-    link?: string;
-  };
+  work: Work;
+  canEdit?: boolean;
 };
 
-const WorkCard = ({ work }: Props) => {
-  // ループと、ドラッグでの切り替えを有効に
-  const [emblaRef] = useEmblaCarousel({ loop: true }, [
-    Autoplay({ delay: 3000, stopOnInteraction: false })
-  ]);
+const WorkCard = ({ work, canEdit = false }: Props) => {
+  const autoplay = useMemo(
+    () => work.images.length > 1 ? Autoplay({ delay: 3000, stopOnInteraction: false }) : undefined,
+    [work.images.length]
+  );
+  const [emblaRef] = useEmblaCarousel(
+    { loop: work.images.length > 1 },
+    autoplay ? [autoplay] : []
+  );
 
   if (!work) return null;
-  
-  return (
-    <div className={styles.card}>
-      <h3 className={styles.workTitle}>
-        {work.link ? (
-          <a href={work.link} target="_blank" rel="noopener noreferrer" className={styles.workLink}>
-            {work.title}
-          </a>
-        ) : (
-          work.title
-        )}
-      </h3>
-      {work.overview && <p className={styles.workDescription}>{work.overview}</p>}
 
-      {/* 作品の中の画像カルーセル */}
-      <div className={styles.embla} ref={emblaRef}>
-        <div className={styles.emblaContainer}>
-          {work.images.map((src, index) => (
-            <div className={styles.emblaSlide} key={index}>
-              <img src={src} alt={`${work.title}-${index}`} className={styles.workImage} />
-            </div>
-          ))}
-        </div>
+  return (
+    <article className={styles.card}>
+      <div className={styles.titleRow}>
+        <h2 className={styles.workTitle}>{work.title}</h2>
+        {canEdit && (
+          <Link
+            href={`/portal/page/?path=content%2Fworks.json&id=${work.id}`}
+            className={styles.editButton}
+            title="この作品を編集"
+            aria-label={`${work.title}を編集`}
+          >
+            <Icon icon="fa6-solid:pen-to-square" />
+          </Link>
+        )}
       </div>
-      
-      {/* 作品の情報 */}
-        <div className={styles.workInfo}>
-        {work.description && (
-          <p dangerouslySetInnerHTML={{ __html: work.description }} />
-        )}
-        {work.link && (
-          <a href={work.link} target="_blank" rel="noopener noreferrer" className={styles.workLink}>
-            作品ページへ
-          </a>
-        )}
+
+      <div className={styles.metadata}>
+        {work.author && <span className={styles.author}>{work.author}</span>}
+        {work.category && <span className={styles.category}>{work.category}</span>}
+        {work.tags?.map(tag => <span className={styles.tag} key={tag}>{tag}</span>)}
+      </div>
+
+      {work.overview && <p className={styles.overview}>{work.overview}</p>}
+
+      {work.images.length > 0 && (
+        <div className={styles.embla} ref={emblaRef}>
+          <div className={styles.emblaContainer}>
+            {work.images.map((src, index) => (
+              <div className={styles.emblaSlide} key={`${src}-${index}`}>
+                <img src={src} alt={`${work.title}の画像 ${index + 1}`} className={styles.workImage} />
+              </div>
+            ))}
+          </div>
         </div>
-    </div>
+      )}
+
+      {work.description && (
+        <div className={styles.workInfo}>
+          <div dangerouslySetInnerHTML={{ __html: work.description }} />
+        </div>
+      )}
+
+      {work.links && work.links.length > 0 && (
+        <div className={styles.links}>
+          {work.links.map((link, index) => {
+            const iconName = fontAwesomeIconName(link.icon);
+            return (
+              <a
+                key={`${link.url}-${index}`}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={iconName ? styles.iconLink : styles.textLink}
+                title={iconName ? link.label : undefined}
+                aria-label={iconName ? link.label : undefined}
+              >
+                {iconName ? <Icon icon={iconName} /> : link.label}
+              </a>
+            );
+          })}
+        </div>
+      )}
+    </article>
   );
 };
 
