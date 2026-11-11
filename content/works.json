@@ -5,7 +5,11 @@
     "overview": "カメラから手で車を操作して障害物をよけるゲームです！",
     "description": "電研1weekハッカソン 第一回で制作した作品です。<br /><br />使用技術: HTML/CSS/JS, Python/MediaPipe/OpenCV/FastAPI, Antigravity<br />制作期間: 2026/05/27〜2026/06/03",
     "category": "ゲーム",
-    "tags": [],
+    "tags": [
+      "HTML/CSS/JS",
+      "Python/MediaPipe/OpenCV/FastAPI",
+      "Antigravity"
+    ],
     "author": "チームAntigravity (3人)",
     "links": [
       {
@@ -25,7 +29,11 @@
     "overview": "カメラから手の動きを読み取ってエネルギーのオーブを出して爆発させることができます！",
     "description": "電研1weekハッカソン 第一回で制作した作品です。<br /><br />使用技術: HTML/CSS/JS, Python/MediaPipe/OpenCV/FastAPI, Antigravity<br />制作期間: 2026/05/27〜2026/06/03",
     "category": "ゲーム",
-    "tags": [],
+    "tags": [
+      "HTML/CSS/JS",
+      "Python/MediaPipe/OpenCV/FastAPI",
+      "Antigravity"
+    ],
     "author": "チームAntigravity (3人)",
     "links": [
       {
@@ -44,7 +52,11 @@
     "overview": "スマホを傾けて遊ぶシューティングゲームです！",
     "description": "電研1weekハッカソン 第一回で制作した作品です。<br /><br />使用技術: HTML/CSS/JS, JS/Node.js/Express, GitHub Copilot<br />制作期間: 2026/05/27〜2026/06/03",
     "category": "ゲーム",
-    "tags": [],
+    "tags": [
+      "HTML/CSS/JS",
+      "JS/Node.js/Express",
+      "GitHub Copilot"
+    ],
     "author": "チームweii (3人)",
     "links": [
       {
@@ -82,7 +94,9 @@
     "overview": "七夕に作成した願い事を吊るすウェブアプリです！",
     "description": "部長が七夕に作成した作品です。<br /><br />使用技術: HTML/CSS/JS<br />制作日時: 2026/07/07",
     "category": "Webアプリ",
-    "tags": [],
+    "tags": [
+      "HTML/CSS/JS"
+    ],
     "author": "部長 (1人)",
     "links": [
       {
@@ -100,7 +114,9 @@
     "overview": "トップページに埋め込まれているターミナルもどき",
     "description": "実際にコマンドを入力できます！頑張って「sudo rm -rf /」してみてください！<br />使えるコマンドはhelpで確認してみてください！ちょくちょくコマンド追加していきます！<br /><br />使用技術: HTML/CSS/JS<br />制作日時: 2025/12/22",
     "category": "ツール",
-    "tags": [],
+    "tags": [
+      "HTML/CSS/JS"
+    ],
     "links": [
       {
         "label": "GitHub",
@@ -119,7 +135,11 @@
     "overview": "銃と剣で敵を倒していく、ブラウザですぐ遊べるアクションゲームです！",
     "description": "ブラウザ上ですぐに遊べます(パソコン推奨・スマホ非対応)。<br />全5ステージ + ラスボス。高低差のあるマップで、飛行ドローンなどの敵と戦います。<br /><br />操作: WASD 移動 / Shift ダッシュ / E ジェットパック / V 一人称・三人称の切り替え / 1 銃・2 剣 / 左クリック 攻撃 / 右クリック ズーム(スナイパー) / R リロード / M ミュート / Esc メニュー(一時停止・音量)<br /><br />使用技術: Unity (C#, WebGL), Claude Code<br />音楽: 魔王魂<br />制作期間: 2026/05/17〜2026/10/18<br /><br /><span><button type=\"button\" style=\"padding:10px 18px;font-size:16px;cursor:pointer\" onclick=\"this.parentNode.innerHTML='<iframe src=&quot;https://osu-denken.net/arena-shooter/?embed&quot; style=&quot;width:100%;aspect-ratio:16/9;border:0;border-radius:6px;background:#000&quot; allow=&quot;fullscreen&quot; allowfullscreen></iframe>'\">▶ ここで遊ぶ</button></span>",
     "category": "ゲーム",
-    "tags": [],
+    "tags": [
+      "Unity (C#",
+      "WebGL)",
+      "Claude Code"
+    ],
     "author": "jtoxyz (1人)",
     "links": [
       {
@@ -139,7 +159,9 @@
     "overview": "SQLを学習するためのRPG風ゲームです。 ",
     "description": "Webブラウザで動作します。バックエンドは不要です。\n<br /><br />使用技術: HTML/CSS/JS<br />制作日時: 2025/10/06",
     "category": "ゲーム",
-    "tags": [],
+    "tags": [
+      "HTML/CSS/JS"
+    ],
     "author": "kmmz1127",
     "links": [
       {
@@ -158,7 +180,9 @@
     "overview": "ネットワーク構築を学習する、体験できる経営シミュレーションゲームです。",
     "description": "初回は5x5の狭い自社のオフィスで社員2人とデスク2つがあります！ 社員の給与を払うために、案件を受注し、他社のオフィスにてネットワークを構築するなどして稼ぎます！<br />\nWebブラウザで動作します。バックエンドは不要です。<br /><br />使用技術: React<br />制作日時: 2026/11/05",
     "category": "ゲーム",
-    "tags": [],
+    "tags": [
+      "React"
+    ],
     "author": "kmmz1127",
     "links": [
       {
@@ -177,7 +201,11 @@
     "overview": "製造業の会社を経営して、決算で純資産を競う経営ボードゲームのブラウザ版です！",
     "description": "ゼミで遊んだ経営ボードゲームを、ブラウザで遊べるようにしました。スマホでも遊べます。<br />CPU対戦・1台を回して対戦・オンライン対戦（部屋コードで参加）に対応。現金出納帳・原価計算・決算書は自動で作られます。<br /><br />使用技術: HTML/CSS/JS, PeerJS, Claude Code<br />制作期間: 2026/10/07〜2026/11/06",
     "category": "ゲーム",
-    "tags": [],
+    "tags": [
+      "HTML/CSS/JS",
+      "PeerJS",
+      "Claude Code"
+    ],
     "author": "jtoxyz (1人)",
     "links": [
       {
@@ -197,7 +225,10 @@
     "overview": "プロトコル名とポート番号を当てる、シンプルでサクッと遊べるブラウザゲーム",
     "description": "ネットワークのプロトコル名と対応する標準ポート番号を、ハッキングゲーム感覚で楽しく、スピーディに学べるブラウザ向けのクイズゲームです。サイバーパンク風のレトロターミナルUI、手触り感のあるアニメーション、制限時間による緊張感、そして詳細な学習解説機能を備えており、インフラエンジニアやプログラマーの基礎知識の確認・定着に最適です。<br /><br />使用技術: HTML/CSS/CoffeeScript, Gemini<br />制作日時: 2026/10/03",
     "category": "ゲーム",
-    "tags": [],
+    "tags": [
+      "HTML/CSS/CoffeeScript",
+      "Gemini"
+    ],
     "links": [
       {
         "label": "作品を見る",
