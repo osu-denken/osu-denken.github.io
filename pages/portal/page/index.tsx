@@ -67,7 +67,7 @@ const SitePageEditor: NextPage = () => {
             const nextWorks = [...parsedWorks, { id: newId, title: "", images: [], links: [], tags: [] }];
             setWorks(nextWorks);
             setSelectedWorkId(newId);
-            setSource(JSON.stringify(nextWorks, null, 2) + "\\n");
+            setSource(JSON.stringify(nextWorks, null, 2) + "\n");
           } else {
             setWorks(parsedWorks);
           }
