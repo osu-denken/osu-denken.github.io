@@ -1,20 +1,36 @@
 import fs from "fs";
 import path from "path";
 import type { GetStaticProps, NextPage } from "next";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styles from "@styles/Page.module.css";
 import pageStyles from "@styles/Works.module.css";
 import WorkCard from "@components/WorkCard";
 import { Icon } from "@iconify/react";
 import { parseWorks, Work } from "@lib/works";
+import { apiFetch } from "@lib/api";
+import { hasPermission, Permission } from "@lib/member";
 
 interface WorksPageProps { works: Work[]; }
 
 const WorksPage: NextPage<WorksPageProps> = ({ works }) => {
+  const [canEdit, setCanEdit] = useState(false);
   const [search, setSearch] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [category, setCategory] = useState("");
   const [tag, setTag] = useState("");
+
+  useEffect(() => {
+    if (!localStorage.getItem("idToken")) return;
+    let cancelled = false;
+    apiFetch("/portal", { method: "POST" })
+      .then(async response => {
+        if (!response.ok) return;
+        const data = await response.json();
+        if (!cancelled) setCanEdit(hasPermission(data.permissions ?? 0, Permission.PageEdit));
+      })
+      .catch(error => console.error("Failed to load works permission:", error));
+    return () => { cancelled = true; };
+  }, []);
 
   const categories = useMemo(() => Array.from(new Set(works.map(w => w.category).filter(Boolean))) as string[], [works]);
   const tags = useMemo(() => Array.from(new Set(works.flatMap(w => w.tags ?? []))), [works]);
@@ -82,7 +98,7 @@ const WorksPage: NextPage<WorksPageProps> = ({ works }) => {
 
         <div className={pageStyles.worksGrid}>
           {filteredWorks.length > 0
-            ? filteredWorks.map(work => <WorkCard key={work.id} work={work} />)
+            ? filteredWorks.map(work => <WorkCard key={work.id} work={work} canEdit={canEdit} />)
             : <p className={pageStyles.emptyState}>該当する作品がありません。</p>}
         </div>
       </main>
