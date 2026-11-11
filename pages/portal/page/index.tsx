@@ -33,6 +33,7 @@ const SitePageEditor: NextPage = () => {
   const [source, setSource] = useState("");
   const [savedSource, setSavedSource] = useState("");
   const [works, setWorks] = useState<Work[]>([]);
+  const [selectedWorkId, setSelectedWorkId] = useState<number | undefined>(undefined);
 
   const page = sitePageOf(path);
   const isDirty = source !== savedSource;
@@ -44,7 +45,11 @@ const SitePageEditor: NextPage = () => {
       return;
     }
 
-    const target = new URLSearchParams(window.location.search).get("path") ?? "";
+    const params = new URLSearchParams(window.location.search);
+    const target = params.get("path") ?? "";
+    const requestedId = params.get("id");
+    const isNewWork = params.get("new") === "1";
+    if (requestedId) setSelectedWorkId(Number(requestedId));
     setPath(target);
 
     if (!sitePageOf(target)) return;
@@ -55,7 +60,18 @@ const SitePageEditor: NextPage = () => {
 
         setSource(data.content);
         setSavedSource(data.content);
-        if (target.endsWith(".json")) setWorks(parseWorks(data.content));
+        if (target.endsWith(".json")) {
+          const parsedWorks = parseWorks(data.content);
+          if (isNewWork) {
+            const newId = parsedWorks.reduce((max, work) => Math.max(max, work.id), 0) + 1;
+            const nextWorks = [...parsedWorks, { id: newId, title: "", images: [], links: [], tags: [] }];
+            setWorks(nextWorks);
+            setSelectedWorkId(newId);
+            setSource(JSON.stringify(nextWorks, null, 2) + "\\n");
+          } else {
+            setWorks(parsedWorks);
+          }
+        }
       })
       .catch(e => {
         console.error("Failed to load site page:", e);
@@ -118,7 +134,7 @@ const SitePageEditor: NextPage = () => {
         <h1>{page.label} の編集</h1>
 
         {page.kind === "works" ? (
-          <WorksEditor works={works} onChange={onWorksChange} />
+          <WorksEditor works={works} onChange={onWorksChange} selectedId={selectedWorkId} />
         ) : (
           <div className={portalStyles.inputGroup2}>
             <div className={portalStyles.mdeeditor}>
