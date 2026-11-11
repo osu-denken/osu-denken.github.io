@@ -57,7 +57,7 @@
     line-height: 24px;
   }
 }
-.navAction {
+.nav .navAction {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -71,7 +71,7 @@
   transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-.navAction:hover {
+.nav .navAction:hover {
   color: #fff;
   background-color: #3a3a3a;
 }
