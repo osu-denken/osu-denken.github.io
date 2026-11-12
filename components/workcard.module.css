@@ -150,8 +150,9 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem 0.5rem;
   margin-bottom: 0.75rem;
+  line-height: 1.5;
 }
 
 .author {
@@ -161,7 +162,8 @@
 }
 
 .category,
-.tag {
+.tag,
+.date {
   padding: 0.15rem 0.5rem;
   color: #ffffffb8;
   background: #ffffff0c;
@@ -173,6 +175,14 @@
 .category {
   color: #a9d7ff;
   border-color: #4fafff55;
+}
+
+.date {
+  color: #ffffff99;
+  background: #ffffff06;
+  border-color: #ffffff18;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .overview {
