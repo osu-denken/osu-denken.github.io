@@ -93,7 +93,7 @@
     "id": 4,
     "title": "タイピングゲーム",
     "overview": "画面上の文字をタイプしていくゲームです！",
-    "description": "電研1weekハッカソン 第一回で制作した作品です。<br />",
+    "description": "電研1weekハッカソン 第一回で制作した作品です。",
     "category": "ゲーム",
     "tags": [
       "JavaScript",
@@ -124,7 +124,7 @@
     "id": 5,
     "title": "デジタル七夕",
     "overview": "七夕に作成した願い事を吊るすウェブアプリです！",
-    "description": "部長が七夕に作成した作品です。<br />",
+    "description": "部長が七夕に作成した作品です。",
     "category": "Webアプリ",
     "tags": [
       "JavaScript",
@@ -154,7 +154,7 @@
     "id": 6,
     "title": "ECRD fash",
     "overview": "トップページに埋め込まれているターミナルもどき",
-    "description": "実際にコマンドを入力できます！頑張って「sudo rm -rf /」してみてください！<br />使えるコマンドはhelpで確認してみてください！ちょくちょくコマンド追加していきます！<br />",
+    "description": "実際にコマンドを入力できます！頑張って「sudo rm -rf /」してみてください！<br />使えるコマンドはhelpで確認してみてください！ちょくちょくコマンド追加していきます！",
     "category": "ツール",
     "tags": [
       "JavaScript",
@@ -207,7 +207,7 @@
     "id": 8,
     "title": "SQLダンジョン",
     "overview": "SQLを学習するためのRPG風ゲームです。 ",
-    "description": "Webブラウザで動作します。バックエンドは不要です。\n<br />",
+    "description": "Webブラウザで動作します。バックエンドは不要です。\n",
     "category": "ゲーム",
     "tags": [
       "JavaScript",
