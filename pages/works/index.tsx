@@ -33,7 +33,8 @@ const WorksPage: NextPage<WorksPageProps> = ({ works }) => {
   }, []);
 
   const categories = useMemo(() => Array.from(new Set(works.map(w => w.category).filter(Boolean))) as string[], [works]);
-  const tags = useMemo(() => Array.from(new Set(works.flatMap(w => w.tags ?? []))), [works]);
+  const categoryNames = useMemo(() => new Set(works.map(work => work.category).filter(Boolean)), [works]);
+  const tags = useMemo(() => Array.from(new Set(works.flatMap(work => (work.tags ?? []).filter(item => !categoryNames.has(item))))), [works, categoryNames]);
 
   const filteredWorks = useMemo(() => {
     const keyword = search.trim().toLocaleLowerCase();
