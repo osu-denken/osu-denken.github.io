@@ -573,7 +573,6 @@ button.portal:disabled {
   display: flex;
   justify-content: flex-end;
   padding-top: 0.6rem;
-  border-top: 1px solid #ffffff1f;
 }
 
 .iconPicker {
