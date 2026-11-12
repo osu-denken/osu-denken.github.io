@@ -177,16 +177,12 @@
 }
 
 .dates {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.25rem 0.75rem;
-  flex-basis: 100%;
   color: #ffffff80;
   font-size: 0.78rem;
 }
 
 .date {
+  margin-right: 8px;
   color: inherit;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
