@@ -68,9 +68,11 @@ const Navbar: React.FC = () => {
   };
 
   // ログイン状態に応じたナビゲーションアイテム
+  const showWorksAdd = router.pathname === '/works' && isLoggedIn && canEditWorks;
+
   const rightNavItem = isLoggedIn ? (
     <>
-      <li className={styles.right}>
+      <li className={showWorksAdd ? undefined : styles.right}>
         <Link href="/portal/">{userName}</Link>
       </li>
       <li>
@@ -102,7 +104,7 @@ const Navbar: React.FC = () => {
             電研
           </a>
         </li>
-        {router.pathname === '/works' && isLoggedIn && canEditWorks && (
+        {showWorksAdd && (
           <li className={styles.right}>
             <Link href="/portal/page/?path=content%2Fworks.json&new=1" className={styles.navAction}>
               <Icon icon="fa6-solid:plus" />作品追加

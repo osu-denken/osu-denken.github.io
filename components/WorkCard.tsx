@@ -42,7 +42,7 @@ const WorkCard = ({ work, canEdit = false }: Props) => {
       <div className={styles.metadata}>
         {work.author && <span className={styles.author}>{work.author}</span>}
         {work.category && <span className={styles.category}>{work.category}</span>}
-        {work.tags?.map(tag => <span className={styles.tag} key={tag}>{tag}</span>)}
+        {work.tags?.filter(tag => tag !== work.category).map(tag => <span className={styles.tag} key={tag}>{tag}</span>)}
       </div>
 
       {work.overview && <p className={styles.overview}>{work.overview}</p>}
