@@ -203,7 +203,7 @@ input[type="text"].portal,
 input[type="email"].portal,
 input[type="password"].portal,
 input[type="tel"].portal,
-input[type="date"].portal {
+input[type="date"].portal,\ninput[type="url"].portal {
   margin: 0;
   width: min(16rem, 100%) !important;
   padding: 0.5rem !important;
@@ -504,7 +504,7 @@ button.portal:disabled {
   /* 編集フォームの入力は横のボタンと並ばないので、幅を削らない */
   .memberEditor input[type="text"].portal,
   .memberEditor input[type="tel"].portal,
-  .memberEditor input[type="date"].portal,
+  .memberEditor input[type="date"].portal,\n  .memberEditor input[type="url"].portal,
   .memberEditor select.portal {
     width: 100% !important;
     max-width: none !important;
