@@ -94,7 +94,7 @@ const SitePageEditor: NextPage = () => {
         ? JSON.stringify(parseWorksForSave(source), null, 2) + "\n"
         : source;
     } catch (e) {
-      setMsg(`保存できない作品データがある。入力内容を確認してほしい。 ${e instanceof Error ? e.message : ""}`);
+      setMsg(`作品データの検証エラー：${e instanceof Error ? e.message : "不明なエラー"}`);
       return;
     }
 
