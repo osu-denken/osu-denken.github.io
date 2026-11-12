@@ -54,7 +54,7 @@ export const WorksEditor = ({ works, onChange, selectedId }: WorksEditorProps) =
 
   const applyJson = () => {
     try {
-      onChange(parseWorks(json));
+      onChange(parseWorks(json, { allowIncomplete: true }));
       setJsonMode(false);
       setJsonError("");
     } catch (e: any) {

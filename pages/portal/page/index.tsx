@@ -34,6 +34,7 @@ const SitePageEditor: NextPage = () => {
   const [savedSource, setSavedSource] = useState("");
   const [works, setWorks] = useState<Work[]>([]);
   const [selectedWorkId, setSelectedWorkId] = useState<number | undefined>(undefined);
+  const [isNewWork, setIsNewWork] = useState(false);
 
   const page = sitePageOf(path);
   const isDirty = source !== savedSource;
@@ -48,7 +49,8 @@ const SitePageEditor: NextPage = () => {
     const params = new URLSearchParams(window.location.search);
     const target = params.get("path") ?? "";
     const requestedId = params.get("id");
-    const isNewWork = params.get("new") === "1";
+    const isNew = params.get("new") === "1";
+    setIsNewWork(isNew);
     if (requestedId) setSelectedWorkId(Number(requestedId));
     setPath(target);
 
@@ -62,7 +64,7 @@ const SitePageEditor: NextPage = () => {
         setSavedSource(data.content);
         if (target.endsWith(".json")) {
           const parsedWorks = parseWorks(data.content);
-          if (isNewWork) {
+          if (isNew) {
             const newId = parsedWorks.reduce((max, work) => Math.max(max, work.id), 0) + 1;
             const nextWorks = [...parsedWorks, { id: newId, title: "", images: [], links: [], tags: [] }];
             setWorks(nextWorks);
@@ -131,7 +133,7 @@ const SitePageEditor: NextPage = () => {
       <main className={styles.main} style={{ width: "100%", maxWidth: "1600px" }}>
         {msg ? <div className={portalStyles.notice}>{msg}</div> : ``}
 
-        <h1>{page.label} の編集</h1>
+        <h1>{page.kind === "works" && isNewWork ? "作品の追加" : `${page.label} の編集`}</h1>
 
         {page.kind === "works" ? (
           <WorksEditor works={works} onChange={onWorksChange} selectedId={selectedWorkId} />

@@ -103,7 +103,7 @@ const Navbar: React.FC = () => {
           </a>
         </li>
         {router.pathname === '/works' && isLoggedIn && canEditWorks && (
-          <li>
+          <li className={styles.right}>
             <Link href="/portal/page/?path=content%2Fworks.json&new=1" className={styles.navAction}>
               <Icon icon="fa6-solid:plus" />作品追加
             </Link>
