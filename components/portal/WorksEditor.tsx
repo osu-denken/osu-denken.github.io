@@ -29,6 +29,7 @@ export const WorksEditor = ({ works, onChange, selectedId }: WorksEditorProps) =
   const [jsonMode, setJsonMode] = useState(false);
   const [json, setJson] = useState("");
   const [jsonError, setJsonError] = useState("");
+  const [openIconPicker, setOpenIconPicker] = useState<string | null>(null);
 
   const visibleWorks = works
     .map((work, index) => ({ work, index }))
@@ -140,39 +141,67 @@ export const WorksEditor = ({ works, onChange, selectedId }: WorksEditorProps) =
 
           <div className={portalStyles.field}>
             <label>リンク</label>
-            {(work.links ?? []).map((link, linkIndex) => (
-              <div key={linkIndex} className={portalStyles.fieldGrid} style={{ marginBottom: "0.6rem" }}>
-                <div className={portalStyles.field}>
-                  <label>表示名 / ツールチップ</label>
-                  <input type="text" className={portalStyles.portal} value={link.label}
-                    onChange={e => patchLink(index, linkIndex, { label: e.target.value })} />
-                </div>
-                <div className={portalStyles.field}>
-                  <label>URL</label>
-                  <input type="url" className={portalStyles.portal} value={link.url}
-                    onChange={e => patchLink(index, linkIndex, { url: e.target.value })} />
-                </div>
-                <div className={portalStyles.field}>
-                  <label>Font Awesome アイコン (任意)</label>
-                  <select className={portalStyles.portal} value={link.icon ?? ""}
-                    onChange={e => patchLink(index, linkIndex, { icon: e.target.value || undefined })}>
-                    <option value="">文字で表示</option>
-                    {WORK_ICON_OPTIONS.map(option => (
-                      <option value={option.value} key={option.value}>{option.label}</option>
-                    ))}
-                  </select>
-                </div>
-                {link.icon && (
-                  <div className={portalStyles.field}>
-                    <label>プレビュー</label>
-                    <p><Icon icon={fontAwesomeIconName(link.icon) ?? "fa6-solid:link"} /></p>
+            {(work.links ?? []).map((link, linkIndex) => {
+              const pickerId = `${work.id}-${linkIndex}`;
+              const selectedIcon = WORK_ICON_OPTIONS.find(option => option.value === link.icon);
+
+              return (
+                <div key={linkIndex} className={portalStyles.linkEditor}>
+                  <div className={portalStyles.linkFields}>
+                    <div className={portalStyles.field}>
+                      <label>表示名 / ツールチップ</label>
+                      <input type="text" className={portalStyles.portal} value={link.label}
+                        onChange={e => patchLink(index, linkIndex, { label: e.target.value })} />
+                    </div>
+                    <div className={portalStyles.field}>
+                      <label>URL</label>
+                      <input type="url" className={portalStyles.portal} value={link.url}
+                        onChange={e => patchLink(index, linkIndex, { url: e.target.value })} />
+                    </div>
+                    <div className={portalStyles.field}>
+                      <label>アイコン (任意)</label>
+                      <div className={portalStyles.iconPicker}>
+                        <button type="button" className={portalStyles.iconPickerTrigger}
+                          aria-expanded={openIconPicker === pickerId}
+                          onClick={() => setOpenIconPicker(openIconPicker === pickerId ? null : pickerId)}>
+                          {selectedIcon ? <Icon icon={selectedIcon.icon} /> : <span>文字で表示</span>}
+                          <span>{selectedIcon?.label ?? "アイコンなし"}</span>
+                          <Icon icon="fa6-solid:chevron-down" />
+                        </button>
+                        {openIconPicker === pickerId && (
+                          <div className={portalStyles.iconPickerMenu}>
+                            <button type="button" className={portalStyles.iconPickerOption}
+                              onClick={() => {
+                                patchLink(index, linkIndex, { icon: undefined });
+                                setOpenIconPicker(null);
+                              }}>
+                              <span className={portalStyles.iconPickerEmpty}>Aa</span>
+                              <span>文字で表示</span>
+                            </button>
+                            {WORK_ICON_OPTIONS.map(option => (
+                              <button type="button" className={portalStyles.iconPickerOption}
+                                key={option.value}
+                                aria-pressed={link.icon === option.value}
+                                onClick={() => {
+                                  patchLink(index, linkIndex, { icon: option.value });
+                                  setOpenIconPicker(null);
+                                }}>
+                                <Icon icon={option.icon} />
+                                <span>{option.label}</span>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                )}
-                <div className={portalStyles.editorActions}>
-                  <button type="button" className={portalStyles.portal} onClick={() => removeLink(index, linkIndex)}>リンクを削除</button>
+                  <div className={portalStyles.linkActions}>
+                    <button type="button" className={portalStyles.portal}
+                      onClick={() => removeLink(index, linkIndex)}>リンクを削除</button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             <div className={portalStyles.editorActions}>
               <button type="button" className={portalStyles.portal}
                 onClick={() => patch(index, { links: [...(work.links ?? []), { label: "", url: "" }] })}>

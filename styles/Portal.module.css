@@ -546,3 +546,117 @@ button.portal:disabled {
     color-scheme: dark;
   }
 }
+
+
+/* 作品リンク編集 */
+.linkEditor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.85rem;
+  margin-top: 0.65rem;
+  background: #ffffff08;
+  border: 1px solid #ffffff1f;
+  border-radius: 6px;
+}
+
+.linkFields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  gap: 0.75rem 1.25rem;
+  align-items: start;
+}
+
+.linkActions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.6rem;
+  border-top: 1px solid #ffffff1f;
+}
+
+.iconPicker {
+  position: relative;
+  width: 100%;
+}
+
+.iconPickerTrigger {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.65rem;
+  color: #fff;
+  background: #222;
+  border: 1px solid #555;
+  border-radius: 4px;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.iconPickerTrigger > :last-child {
+  margin-left: auto;
+  opacity: 0.65;
+}
+
+.iconPickerMenu {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  gap: 0.25rem;
+  width: min(100%, 28rem);
+  max-height: 16rem;
+  padding: 0.4rem;
+  overflow-y: auto;
+  background: #222;
+  border: 1px solid #666;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px #0009;
+}
+
+.iconPickerOption {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+  padding: 0.5rem;
+  color: #fff;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.iconPickerOption:hover,
+.iconPickerOption[aria-pressed="true"] {
+  background: #ffffff16;
+  border-color: #23df1e;
+}
+
+.iconPickerOption > :first-child,
+.iconPickerEmpty {
+  flex: 0 0 1.25rem;
+  width: 1.25rem;
+  text-align: center;
+}
+
+.iconPickerEmpty {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+@media screen and (max-width: 640px) {
+  .linkFields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .iconPickerMenu {
+    width: 100%;
+  }
+}
