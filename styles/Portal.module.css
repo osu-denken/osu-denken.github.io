@@ -215,6 +215,25 @@ input[type="date"].portal {
   color-scheme: dark;
 }
 
+/* URL入力欄はブラウザ標準の外観を使わず、ポータルの入力欄に統一 */
+input[type="url"].portal {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  background-color: #222;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  font-size: 15px;
+  font-family: inherit;
+  color-scheme: dark;
+}
+
+input[type="url"].portal:focus {
+  outline: none;
+  border-color: #23df1e;
+}
+
 select.portal {
   margin: 0;
   width: min(16rem, 100%);
