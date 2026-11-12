@@ -72,7 +72,6 @@ const WorksPage: NextPage<WorksPageProps> = ({ works }) => {
     <div className={styles.container}>
       <main className={`${styles.main} ${pageStyles.page}`}>
         <h1>作品</h1>
-        <p className={styles.description}>部員が創作したものを紹介します！</p>
 
         <div className={pageStyles.toolbar}>
           <label className={pageStyles.searchBox}>
