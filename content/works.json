@@ -16,6 +16,7 @@
     "links": [
       {
         "label": "制作ブログ",
+        "icon": "fa-solid fa-pen-to-square",
         "url": "https://osu-denken.github.io/blog/2026/06/03/61.html"
       }
     ],
@@ -42,6 +43,7 @@
     "links": [
       {
         "label": "制作ブログ",
+        "icon": "fa-solid fa-pen-to-square",
         "url": "https://osu-denken.github.io/blog/2026/06/03/61.html"
       }
     ],
@@ -66,7 +68,13 @@
     "links": [
       {
         "label": "制作ブログ",
+        "icon": "fa-solid fa-pen-to-square",
         "url": "https://osu-denken.github.io/blog/2026/06/03/61.html"
+      },
+      {
+        "label": "作品を見る",
+        "icon": "fa fa-play",
+        "url": "https://osu-denken.net/phone-and-shoot/host/"
       }
     ],
     "images": [
@@ -91,7 +99,13 @@
     "links": [
       {
         "label": "制作ブログ",
+        "icon": "fa-solid fa-pen-to-square",
         "url": "https://osu-denken.github.io/blog/2026/06/03/61.html"
+      },
+      {
+        "label": "作品を見る",
+        "icon": "fa fa-play",
+        "url": "https://osu-denken.net/typing-ksh/"
       }
     ],
     "images": [
@@ -109,11 +123,17 @@
       "Webアプリ",
       "個人制作"
     ],
-    "author": "部長 (1人)",
+    "author": "部長",
     "links": [
       {
         "label": "制作ブログ",
+        "icon": "fa-solid fa-pen-to-square",
         "url": "https://osu-denken.github.io/blog/2026/07/07/119.html"
+      },
+      {
+        "label": "作品を見る",
+        "icon": "fa fa-play",
+        "url": "https://osu-denken.github.io/tanabata-2026/"
       }
     ],
     "images": [
@@ -155,10 +175,11 @@
       "Webアプリ",
       "個人制作"
     ],
-    "author": "jtoxyz (1人)",
+    "author": "jtoxyz",
     "links": [
       {
         "label": "作品を見る",
+        "icon": "fa fa-play",
         "url": "https://osu-denken.net/arena-shooter/"
       }
     ],
@@ -183,6 +204,7 @@
     "links": [
       {
         "label": "作品を見る",
+        "icon": "fa fa-play",
         "url": "https://kmmz.jp/sql-dungeons/"
       }
     ],
@@ -206,7 +228,13 @@
     "links": [
       {
         "label": "作品を見る",
+        "icon": "fa fa-play",
         "url": "https://kmmz.jp/my-network-guy/"
+      },
+      {
+        "label": "個人ブログ",
+        "icon": "fa-solid fa-pen-to-square",
+        "url": "https://blog.kmmz.jp/posts/2026-11-05-71/"
       }
     ],
     "images": [
@@ -230,6 +258,7 @@
     "links": [
       {
         "label": "作品を見る",
+        "icon": "fa fa-play",
         "url": "https://osu-denken.net/mg-game/"
       }
     ],
@@ -254,7 +283,7 @@
     "links": [
       {
         "label": "作品を見る",
-        "icon": "fa-solid fa-arrow-up-right-from-square",
+        "icon": "fa fa-play",
         "url": "http://osu-denken.net/port-hacker/"
       }
     ],
