@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Icon } from "@iconify/react";
 import portalStyles from "@styles/Portal.module.css";
-import { fontAwesomeIconName, parseWorks, Work, WorkLink, WORK_ICON_OPTIONS } from "@lib/works";
+import { parseWorks, Work, WorkLink, WORK_ICON_OPTIONS } from "@lib/works";
 
 interface WorksEditorProps {
   works: Work[];
