@@ -6,18 +6,20 @@ const GSI_SRC = "https://accounts.google.com/gsi/client";
 interface GoogleLoginButtonProps {
   /** Google が発行した ID トークン (JWT) を受け取る */
   onCredential: (credential: string) => void;
+  /** Google Identity Services を利用できない場合 */
+  onUnavailable?: () => void;
 }
 
 // GIS スクリプトは一度だけ読み込む
-const loadGis = (): Promise<void> =>
-  new Promise((resolve, reject) => {
+const loadGis = (): Promise<boolean> =>
+  new Promise(resolve => {
     const w = window as any;
-    if (w.google?.accounts?.id) return resolve();
+    if (w.google?.accounts?.id) return resolve(true);
 
     const existing = document.querySelector<HTMLScriptElement>(`script[src="${GSI_SRC}"]`);
     if (existing) {
-      existing.addEventListener("load", () => resolve());
-      existing.addEventListener("error", () => reject(new Error("Failed to load GIS")));
+      existing.addEventListener("load", () => resolve(true), { once: true });
+      existing.addEventListener("error", () => resolve(false), { once: true });
       return;
     }
 
@@ -25,8 +27,8 @@ const loadGis = (): Promise<void> =>
     script.src = GSI_SRC;
     script.async = true;
     script.defer = true;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Failed to load GIS"));
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
     document.head.appendChild(script);
   });
 
@@ -34,18 +36,24 @@ const loadGis = (): Promise<void> =>
  * 大学 Google アカウントでのログインボタン。
  * 押すと Google の ID トークンを取得し onCredential へ渡す (交換はサーバ側)。
  */
-export const GoogleLoginButton = ({ onCredential }: GoogleLoginButtonProps) => {
+export const GoogleLoginButton = ({ onCredential, onUnavailable }: GoogleLoginButtonProps) => {
   const ref = useRef<HTMLDivElement>(null);
   // 再レンダリングで古いコールバックを掴まないよう、最新を参照する
   const cbRef = useRef(onCredential);
   cbRef.current = onCredential;
+  const unavailableRef = useRef(onUnavailable);
+  unavailableRef.current = onUnavailable;
 
   useEffect(() => {
     let cancelled = false;
 
     loadGis()
-      .then(() => {
-        if (cancelled || !ref.current) return;
+      .then(loaded => {
+        if (cancelled) return;
+        if (!loaded || !ref.current) {
+          unavailableRef.current?.();
+          return;
+        }
 
         const google = (window as any).google;
         google.accounts.id.initialize({
@@ -63,7 +71,9 @@ export const GoogleLoginButton = ({ onCredential }: GoogleLoginButtonProps) => {
           locale: "ja"
         });
       })
-      .catch(e => console.error("Google Identity Services の読み込みに失敗:", e));
+      .catch(() => {
+        if (!cancelled) unavailableRef.current?.();
+      });
 
     return () => { cancelled = true; };
   }, []);
