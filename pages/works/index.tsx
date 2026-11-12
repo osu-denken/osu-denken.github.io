@@ -82,7 +82,7 @@ const WorksPage: NextPage<WorksPageProps> = ({ works }) => {
               type="search"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="作品名・概要・作者などで検索"
+              placeholder="作品を検索"
               aria-label="作品を検索"
             />
           </label>
@@ -93,7 +93,7 @@ const WorksPage: NextPage<WorksPageProps> = ({ works }) => {
             onChange={e => setSortBy(e.target.value as typeof sortBy)}
             aria-label="並び順の基準"
           >
-            <option value="recommended">オススメ順</option>
+            <option value="recommended">おすすめ順</option>
             <option value="createdAt">作成日順</option>
             <option value="updatedAt">更新日順</option>
           </select>

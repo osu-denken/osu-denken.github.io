@@ -39,15 +39,15 @@
 .searchInput::placeholder { color: #ffffff70; }
 
 .sortSelect {
-  min-width: 7.2rem;
+  min-width: 3.0rem;
   height: 2.65rem;
-  padding: 0 0.65rem;
+  padding: 0 0.5rem;
   color: #ffffffd9;
   background: #ffffff0a;
   border: 1px solid #ffffff2b;
   border-radius: 6px;
   font: inherit;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   cursor: pointer;
 }
 
