@@ -29,15 +29,51 @@ h3 {
   /* border-bottom: 2px solid #ffffff; */
 }
 
-input[type="text"], input[type="password"], input[type="tel"], input[type="email"] {
+/* フォーム入力部品の共通デザイン */
+input[type="text"],
+input[type="password"],
+input[type="tel"],
+input[type="email"],
+input[type="date"],
+input[type="url"],
+textarea {
   background-color: #222;
   font-size: 15px;
   color: #fff;
   border: 1px solid #555;
   border-radius: 4px;
+  font-family: inherit;
+  color-scheme: dark;
+}
+
+/* 入力欄の基本レイアウト */
+input[type="text"],
+input[type="password"],
+input[type="tel"],
+input[type="email"],
+input[type="date"],
+input[type="url"] {
   padding: 0.5rem;
   margin-bottom: 1rem;
   width: 100%;
+}
+
+textarea {
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  min-height: 200px;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus,
+input[type="email"]:focus,
+input[type="date"]:focus,
+input[type="url"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: #23df1e;
 }
 
 input[type="submit"] {
@@ -54,31 +90,6 @@ input[type="submit"] {
 
 input[type="submit"]:hover {
   background-color: #23df1e;
-}
-
-input[type="date"] {
-  background-color: #222;
-  font-size: 15px;
-  color: #fff;
-  border: 1px solid #555;
-  border-radius: 4px;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  width: 100%;
-  color-scheme: dark;
-}
-
-textarea {
-  background-color: #222;
-  font-size: 15px;
-  color: #fff;
-  border: 1px solid #555;
-  border-radius: 4px;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  width: 100%;
-  min-height: 200px;
-  color-scheme: dark;
 }
 
 table {
