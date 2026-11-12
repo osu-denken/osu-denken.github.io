@@ -18,6 +18,11 @@
         "label": "制作ブログ",
         "icon": "fa-solid fa-pen-to-square",
         "url": "https://osu-denken.github.io/blog/2026/06/03/61.html"
+      },
+      {
+        "label": "GitHub",
+        "icon": "fa-brands fa-github",
+        "url": "https://github.com/osu-denken/hackathon-group_Antigravity"
       }
     ],
     "images": [
@@ -47,6 +52,11 @@
         "label": "制作ブログ",
         "icon": "fa-solid fa-pen-to-square",
         "url": "https://osu-denken.github.io/blog/2026/06/03/61.html"
+      },
+      {
+        "label": "GitHub",
+        "icon": "fa-brands fa-github",
+        "url": "https://github.com/osu-denken/hackathon-group_Antigravity"
       }
     ],
     "images": [
@@ -79,6 +89,11 @@
         "label": "作品を見る",
         "icon": "fa fa-play",
         "url": "https://osu-denken.net/phone-and-shoot/host/"
+      },
+      {
+        "label": "GitHub",
+        "icon": "fa-brands fa-github",
+        "url": "https://github.com/osu-denken/hackathon-team_weii"
       }
     ],
     "images": [
@@ -87,7 +102,7 @@
       "/image/works/phoneandshoot_3.jpg"
     ],
     "createdAt": "2026-05-27",
-    "updatedAt": "2026-06-03"
+    "updatedAt": "2026-10-30"
   },
   {
     "id": 4,
@@ -112,6 +127,11 @@
         "label": "作品を見る",
         "icon": "fa fa-play",
         "url": "https://osu-denken.net/typing-ksh/"
+      },
+      {
+        "label": "GitHub",
+        "icon": "fa-brands fa-github",
+        "url": "https://github.com/osu-denken/typing-ksh"
       }
     ],
     "images": [
