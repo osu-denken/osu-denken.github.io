@@ -23,7 +23,7 @@ const WorkCard = ({ work, canEdit = false }: Props) => {
 
   if (!work) return null;
 
-  const formatDate = (date?: string) => date?.replace(/^(\\d{4})-(\\d{2})-(\\d{2})$/, "$1/$2/$3");
+  const formatDate = (date?: string) => date?.replace(/^(\d{4})-(\d{2})-(\d{2})$/, "$1/$2/$3");
 
   return (
     <article className={styles.card}>
