@@ -36,7 +36,7 @@ const WorkCard = ({ work, canEdit = false }: Props) => {
             title="この作品を編集"
             aria-label={`${work.title}を編集`}
           >
-            <Icon icon="fa6-solid:pen-to-square" />
+            <Icon icon="fa6-solid:pen" />
           </Link>
         )}
       </div>
