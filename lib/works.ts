@@ -86,7 +86,7 @@ function validateWork(work: any, index: number, allowIncomplete: boolean): Work 
     if (!Array.isArray(work.links)) throw new Error(`${at}.links must be an array`);
     work.links.forEach((link: any, linkIndex: number) => {
       const linkAt = `${at}.links[${linkIndex}]`;
-      if (typeof link?.label !== "string" || (!allowIncomplete && !link.label.trim())) throw new Error(`${linkAt}.label must not be empty`);
+      if (typeof link?.label !== "string") throw new Error(`${linkAt}.label must be a string`);
       if (typeof link?.url !== "string" || (!allowIncomplete && !link.url.trim())) throw new Error(`${linkAt}.url must not be empty`);
       if (link.icon !== undefined && typeof link.icon !== "string") throw new Error(`${linkAt}.icon must be a string`);
     });
@@ -105,4 +105,16 @@ export function parseWorks(source: string, options: { allowIncomplete?: boolean 
   if (ids.size !== works.length) throw new Error("works[].id must be unique");
 
   return works;
+}
+
+
+/** 保存前に編集中の空リンク行だけを除外し、ビルドに必要な形式を検証する */
+export function parseWorksForSave(source: string): Work[] {
+  const parsed = parseWorks(source, { allowIncomplete: true });
+  const normalized = parsed.map(work => ({
+    ...work,
+    links: work.links?.filter(link => link.label.trim() || link.url.trim() || link.icon?.trim()),
+  }));
+
+  return parseWorks(JSON.stringify(normalized));
 }

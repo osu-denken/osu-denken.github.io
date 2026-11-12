@@ -9,7 +9,7 @@ import styles from "@styles/Page.module.css";
 import portalStyles from "@styles/Portal.module.css";
 import { apiJson, readIdToken } from "@lib/api";
 import { sitePageOf } from "@lib/site-page";
-import { parseWorks, Work } from "@lib/works";
+import { parseWorks, parseWorksForSave, Work } from "@lib/works";
 import { WorksEditor } from "@components/portal/WorksEditor";
 
 const ReactSimpleMdeEditor = dynamic(() => import("react-simplemde-editor"), { ssr: false });
@@ -88,9 +88,17 @@ const SitePageEditor: NextPage = () => {
   };
 
   const onSave = () => {
+    let content: string;
+    try {
+      content = JSON.stringify(parseWorksForSave(source), null, 2) + "\\n";
+    } catch (e) {
+      setMsg(`保存できない作品データがある。入力内容を確認してほしい。 ${e instanceof Error ? e.message : ""}`);
+      return;
+    }
+
     apiJson<UpdateResponse>("/site-pages/update", {
       method: "POST",
-      body: JSON.stringify({ path, content: source }),
+      body: JSON.stringify({ path, content }),
     })
       .then(data => {
         if (!data.success) {
@@ -98,7 +106,8 @@ const SitePageEditor: NextPage = () => {
           return;
         }
 
-        setSavedSource(source);
+        setSource(content);
+        setSavedSource(content);
 
         // サイトの再ビルドを経て公開されるので、すぐには反映されない
         setMsg(data.rebuildTriggered

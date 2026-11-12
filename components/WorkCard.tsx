@@ -84,8 +84,8 @@ const WorkCard = ({ work, canEdit = false }: Props) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={iconName ? styles.iconLink : styles.textLink}
-                title={iconName ? link.label : undefined}
-                aria-label={iconName ? link.label : undefined}
+                title={iconName && link.label ? link.label : undefined}
+                aria-label={iconName ? (link.label || "リンクを開く") : undefined}
               >
                 {iconName ? <Icon icon={iconName} /> : link.label}
               </a>
