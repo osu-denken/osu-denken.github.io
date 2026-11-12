@@ -162,8 +162,7 @@
 }
 
 .category,
-.tag,
-.date {
+.tag {
   padding: 0.15rem 0.5rem;
   color: #ffffffb8;
   background: #ffffff0c;
@@ -177,10 +176,18 @@
   border-color: #4fafff55;
 }
 
+.dates {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  flex-basis: 100%;
+  color: #ffffff80;
+  font-size: 0.78rem;
+}
+
 .date {
-  color: #ffffff99;
-  background: #ffffff06;
-  border-color: #ffffff18;
+  color: inherit;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
