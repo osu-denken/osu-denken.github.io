@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Icon } from "@iconify/react";
 import portalStyles from "@styles/Portal.module.css";
-import { parseWorks, Work, WorkLink, WORK_ICON_OPTIONS } from "@lib/works";
+import { fontAwesomeIconName, parseWorks, Work, WorkLink, WORK_ICON_OPTIONS } from "@lib/works";
 
 interface WorksEditorProps {
   works: Work[];
@@ -14,6 +14,8 @@ const emptyWork = (id: number): Work => ({
   title: "",
   overview: "",
   description: "",
+  createdAt: "",
+  updatedAt: "",
   category: "",
   tags: [],
   author: "",
@@ -105,6 +107,19 @@ export const WorksEditor = ({ works, onChange, selectedId }: WorksEditorProps) =
             </div>
           </div>
 
+          <div className={portalStyles.fieldGrid}>
+            <div className={portalStyles.field}>
+              <label>制作日</label>
+              <input type="date" className={portalStyles.portal} value={work.createdAt ?? ""}
+                onChange={e => patch(index, { createdAt: e.target.value })} />
+            </div>
+            <div className={portalStyles.field}>
+              <label>更新日</label>
+              <input type="date" className={portalStyles.portal} value={work.updatedAt ?? ""}
+                onChange={e => patch(index, { updatedAt: e.target.value })} />
+            </div>
+          </div>
+
           <div className={portalStyles.field}>
             <label>概要</label>
             <input type="text" className={portalStyles.portal} value={work.overview ?? ""}
@@ -150,7 +165,7 @@ export const WorksEditor = ({ works, onChange, selectedId }: WorksEditorProps) =
                 {link.icon && (
                   <div className={portalStyles.field}>
                     <label>プレビュー</label>
-                    <p><Icon icon={WORK_ICON_OPTIONS.find(option => option.value === link.icon)?.icon ?? "fa6-solid:link"} /></p>
+                    <p><Icon icon={fontAwesomeIconName(link.icon) ?? "fa6-solid:link"} /></p>
                   </div>
                 )}
                 <div className={portalStyles.editorActions}>

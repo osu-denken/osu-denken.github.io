@@ -66,7 +66,7 @@ const SitePageEditor: NextPage = () => {
           const parsedWorks = parseWorks(data.content);
           if (isNew) {
             const newId = parsedWorks.reduce((max, work) => Math.max(max, work.id), 0) + 1;
-            const nextWorks = [...parsedWorks, { id: newId, title: "", images: [], links: [], tags: [] }];
+            const nextWorks = [...parsedWorks, { id: newId, title: "", createdAt: "", updatedAt: "", images: [], links: [], tags: [] }];
             setWorks(nextWorks);
             setSelectedWorkId(newId);
             setSource(JSON.stringify(nextWorks, null, 2) + "\n");

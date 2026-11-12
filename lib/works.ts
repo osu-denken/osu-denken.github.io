@@ -12,6 +12,10 @@ export interface Work {
   overview?: string;
   /** WorkCard が dangerouslySetInnerHTML で描画する。改行は <br /> で書く */
   description?: string;
+  /** 制作日・公開日など、作品が作成された日 */
+  createdAt?: string;
+  /** 最終更新日 */
+  updatedAt?: string;
   category?: string;
   tags?: string[];
   author?: string;
@@ -32,13 +36,34 @@ export const WORK_ICON_OPTIONS = [
   { value: "fa-solid fa-globe", label: "Webサイト", icon: "fa6-solid:globe" },
   { value: "fa-solid fa-video", label: "動画", icon: "fa6-solid:video" },
   { value: "fa-solid fa-play", label: "再生", icon: "fa6-solid:play" },
+  { value: "fa-solid fa-pen-to-square", label: "編集・記事", icon: "fa6-solid:pen-to-square" },
   { value: "fa-solid fa-book-open", label: "資料・Wiki", icon: "fa6-solid:book-open" },
   { value: "fa-solid fa-download", label: "ダウンロード", icon: "fa6-solid:download" },
   { value: "fa-solid fa-link", label: "リンク", icon: "fa6-solid:link" },
 ] as const;
 
-export const fontAwesomeIconName = (value?: string): string | undefined =>
-  WORK_ICON_OPTIONS.find(option => option.value === value)?.icon;
+export const fontAwesomeIconName = (value?: string): string | undefined => {
+  if (!value?.trim()) return undefined;
+
+  const normalized = value.trim();
+  const preset = WORK_ICON_OPTIONS.find(option => option.value === normalized);
+  if (preset) return preset.icon;
+
+  // Iconify 名はそのまま利用する。
+  if (/^fa6-(solid|regular|brands):[a-z0-9-]+$/.test(normalized)) return normalized;
+
+  // Font Awesome の class 名 (例: "fa fa-play", "fa-solid fa-pen-to-square") に対応する。
+  const classes = normalized.split(/\\s+/);
+  const iconClass = classes.find(name => /^fa-[a-z0-9-]+$/.test(name) && !["fa-solid", "fa-regular", "fa-brands"].includes(name));
+  if (!iconClass) return undefined;
+
+  const style = classes.includes("fa-brands") || classes.includes("fab")
+    ? "brands"
+    : classes.includes("fa-regular") || classes.includes("far")
+      ? "regular"
+      : "solid";
+  return `fa6-${style}:${iconClass.slice(3)}`;
+};
 
 /** 文字列配列かどうか */
 const isStringArray = (value: unknown): value is string[] =>
@@ -53,6 +78,8 @@ function validateWork(work: any, index: number, allowIncomplete: boolean): Work 
   if (typeof work?.id !== "number") throw new Error(`${at}.id must be a number`);
   if (typeof work.title !== "string" || (!allowIncomplete && !work.title.trim())) throw new Error(`${at}.title must not be empty`);
   if (!isStringArray(work.images)) throw new Error(`${at}.images must be an array of strings`);
+  if (work.createdAt !== undefined && typeof work.createdAt !== "string") throw new Error(`${at}.createdAt must be a string`);
+  if (work.updatedAt !== undefined && typeof work.updatedAt !== "string") throw new Error(`${at}.updatedAt must be a string`);
   if (work.tags !== undefined && !isStringArray(work.tags)) throw new Error(`${at}.tags must be an array of strings`);
 
   if (work.links !== undefined) {
