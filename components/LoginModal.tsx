@@ -42,6 +42,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onLog
   const [code, setCode] = useState('');
   const [needsTotp, setNeedsTotp] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [showGoogleLogin, setShowGoogleLogin] = useState(true);
 
   const handleGoogleCredential = async (credential: string) => {
     if (busy) return;
@@ -157,10 +158,15 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onLog
             <input type="submit" value="ログイン" disabled={busy} onClick={handleLoginClick} />
           </form>
 
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', margin: '1rem 0' }}>
-            <span style={{ color: '#aaa', fontSize: '0.85rem' }}>または</span>
-            <GoogleLoginButton onCredential={handleGoogleCredential} />
-          </div>
+          {showGoogleLogin && (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', margin: '1rem 0' }}>
+              <span style={{ color: '#aaa', fontSize: '0.85rem' }}>または</span>
+              <GoogleLoginButton
+                onCredential={handleGoogleCredential}
+                onUnavailable={() => setShowGoogleLogin(false)}
+              />
+            </div>
+          )}
 
           <p>
             ログインは大産大の電研部員のみが可能となっております。
