@@ -18,6 +18,8 @@ const WorksPage: NextPage<WorksPageProps> = ({ works }) => {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [category, setCategory] = useState("");
   const [tag, setTag] = useState("");
+  const [sortBy, setSortBy] = useState<"recommended" | "createdAt" | "updatedAt">("updatedAt");
+  const [sortOrder, setSortOrder] = useState<"desc" | "asc">("desc");
 
   useEffect(() => {
     if (!localStorage.getItem("idToken")) return;
@@ -46,6 +48,26 @@ const WorksPage: NextPage<WorksPageProps> = ({ works }) => {
     });
   }, [works, search, category, tag]);
 
+
+  const sortedWorks = useMemo(() => {
+    const indexed = filteredWorks.map((work, index) => ({ work, index }));
+    indexed.sort((a, b) => {
+      if (sortBy === "recommended") {
+        return sortOrder === "asc" ? a.index - b.index : b.index - a.index;
+      }
+      const aDate = Date.parse(a.work[sortBy] || "");
+      const bDate = Date.parse(b.work[sortBy] || "");
+      const aValid = Number.isFinite(aDate);
+      const bValid = Number.isFinite(bDate);
+      if (!aValid && !bValid) return a.index - b.index;
+      if (!aValid) return 1;
+      if (!bValid) return -1;
+      const difference = aDate - bDate;
+      return (sortOrder === "asc" ? difference : -difference) || a.index - b.index;
+    });
+    return indexed.map(item => item.work);
+  }, [filteredWorks, sortBy, sortOrder]);
+
   return (
     <div className={styles.container}>
       <main className={`${styles.main} ${pageStyles.page}`}>
@@ -64,6 +86,26 @@ const WorksPage: NextPage<WorksPageProps> = ({ works }) => {
               aria-label="作品を検索"
             />
           </label>
+
+          <select
+            className={pageStyles.sortSelect}
+            value={sortBy}
+            onChange={e => setSortBy(e.target.value as typeof sortBy)}
+            aria-label="並び順の基準"
+          >
+            <option value="recommended">オススメ順</option>
+            <option value="createdAt">作成日順</option>
+            <option value="updatedAt">更新日順</option>
+          </select>
+          <select
+            className={pageStyles.sortSelect}
+            value={sortOrder}
+            onChange={e => setSortOrder(e.target.value as typeof sortOrder)}
+            aria-label="並び順"
+          >
+            <option value="desc">降順</option>
+            <option value="asc">昇順</option>
+          </select>
           <button
             type="button"
             className={pageStyles.filterButton}
@@ -98,8 +140,8 @@ const WorksPage: NextPage<WorksPageProps> = ({ works }) => {
         )}
 
         <div className={pageStyles.worksGrid}>
-          {filteredWorks.length > 0
-            ? filteredWorks.map(work => <WorkCard key={work.id} work={work} canEdit={canEdit} />)
+          {sortedWorks.length > 0
+            ? sortedWorks.map(work => <WorkCard key={work.id} work={work} canEdit={canEdit} />)
             : <p className={pageStyles.emptyState}>該当する作品がありません。</p>}
         </div>
       </main>
