@@ -42,6 +42,8 @@ const WorkCard = ({ work, canEdit = false }: Props) => {
       <div className={styles.metadata}>
         {work.author && <span className={styles.author}>{work.author}</span>}
         {work.category && <span className={styles.category}>{work.category}</span>}
+        {work.createdAt && <span>制作日: {work.createdAt}</span>}
+        {work.updatedAt && <span>更新日: {work.updatedAt}</span>}
         {work.tags?.filter(tag => tag !== work.category).map(tag => <span className={styles.tag} key={tag}>{tag}</span>)}
       </div>
 
