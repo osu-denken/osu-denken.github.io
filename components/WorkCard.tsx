@@ -49,9 +49,11 @@ const WorkCard = ({ work, canEdit = false }: Props) => {
             {work.updatedAt && <span className={styles.date}>更新日: {formatDate(work.updatedAt)}</span>}
           </span>
         )}
-        <br />
-        {work.category && <span className={styles.category}>{work.category}</span>}
-        {work.tags?.filter(tag => tag !== work.category).map(tag => <span className={styles.tag} key={tag}>{tag}</span>)}
+
+        <div>
+          {work.category && <span className={styles.category}>{work.category}</span>}
+          {work.tags?.filter(tag => tag !== work.category).map(tag => <span className={styles.tag} key={tag}>{tag}</span>)}
+        </div>
       </div>
 
       {work.overview && <p className={styles.overview}>{work.overview}</p>}
