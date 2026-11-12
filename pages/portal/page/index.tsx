@@ -90,7 +90,9 @@ const SitePageEditor: NextPage = () => {
   const onSave = () => {
     let content: string;
     try {
-      content = JSON.stringify(parseWorksForSave(source), null, 2) + "\n";
+      content = page.kind === "works"
+        ? JSON.stringify(parseWorksForSave(source), null, 2) + "\n"
+        : source;
     } catch (e) {
       setMsg(`保存できない作品データがある。入力内容を確認してほしい。 ${e instanceof Error ? e.message : ""}`);
       return;
