@@ -53,7 +53,7 @@ export const fontAwesomeIconName = (value?: string): string | undefined => {
   if (/^fa6-(solid|regular|brands):[a-z0-9-]+$/.test(normalized)) return normalized;
 
   // Font Awesome の class 名 (例: "fa fa-play", "fa-solid fa-pen-to-square") に対応する。
-  const classes = normalized.split(/\\s+/);
+  const classes = normalized.split(/\s+/);
   const iconClass = classes.find(name => /^fa-[a-z0-9-]+$/.test(name) && !["fa-solid", "fa-regular", "fa-brands"].includes(name));
   if (!iconClass) return undefined;
 
