@@ -47,11 +47,11 @@ const isStringArray = (value: unknown): value is string[] =>
 /**
  * 1件を検証する。壊れた JSON を保存させるとサイトのビルドごと落ちる
  */
-function validateWork(work: any, index: number): Work {
+function validateWork(work: any, index: number, allowIncomplete: boolean): Work {
   const at = `works[${index}]`;
 
   if (typeof work?.id !== "number") throw new Error(`${at}.id must be a number`);
-  if (typeof work.title !== "string" || !work.title.trim()) throw new Error(`${at}.title must not be empty`);
+  if (typeof work.title !== "string" || (!allowIncomplete && !work.title.trim())) throw new Error(`${at}.title must not be empty`);
   if (!isStringArray(work.images)) throw new Error(`${at}.images must be an array of strings`);
   if (work.tags !== undefined && !isStringArray(work.tags)) throw new Error(`${at}.tags must be an array of strings`);
 
@@ -59,8 +59,8 @@ function validateWork(work: any, index: number): Work {
     if (!Array.isArray(work.links)) throw new Error(`${at}.links must be an array`);
     work.links.forEach((link: any, linkIndex: number) => {
       const linkAt = `${at}.links[${linkIndex}]`;
-      if (typeof link?.label !== "string" || !link.label.trim()) throw new Error(`${linkAt}.label must not be empty`);
-      if (typeof link?.url !== "string" || !link.url.trim()) throw new Error(`${linkAt}.url must not be empty`);
+      if (typeof link?.label !== "string" || (!allowIncomplete && !link.label.trim())) throw new Error(`${linkAt}.label must not be empty`);
+      if (typeof link?.url !== "string" || (!allowIncomplete && !link.url.trim())) throw new Error(`${linkAt}.url must not be empty`);
       if (link.icon !== undefined && typeof link.icon !== "string") throw new Error(`${linkAt}.icon must be a string`);
     });
   }
@@ -69,11 +69,11 @@ function validateWork(work: any, index: number): Work {
 }
 
 /** works.json を読んで検証する */
-export function parseWorks(source: string): Work[] {
+export function parseWorks(source: string, options: { allowIncomplete?: boolean } = {}): Work[] {
   const parsed = JSON.parse(source);
   if (!Array.isArray(parsed)) throw new Error("works.json must be an array");
 
-  const works = parsed.map(validateWork);
+  const works = parsed.map((work, index) => validateWork(work, index, options.allowIncomplete ?? false));
   const ids = new Set(works.map(work => work.id));
   if (ids.size !== works.length) throw new Error("works[].id must be unique");
 
