@@ -6,7 +6,7 @@
     <description>大阪産業大学 文化会 電子計算研究部の公式サイト。部員が制作した作品を紹介しています。</description>
     <language>ja</language>
     <atom:link href="https://osu-denken.github.io/feed.xml" rel="self" type="application/rss+xml"/>
-    <lastBuildDate>Thu, 12 Nov 2026 03:05:33 GMT</lastBuildDate>
+    <lastBuildDate>Sun, 22 Nov 2026 07:52:57 GMT</lastBuildDate>
     <item>
       <title>「カメラでドライブ！」</title>
       <link>https://osu-denken.github.io/works/</link>
@@ -72,6 +72,12 @@
       <link>https://osu-denken.github.io/works/</link>
       <guid isPermaLink="false">osu-denken-work-11</guid>
       <description><![CDATA[プロトコル名とポート番号を当てる、シンプルでサクッと遊べるブラウザゲーム]]></description>
+    </item>
+    <item>
+      <title>フックショット・シティ</title>
+      <link>https://osu-denken.github.io/works/</link>
+      <guid isPermaLink="false">osu-denken-work-12</guid>
+      <description><![CDATA[フックショットで巨大な街を飛び回る、ブラウザですぐ遊べるアクションゲームです！]]></description>
     </item>
   </channel>
 </rss>
