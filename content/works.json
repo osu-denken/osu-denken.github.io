@@ -338,5 +338,33 @@
     ],
     "createdAt": "2026-10-03",
     "updatedAt": "2026-10-03"
+  },
+  {
+    "id": 12,
+    "title": "フックショット・シティ",
+    "overview": "フックショットで巨大な街を飛び回る、ブラウザですぐ遊べるアクションゲームです！",
+    "description": "3km 四方の大きな街を、フックショット・ホバーバイク・グライダー・電車で飛び回る三人称アクション。「アリーナ・シューター」に続く2作目です。街の名所に陣取る「エース」のチームを倒し、最後は中央の広場で眠る巨大兵器にフックで取り付いて弱点を壊します。輪くぐりのタイムアタックと隠し武器もあります。<br /><br />使用技術: Unity, WebGL, Claude Code<br />音楽: 魔王魂<br /><br /><span><button type=\"button\" style=\"padding:5px 10px;font-size:16px;cursor:pointer\" onclick=\"this.parentNode.innerHTML='<iframe src=&quot;https://osu-denken.net/hookshot-city/?embed&quot; style=&quot;width:100%;aspect-ratio:16/9;border:0;background:#000&quot; allow=&quot;fullscreen&quot; allowfullscreen></iframe>'\">▶ ここで遊ぶ</button></span>",
+    "category": "ゲーム",
+    "tags": [
+      "C#",
+      "AI駆動開発",
+      "Webアプリ",
+      "個人制作"
+    ],
+    "author": "jtoxyz",
+    "links": [
+      {
+        "label": "作品を見る",
+        "icon": "fa fa-play",
+        "url": "https://osu-denken.net/hookshot-city/"
+      }
+    ],
+    "images": [
+      "https://osu-denken.net/hookshot-city/shots/hookshot-city_1.jpg",
+      "https://osu-denken.net/hookshot-city/shots/hookshot-city_2.jpg",
+      "https://osu-denken.net/hookshot-city/shots/hookshot-city_3.jpg"
+    ],
+    "createdAt": "2026-10-24",
+    "updatedAt": "2026-11-22"
   }
 ]
