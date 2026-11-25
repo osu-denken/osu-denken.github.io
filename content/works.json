@@ -366,5 +366,33 @@
     ],
     "createdAt": "2026-10-24",
     "updatedAt": "2026-11-22"
+  },
+  {
+    "id": 13,
+    "title": "でんけん青春日記",
+    "createdAt": "2017-03-20",
+    "updatedAt": "2018-04-03",
+    "images": [
+      "https://osu-denken.net/blog/images/2026/anr1nbab.webp"
+    ],
+    "links": [
+      {
+        "label": "作品を見る",
+        "url": "https://osu-denken.net/denken-youth-diary/",
+        "icon": "fa-solid fa-play"
+      },
+      {
+        "label": "ブログ記事",
+        "url": "https://osu-denken.net/blog/2026/11/25/36.html",
+        "icon": "fa-solid fa-pen-to-square"
+      }
+    ],
+    "tags": [
+      "個人制作"
+    ],
+    "author": "高根",
+    "category": "ゲーム",
+    "description": "2017年あたりの電研部員がWOLF RPGエディタで作成したゲームです。",
+    "overview": "でんけんのことを知ってもおうと製作されたゲームです"
   }
 ]
