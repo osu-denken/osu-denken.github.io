@@ -157,6 +157,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onLogin, onLog
             <br />
             <input type="submit" value="ログイン" disabled={busy} onClick={handleLoginClick} />
           </form>
+          <p style={{ fontSize: '0.85rem' }}>
+            <Link href="/resetpass/" onClick={handleClose}>パスワードを忘れた場合</Link>
+          </p>
 
           {showGoogleLogin && (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', margin: '1rem 0' }}>
